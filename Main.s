@@ -18,8 +18,23 @@ main:
 	jal PacMan
 
 
-	b Main
+	b main
 
-Salir:	
+salir:	
 	li $v0 10
 	syscall
+
+PacMan:
+    # Prologo
+	sw   $fp, ($sp)
+	move $fp, $sp
+	addi $sp, $sp, -4
+
+
+
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+
+    jr $ra
+
