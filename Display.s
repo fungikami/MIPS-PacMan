@@ -6,9 +6,9 @@
 
 # Configuracion del Bitmat Display:
 # 
-# Unit Width in pixels:       16	
-# Unit Height in Pixels:      16	
-# Display Width in Pixels:   512
+# Unit Width in pixels:      16	
+# Unit Height in Pixels:     16	
+# Display Width in Pixels:  512
 # Display Height in Pixels: 512
 
         .data
