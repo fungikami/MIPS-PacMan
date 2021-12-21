@@ -151,7 +151,7 @@ pintar_tablero:
     move $s0, $a0   # Dir. Bitmap Display
 
     # Reservar memoria
-    li $a0, 132
+    li $a0, 1055
     li $v0, 9
     syscall
     bltz $v0, pintar_tablero_fin
@@ -161,7 +161,7 @@ pintar_tablero:
     # Abrir y leer el archivo
     move $a0, $a1   # Archivo
     move $a1, $v0   # Dir. Memoria
-    li   $a2, 132   # Tamanio de memoria
+    li   $a2, 1055   # Tamanio de memoria
     jal leer_archivo
     bltz $v0, pintar_tablero_fin
 
