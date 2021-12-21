@@ -3,11 +3,16 @@
 # Variables globales
 seguir:	.byte 1
 MAT:	.word 0x10008000
-N:		.word 32
-M:		.WO
+S:      .word 1             # Refrescamiento 
+C:      .word 1             # Base para la conversión con los tics del reloj
+D:      .word 'A'           # Dirección actual del PacMan
+V:      .word 3             # Vidas
 
 	.globl seguir
 	.globl MAT
+	.globl S
+	.globl C
+	.globl V
 
 	.text
 main:
