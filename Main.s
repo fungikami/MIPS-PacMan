@@ -1,10 +1,14 @@
 	.data
-seguir:	.byte 1
-# Variables
 
+# Variables globales
+seguir:	.byte 1
 MAT:	.word 0x10008000
+N:		.word 32
+M:		.WO
+
 	.globl seguir
-	
+	.globl MAT
+
 	.text
 main:
 	lb $t1 seguir

@@ -17,8 +17,6 @@ colorPortal: .word 0xFF8000     # Naranja
 colorPared:  .word 0x828282     # Gris oscuro
 colorComida: .word 0xFFFFFF     # Blanco
 
-
-
         .text
 
 lw $t0, colorPacman
