@@ -34,4 +34,35 @@ coord_a_dir_bitmap:
 
     jr $ra
 
+# Funcion: Pinta un pixel del Bitmap Display.
+# Entrada: $a0: Direccion base del Bitmap Display 
+#               correspondiente a (x, y).
+#          $a1: Coordenada x.
+#          $a2: Coordenada y.
+#          $a3: Color (24-bit RGB).    
+# Planificacion de registros:
+# $s0: Color
+pintar_pixel:
+    # Prologo
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    sw   $s0, -8($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -12
 
+    move $s0, $a3
+
+    # Convierte la coordenada (x, y) en su dirección
+    # de memoria en el Bitmap Display.
+    jal coord_a_dir_bitmap
+
+    # Pinta el pixel en la dirección del Bitmap Display.
+    sw $s0, ($v0)
+
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+    lw   $ra, -4($sp)
+    lw   $s0, -8($sp)
+
+    jr $ra

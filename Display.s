@@ -27,35 +27,26 @@ colorComida: .word 0xFFFFFF     # Blanco
     lw $a0, MAT
     lw $a1, xBlinky
     lw $a2, yBlinky
-    jal coord_a_dir_bitmap
-
-    lw $t0, colorBlinky
-    sw $t0, ($v0)
+    lw $a3, colorBlinky
+    jal pintar_pixel
 
     lw $a0, MAT
     lw $a1, xPinky
     lw $a2, yPinky
-    jal coord_a_dir_bitmap
-
-    lw $t0, colorPinky
-    sw $t0, ($v0)
+    lw $a3, colorPinky
+    jal pintar_pixel
 
     lw $a0, MAT
     lw $a1, xInky
     lw $a2, yInky
-    jal coord_a_dir_bitmap
-
-    lw $t0, colorInky
-    sw $t0, ($v0)
+    lw $a3, colorInky
+    jal pintar_pixel
 
     lw $a0, MAT
     lw $a1, xClyde
     lw $a2, yClyde
-    jal coord_a_dir_bitmap
-
-    lw $t0, colorClyde
-    sw $t0, ($v0)
-
+    lw $a3, colorClyde
+    jal pintar_pixel
 fin:
 
 li $v0 10

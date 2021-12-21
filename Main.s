@@ -8,10 +8,10 @@
 
 # Variables globales
 seguir:	.byte 1
-MAT:	.word 0x10008000
+MAT:	.word 0x10008000	# Dirección base del Bitmat Display
 S:      .word 1             # Refrescamiento 
 C:      .word 1             # Base para la conversión con los tics del reloj
-D:      .word 'A'           # Dirección actual del PacMan
+D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas
 
 # Posiciones
@@ -27,8 +27,8 @@ yPinky:     .word 24
 xInky:      .word 27
 yInky:      .word 23
 
-xClyde:	.word 27
-yClyde:	.word 22
+xClyde:		.word 27
+yClyde:		.word 22
 
 xPortal5:   .word 31
 yPortal5:   .word 18
