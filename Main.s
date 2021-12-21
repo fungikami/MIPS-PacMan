@@ -14,6 +14,7 @@ V:      .word 3             # Vidas
 	.globl C
 	.globl D
 	.globl V
+	.globl main
 
 	.text
 main:
