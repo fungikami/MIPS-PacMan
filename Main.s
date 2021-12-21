@@ -12,6 +12,7 @@ V:      .word 3             # Vidas
 	.globl MAT
 	.globl S
 	.globl C
+	.globl D
 	.globl V
 
 	.text
