@@ -1,6 +1,8 @@
 	.data
 seguir:	.byte 1
+# Variables
 
+MAT:	.word 0x10008000
 	.globl seguir
 	
 	.text
