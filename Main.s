@@ -1,5 +1,5 @@
 # Proyecto 2
-# Implementacion del juego "PacMan".
+# Implementacion del juego Pac-Man.
 #
 # Autores: Ka Fung & Christopher Gomez
 # Fecha:   10-ene-2022

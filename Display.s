@@ -47,6 +47,7 @@ colorComida: .word 0xFFFFFF     # Blanco
     lw $a2, yClyde
     lw $a3, colorClyde
     jal pintar_pixel
+
 fin:
 
 li $v0 10
