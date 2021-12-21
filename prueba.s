@@ -12,7 +12,7 @@ pacmanColor: .word 0xFFFF00     # Amarillo
 blinkyColor: .word 0xFF0000     # Rojo
 pinkyColor:  .word 0x993400     # Marron
 inkyColor:   .word 0x00FFFF     # Azul
-clydeColor:  .word 0x31AC73     # Verde
+clydeColor:  .word 0x38D92B     # Verde
 
 # Otras cosas
 
