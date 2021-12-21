@@ -155,6 +155,8 @@ pintar_tablero:
     li $v0, 9
     syscall
     bltz $v0, pintar_tablero_fin
+
+    move $s1, $v0   # Dir. Memoria
     
     # Abrir y leer el archivo
     move $a0, $a1   # Archivo
@@ -163,13 +165,18 @@ pintar_tablero:
     jal leer_archivo
     bltz $v0, pintar_tablero_fin
 
-    move $s1, $v0   # Dir. Memoria
-
     # Pintar cada pixel
     li $s2, 0   # Coordenada x
-    li $s3, 0   # Coordenada y
+    li $s3, 31   # Coordenada y
     for_pixel:
         lb $t0, ($s1)
+
+        #####################################
+        move $a0, $t0
+        li $v0, 11
+        syscall
+        #####################################
+
         beq $t0, '\n', for_pixel_sig
 
         # Argumentos para pintar
@@ -228,15 +235,15 @@ pintar_tablero:
 
     for_pixel_sig:
         add $s1, $s1, 1
-        add $s2, $s2, 1 # x++
+        add $s2, $s2, 1     # x++
 
-        bne  $s1, 33, for_pixel
+        bne  $s2, 33, for_pixel
 
         # Si llegó al final de la línea, reinicia x y aumenta y
-        add  $s3, $s3, 1  # y++
-        move $s1, $zero   # x = 0
+        add  $s3, $s3, -1    # y++
+        move $s2, $zero     # x = 0
         
-        bne $s3, 32, for_pixel
+        bne $s3, -1, for_pixel
 
 pintar_tablero_fin:
     # Epilogo
