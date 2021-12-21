@@ -15,7 +15,7 @@ N G  G G GG GGG G GGG G G      N
 N G  G G GG GGG G GGG G        N
 G G GG G GG     G GGG GGGGGG   G
 G G G  G GG GGG   GGG G        G
-G G G  G    GGG G GGG G        G
+G G G  G    GGG G GGG G    GGG G
 G G G  G GG GGG G GGG G GG G   G
 G G G  G        G       GG G   G
 G G G  GGGGG  P G  GG   GG G   G
