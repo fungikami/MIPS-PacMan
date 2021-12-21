@@ -24,34 +24,41 @@ colorPared:  .word 0x828282     # Gris oscuro
 colorComida: .word 0xFFFFFF     # Blanco
 
         .text
+    lw $a0, MAT
+    lw $a1, xBlinky
+    lw $a2, yBlinky
+    jal coord_a_dir_bitmap
 
-lw $t0, colorPacman
-lw $s0, MAT
+    lw $t0, colorBlinky
+    sw $t0, ($v0)
 
-sw $t0, ($s0)
+    lw $a0, MAT
+    lw $a1, xPinky
+    lw $a2, yPinky
+    jal coord_a_dir_bitmap
 
-lw $t0, colorBlinky
-sw $t0, 4($s0)
+    lw $t0, colorPinky
+    sw $t0, ($v0)
 
-lw $t0, colorPinky
-sw $t0, 8($s0)
+    lw $a0, MAT
+    lw $a1, xInky
+    lw $a2, yInky
+    jal coord_a_dir_bitmap
 
-lw $t0, colorInky
-sw $t0, 12($s0)
+    lw $t0, colorInky
+    sw $t0, ($v0)
 
-lw $t0, colorClyde
-sw $t0, 16($s0)
+    lw $a0, MAT
+    lw $a1, xClyde
+    lw $a2, yClyde
+    jal coord_a_dir_bitmap
 
-lw $t0, colorPortal
-sw $t0, 20($s0)
-
-lw $t0, colorPared
-sw $t0, 24($s0)
-
-lw $t0, colorComida
-sw $t0, 28($s0)
+    lw $t0, colorClyde
+    sw $t0, ($v0)
 
 fin:
 
 li $v0 10
 syscall
+
+.include "Utilidades.s"

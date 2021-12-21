@@ -14,12 +14,42 @@ C:      .word 1             # Base para la conversión con los tics del reloj
 D:      .word 'A'           # Dirección actual del PacMan
 V:      .word 3             # Vidas
 
+# Posiciones
+xPacman:    .word 14
+yPacman:    .word 11
+
+xBlinky:    .word 27
+yBlinky:    .word 25
+
+xPinky:     .word 27
+yPinky:     .word 24
+
+xInky:      .word 27
+yInky:      .word 23
+
+xClyde:	.word 27
+yClyde:	.word 22
+
+xPortal5:   .word 31
+yPortal5:   .word 18
+
+xPortal6:   .word 0
+yPortal6:   .word 18
+
 	.globl seguir
 	.globl MAT
 	.globl S
 	.globl C
 	.globl D
 	.globl V
+	.globl xBlinky
+	.globl yBlinky
+	.globl xPinky
+	.globl yPinky
+	.globl xInky
+	.globl yInky
+	.globl xClyde
+	.globl yClyde
 	.globl main
 
 	.text
