@@ -240,7 +240,7 @@ pintar_tablero:
         bne  $s2, 33, for_pixel
 
         # Si llegó al final de la línea, reinicia x y aumenta y
-        add  $s3, $s3, -1    # y++
+        add  $s3, $s3, -1   # y--
         move $s2, $zero     # x = 0
         
         bne $s3, -1, for_pixel
