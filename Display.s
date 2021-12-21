@@ -1,3 +1,9 @@
+# Display.s
+# Implementacion de 
+#
+# Autores: Ka Fung & Christopher Gomez
+# Fecha:   10-ene-2022
+
 # Configuracion del Bitmat Display:
 # 
 # Unit Width in pixels:       16	

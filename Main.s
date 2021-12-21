@@ -1,3 +1,9 @@
+# Proyecto 2
+# Implementacion del juego "PacMan".
+#
+# Autores: Ka Fung & Christopher Gomez
+# Fecha:   10-ene-2022
+
 	.data
 
 # Variables globales
@@ -51,3 +57,5 @@ PacMan:
 
     jr $ra
 
+
+.include "Utilidades.s"
