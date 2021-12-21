@@ -14,9 +14,9 @@
 # $t0: Auxiliar
 coord_a_dir_bitmap: 
     # Prologo
-	sw   $fp, ($sp)
-	move $fp,  $sp
-	addi $sp,  $sp, -4
+    sw   $fp, ($sp)
+    move $fp,  $sp
+    addi $sp,  $sp, -4
 
     li  $t0, 31
     sub $v0, $t0, $a2   # a = 31 - y
