@@ -8,24 +8,14 @@
 
 # Variables globales
 seguir:	.byte 1
-MAT:	.word 0x10008000	# Dirección base del Bitmat Display
+MAT:	.word 0x10010000	# Dirección base del Bitmat Display
 S:      .word 1             # Refrescamiento 
 C:      .word 1             # Base para la conversión con los tics del reloj
 D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas
 
 # ------------ Tablero ------------
-arcTablero:  .asciiz "/home/fung/Downloads/Orga/proyecto2/tablero.txt"
-
-# ------------ Colores ------------
-colorPacman: .word 0xFFFF00     # Amarillo
-colorBlinky: .word 0xFF0000     # Rojo
-colorPinky:  .word 0x993400     # Marron
-colorInky:   .word 0x00FFFF     # Azul
-colorClyde:  .word 0x38D92B     # Verde
-colorPortal: .word 0xFF8000     # Naranja
-colorPared:  .word 0x828282     # Gris oscuro
-colorComida: .word 0xFFFFFF     # Blanco
+arcTablero:  .asciiz "/home/chus/Documents/Orga/Proyecto2/proyecto2/tablero.txt"
 
 # ------------ Posiciones ------------
 xPacman:    .word 14
@@ -49,8 +39,7 @@ yPortal5:   .word 18
 xPortal6:   .word 0
 yPortal6:   .word 18
 
-	.globl seguir
-	.globl MAT
+	.globl seguir MAT
 	.globl S
 	.globl C
 	.globl D
@@ -109,13 +98,10 @@ PacMan:
 	move $fp, $sp
 	addi $sp, $sp, -4
 
-
-
     # Epilogo
     move $sp,  $fp
     lw   $fp, ($sp)
 
     jr $ra
-
 
 .include "Utilidades.s"
