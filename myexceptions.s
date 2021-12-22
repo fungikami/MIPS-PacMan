@@ -100,7 +100,7 @@ s2:	.word 0
 	syscall
 
 	li $v0 4		# syscall 4 (print_str)
-	andi $a0 $k0 0x3c
+	andi $a0 $k0 0x7c
 	lw $a0 __excp($a0)
 	nop
 	syscall
@@ -178,13 +178,13 @@ V:      .word 3             # Vidas
 arcTablero:  .asciiz "/home/chus/Documents/Orga/Proyecto2/proyecto2/tablero.txt"
 
 # ------------ Colores ------------
-colorPacman: .word 0xFFFF00     # Amarillo
-colorBlinky: .word 0xFF0000     # Rojo
-colorPinky:  .word 0x993400     # Marron
-colorInky:   .word 0x00FFFF     # Azul
+colorPacman: .word 0xFFDE1E     # Amarillo
+colorBlinky: .word 0xE61E0E     # Rojo
+colorPinky:  .word 0x783014     # Marron
+colorInky:   .word 0x38A4E4     # Azul
 colorClyde:  .word 0x38D92B     # Verde
-colorPortal: .word 0xFF8000     # Naranja
-colorPared:  .word 0x828282     # Gris oscuro
+colorPortal: .word 0xF16406     # Naranja
+colorPared:  .word 0x33393B     # Gris oscuro
 colorComida: .word 0xFFFFFF     # Blanco
 
 	.globl seguir MAT S C D V
