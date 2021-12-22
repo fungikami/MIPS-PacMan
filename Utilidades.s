@@ -161,7 +161,7 @@ pintar_tablero:
     # Abrir y leer el archivo
     move $a0, $a1   # Archivo
     move $a1, $v0   # Dir. Memoria
-    li   $a2, 1055   # Tamanio de memoria
+    li   $a2, 1055  # Tamanio de memoria
     jal leer_archivo
     bltz $v0, pintar_tablero_fin
 
