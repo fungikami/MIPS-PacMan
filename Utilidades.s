@@ -6,9 +6,8 @@
 
 # Funcion: Convierte una coordenada (x, y) en una 
 #          direccion del Bitmap Display.
-# Entrada: $a0: Direccion base del Bitmap Display.
-#          $a1: Coordenada x.
-#          $a2: Coordenada y.
+# Entrada: $a0: Coordenada x.
+#          $a1: Coordenada y.
 # Salida:  $v0: Direccion del Bitmap Display 
 #               correspondiente a (x, y).
 # Planificacion de registros:
@@ -21,11 +20,12 @@ coord_a_dir_bitmap:
 
     # Formula: (32*(31 - y) + x)*4 + MAT
     li  $t0, 31
-    sub $v0, $t0, $a2   # a = 31 - y
+    sub $v0, $t0, $a1   # a = 31 - y
     sll $v0, $v0, 5     # a = a * 32
-    add $v0, $v0, $a1   # a = a + x
+    add $v0, $v0, $a0   # a = a + x
     sll $v0, $v0, 2     # a = a * 4
-    add $v0, $v0, $a0   # a = a + MAT
+    lw  $t0, MAT
+    add $v0, $v0, $t0   # a = a + MAT
 
     # Epilogo
     move $sp,  $fp
@@ -34,10 +34,9 @@ coord_a_dir_bitmap:
     jr $ra
 
 # Funcion: Pinta un pixel del Bitmap Display.
-# Entrada: $a0: Direccion base del Bitmap Display.
-#          $a1: Coordenada x.
-#          $a2: Coordenada y.
-#          $a3: Color (24-bit RGB).    
+# Entrada: $a0: Coordenada x.
+#          $a1: Coordenada y.
+#          $a2: Color (24-bit RGB).    
 # Planificacion de registros:
 # $s0: Color
 pintar_pixel:
@@ -48,7 +47,7 @@ pintar_pixel:
     move $fp,    $sp
     addi $sp,    $sp, -12
 
-    move $s0, $a3
+    move $s0, $a2
 
     # Convierte la coordenada (x, y) en su dirección
     # de memoria en el Bitmap Display.
@@ -129,8 +128,7 @@ leer_archivo_fin:
 #                'A' representa azul (Inky).
 #                'V' representa verde (Clyde).
 #          Usa los colores definidos en Main.s
-# Entrada: $a0: Direccion base del Bitmap Display.
-#          $a1: Archivo.
+# Entrada: $a0: Archivo.
 # Salida:  $v0: negativo si ocurrió algún error.    
 # Planificacion de registros:
 # $s0: Dir. Bitmap Display.
@@ -148,8 +146,6 @@ pintar_tablero:
 	move $fp,     $sp
 	addi $sp,     $sp, -24
 
-    move $s0, $a0   # Dir. Bitmap Display
-
     # Reservar memoria
     li $a0, 1055
     li $v0, 9
@@ -159,7 +155,6 @@ pintar_tablero:
     move $s1, $v0   # Dir. Memoria
     
     # Abrir y leer el archivo
-    move $a0, $a1   # Archivo
     move $a1, $v0   # Dir. Memoria
     li   $a2, 1055  # Tamanio de memoria
     jal leer_archivo
@@ -167,22 +162,15 @@ pintar_tablero:
 
     # Pintar cada pixel
     li $s2, 0   # Coordenada x
-    li $s3, 31   # Coordenada y
+    li $s3, 31  # Coordenada y
     for_pixel:
         lb $t0, ($s1)
-
-        #####################################
-        move $a0, $t0
-        li $v0, 11
-        syscall
-        #####################################
 
         beq $t0, '\n', for_pixel_sig
 
         # Argumentos para pintar
-        move $a0, $s0
-        move $a1, $s2
-        move $a2, $s3
+        move $a0, $s2
+        move $a1, $s3
 
         # Pintar tablero
         beq $t0, ' ', pintar_blanco
@@ -194,42 +182,42 @@ pintar_tablero:
         beq $t0, 'A', pintar_azul
 
         # Si no es ninguno de los anteriores es verde
-        lw $a3, colorClyde
+        lw $a2, colorClyde
         jal pintar_pixel
         j for_pixel_sig
 
         pintar_gris:
-            lw $a3, colorPared
+            lw $a2, colorPared
             jal pintar_pixel
             j for_pixel_sig
 
         pintar_blanco:
-            lw $a3, colorComida
+            lw $a2, colorComida
             jal pintar_pixel
             j for_pixel_sig
 
         pintar_naranja:
-            lw $a3, colorPortal
+            lw $a2, colorPortal
             jal pintar_pixel
             j for_pixel_sig
 
         pintar_amarillo:
-            lw $a3, colorPacman
+            lw $a2, colorPacman
             jal pintar_pixel
             j for_pixel_sig
 
         pintar_rojo:
-            lw $a3, colorBlinky
+            lw $a2, colorBlinky
             jal pintar_pixel
             j for_pixel_sig
 
         pintar_marron:
-            lw $a3, colorPinky
+            lw $a2, colorPinky
             jal pintar_pixel
             j for_pixel_sig
 
         pintar_azul:
-            lw $a3, colorInky
+            lw $a2, colorInky
             jal pintar_pixel
             j for_pixel_sig
 

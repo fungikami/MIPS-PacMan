@@ -33,8 +33,7 @@ yPortal6:   .word 18
 	.text
 main:
     # Display tablero
-    lw $a0, MAT
-    la $a1, arcTablero
+    la $a0, arcTablero
     jal pintar_tablero
 
     b salir

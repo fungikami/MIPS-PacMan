@@ -167,14 +167,14 @@ ret:
 	.data
 # ------------ Variables globales ------------ 
 seguir:	.byte 1
-MAT:	.word 0x10010000	# Dirección base del Bitmat Display
+MAT:	.word 0x10008000	# Dirección base del Bitmat Display
 S:      .word 1             # Refrescamiento 
 C:      .word 1             # Base para la conversión con los tics del reloj
 D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas
 
 # ------------ Tablero ------------
-#arcTablero:  .asciiz "/home/fung/Downloads/Orga/Proyecto2/proyecto2/tablero.txt"
+#arcTablero:  .asciiz "/home/fung/Downloads/Orga/proyecto2/tablero.txt"
 arcTablero:  .asciiz "/home/chus/Documents/Orga/Proyecto2/proyecto2/tablero.txt"
 
 # ------------ Colores ------------
