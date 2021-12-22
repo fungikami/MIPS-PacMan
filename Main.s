@@ -6,17 +6,6 @@
 
 	.data
 
-# Variables globales
-seguir:	.byte 1
-MAT:	.word 0x10010000	# Dirección base del Bitmat Display
-S:      .word 1             # Refrescamiento 
-C:      .word 1             # Base para la conversión con los tics del reloj
-D:      .word 'A'           # Dirección actual del Pac-Man
-V:      .word 3             # Vidas
-
-# ------------ Tablero ------------
-arcTablero:  .asciiz "/home/chus/Documents/Orga/Proyecto2/proyecto2/tablero.txt"
-
 # ------------ Posiciones ------------
 xPacman:    .word 14
 yPacman:    .word 11
@@ -38,29 +27,6 @@ yPortal5:   .word 18
 
 xPortal6:   .word 0
 yPortal6:   .word 18
-
-	.globl seguir MAT
-	.globl S
-	.globl C
-	.globl D
-	.globl V
-	.globl xBlinky
-	.globl yBlinky
-	.globl xPinky
-	.globl yPinky
-	.globl xInky
-	.globl yInky
-	.globl xClyde
-	.globl yClyde
-
-	.globl colorPacman
-	.globl colorBlinky
-	.globl colorPinky
-	.globl colorInky
-	.globl colorClyde
-	.globl colorPortal
-	.globl colorPared
-	.globl colorComida
 	
 	.globl main
 

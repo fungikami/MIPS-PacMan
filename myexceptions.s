@@ -173,6 +173,10 @@ C:      .word 1             # Base para la conversión con los tics del reloj
 D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas
 
+# ------------ Tablero ------------
+#arcTablero:  .asciiz "/home/fung/Downloads/Orga/Proyecto2/proyecto2/tablero.txt"
+arcTablero:  .asciiz "/home/chus/Documents/Orga/Proyecto2/proyecto2/tablero.txt"
+
 # ------------ Colores ------------
 colorPacman: .word 0xFFFF00     # Amarillo
 colorBlinky: .word 0xFF0000     # Rojo
@@ -184,6 +188,7 @@ colorPared:  .word 0x828282     # Gris oscuro
 colorComida: .word 0xFFFFFF     # Blanco
 
 	.globl seguir MAT S C D V
+	.globl arcTablero
 	.globl colorPacman colorBlinky colorPinky colorInky colorClyde colorPortal colorPared colorComida
 
 # Standard startup code.  Invoke the routine "main" with arguments:
