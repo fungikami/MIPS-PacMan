@@ -131,7 +131,7 @@ leer_archivo_fin:
 # Entrada: $a0: Archivo.
 # Salida:  $v0: negativo si ocurrió algún error.    
 # Planificacion de registros:
-# $s0: Dir. Bitmap Display.
+# $s0: Archivo del tablero.
 # $s1: Dir. memoria del tablero.
 # $s2: xActual.
 # $s3: yActual.
@@ -146,6 +146,8 @@ pintar_tablero:
 	move $fp,     $sp
 	addi $sp,     $sp, -24
 
+    move $s0, $a0   # Archivo tablero
+
     # Reservar memoria
     li $a0, 1055
     li $v0, 9
@@ -155,6 +157,7 @@ pintar_tablero:
     move $s1, $v0   # Dir. Memoria
     
     # Abrir y leer el archivo
+    move $a0, $s0   # Archivo
     move $a1, $v0   # Dir. Memoria
     li   $a2, 1055  # Tamanio de memoria
     jal leer_archivo
