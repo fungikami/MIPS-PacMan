@@ -66,6 +66,15 @@ __excp:	.word __e0_, __e1_, __e2_, __e3_, __e4_, __e5_, __e6_, __e7_, __e8_, __e
 s1:	.word 0
 s2:	.word 0
 
+
+
+# Mensajes:
+prueba:  .asciiz "Hola es una prueba"
+
+
+
+
+
 # This is the exception handler code that the processor runs when
 # an exception occurs. It only prints some information about the
 # exception, but can server as a model of how to write a handler.
@@ -86,7 +95,7 @@ s2:	.word 0
 
 	mfc0 $k0 $13		# Cause register
 	srl $a0 $k0 2		# Extract ExcCode Field
-	andi $a0 $a0 0x1f
+	andi $a0 $a0 0x1F
 
 	# Print information about exception.
 	#
@@ -96,11 +105,11 @@ s2:	.word 0
 
 	li $v0 1		# syscall 1 (print_int)
 	srl $a0 $k0 2		# Extract ExcCode Field
-	andi $a0 $a0 0x1f
+	andi $a0 $a0 0x1F
 	syscall
 
 	li $v0 4		# syscall 4 (print_str)
-	andi $a0 $k0 0x7c
+	andi $a0 $k0 0x7C
 	lw $a0 __excp($a0)
 	nop
 	syscall
@@ -129,6 +138,58 @@ ok_pc:
 # Interrupt-specific code goes here!
 # Don't skip instruction at EPC since it has not executed.
 
+interrupciones:
+	# Si la interrupcion proviene del timer, redirigir
+	# Timer: bit 15 of $13
+	# mfc0 $a0, $13
+	# srl $a0, $a0, 15
+	# andi $a0, 1
+	# bgtz $a0, timer
+
+	# Redirige la interrupcion si proviene del teclado
+	# (Keyboard: bit 8 de $13)
+	mfc0 $a0, $13
+	andi $a0, 0x7C  # Enmascara los bits 2-6 (exception code)
+	beqz $a0, teclado
+
+	j interrupciones_end
+
+teclado:
+    # q (quit), p (pausa), w (arriba), a (izquierda), s (abajo), d (derecha)
+    # q (0x71), p (0x70), w (0x77), a (0x61), s (0x73), d (0x64)
+
+    # Tomar el comando
+    lw $a0, 0xFFFF0004
+
+	li $v0, 11
+	syscall
+
+    # Ejecutar el comando
+	# Salir del juego ('q' o 'Q')
+	# beq $a0, 0x71, quit
+
+	# Pausar el juego ('p' o 'P')
+    # beq $a0, 0x70, pause
+
+    # # Si el juego esta pausado, no se puede ejecutar movimientos
+	# lw $a1, pauseS
+	# beq $a1, $zero, interrupciones_pause
+
+	# # Si no esta pausado, y el comando es valido, ejecutar
+    # beq $a0, 0x77, mover_arriba
+    # beq $a0, 0x73, mover_abajo
+    # beq $a0, 0x61, mover_izq
+    # beq $a0, 0x64, mover_der
+
+	j interrupciones_end
+
+# quit:
+# 	la $a0, prueba
+# 	li $v0, 4
+# 	syscall 
+
+# 	j end_game
+
 
 ret:
 # Return from (non-interrupt) exception. Skip offending instruction
@@ -140,6 +201,7 @@ ret:
 	mtc0 $k0 $14
 
 
+interrupciones_end:
 # Restore registers and reset procesor state
 #
 	lw $v0 s1		# Restore other registers
