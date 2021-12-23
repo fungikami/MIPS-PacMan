@@ -65,6 +65,7 @@ __excp:	.word __e0_, __e1_, __e2_, __e3_, __e4_, __e5_, __e6_, __e7_, __e8_, __e
 	.word __e28_, __e29_, __e30_, __e31_
 s1:	.word 0
 s2:	.word 0
+t0: .word 0
 
 # Mensajes:
 prueba:  .asciiz "Hola es una prueba"
@@ -87,6 +88,7 @@ mascaraInterrup: .word 0x8101
 	.set at
 	sw $v0 s1		# Not re-entrant and we can't trust $sp
 	sw $a0 s2		# But we need to use these registers
+	sw $t0 t0
 
 	mtc0 $0 $12		# Disable interrupts
 
@@ -204,8 +206,7 @@ interrupciones_fin:
 	mtc0 $0 $13	  # Clear Cause register
 	
 	# Restore Status register
-	lw   $a0, mascaraInterrup
-	mtc0 $a0, $12
+	lw   $t0, mascaraInterrup
 	
 	lw $v0 s1     # Restore other registers
 	lw $a0 s2
@@ -213,6 +214,10 @@ interrupciones_fin:
 	.set noat
 	move $at $k1  # Restore $at
 	.set at
+	
+	# Exactly the last instruction before returning to user mode
+	# (prevents re-entrancy and stack corruption)
+	mtc0 $t0, $12
 
 # Return from exception on MIPS32:
 	eret
