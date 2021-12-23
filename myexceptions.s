@@ -66,10 +66,9 @@ __excp:	.word __e0_, __e1_, __e2_, __e3_, __e4_, __e5_, __e6_, __e7_, __e8_, __e
 s1:	.word 0
 s2:	.word 0
 
-
-
 # Mensajes:
 prueba:  .asciiz "Hola es una prueba"
+mascaraInterrup: .word 0x8101
 
 # This is the exception handler code that the processor runs when
 # an exception occurs. It only prints some information about the
@@ -88,6 +87,8 @@ prueba:  .asciiz "Hola es una prueba"
 	.set at
 	sw $v0 s1		# Not re-entrant and we can't trust $sp
 	sw $a0 s2		# But we need to use these registers
+
+	mtc0 $0 $12		# Disable interrupts
 
 	mfc0 $k0 $13		# Cause register
 	srl $a0 $k0 2		# Extract ExcCode Field
@@ -127,7 +128,7 @@ ok_pc:
 	syscall
 
 	srl $a0 $k0 2		# Extract ExcCode Field
-	andi $a0 $a0 0x1f
+	andi $a0 $a0 0x1F
 	bne $a0 0 ret		# 0 means exception was an interrupt
 	nop
 
@@ -148,7 +149,7 @@ interrupciones:
 	andi $a0, 0x7C  # Enmascara los bits 2-6 (exception code)
 	beqz $a0, teclado
 
-	j interrupciones_end
+	j interrupciones_fin
 
 teclado:
     # q (quit), p (pausa), w (arriba), a (izquierda), s (abajo), d (derecha)
@@ -177,7 +178,7 @@ teclado:
     # beq $a0, 0x61, mover_izq
     # beq $a0, 0x64, mover_der
 
-	j interrupciones_end
+	j interrupciones_fin
 
 # quit:
 # 	la $a0, prueba
@@ -197,21 +198,21 @@ ret:
 	mtc0 $k0 $14
 
 
-interrupciones_end:
+interrupciones_fin:
 # Restore registers and reset procesor state
-#
-	lw $v0 s1		# Restore other registers
+
+	mtc0 $0 $13	  # Clear Cause register
+	
+	# Restore Status register
+	lw   $a0, mascaraInterrup
+	mtc0 $a0, $12
+	
+	lw $v0 s1     # Restore other registers
 	lw $a0 s2
 
 	.set noat
-	move $at $k1		# Restore $at
+	move $at $k1  # Restore $at
 	.set at
-
-	mtc0 $0 $13		# Clear Cause register
-
-	mfc0 $k0 $12		# Set Status register
-	ori  $k0 0x1		# Interrupts enabled
-	mtc0 $k0 $12
 
 # Return from exception on MIPS32:
 	eret
@@ -266,6 +267,19 @@ __start:
 	
 	####################
 	
+	# Inicializa Status register ($11/Compare)
+	li $a0, 300
+	mtc0 $a0, $11
+
+	# Inicializa Cause register ($12)
+	lw $a0, mascaraInterrup
+	mtc0 $a0, $12
+	
+	# Inicializa Receiver Control
+	li	$a0, 0xFFFF0000
+	lw	$a1, ($a0)
+	ori	$a1, $a1, 2
+	sw	$a1, ($a0)
 
 	lw $a0 0($sp)		# argc
 	addiu $a1 $sp 4		# argv
