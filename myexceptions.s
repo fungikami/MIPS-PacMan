@@ -84,10 +84,10 @@ prueba:  .asciiz "Hola es una prueba"
 	.set noat
 	move $k1 $at		# Save $at
 	.set at
-	sw $v0 s1		# Not re-entrant and we can't trust $sp
-	sw $a0 s2		# But we need to use these registers
-
-	mtc0 $0 $12		# Disable interrupts
+	sw $v0 s1        # Not re-entrant and we can't trust $sp
+	sw $a0 s2	     # But we need to use these registers
+	
+	mtc0 $0 $12		# Disable interrupts		
 
 	mfc0 $k0 $13		# Cause register
 	srl $a0 $k0 2		# Extract ExcCode Field
