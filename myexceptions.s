@@ -208,8 +208,10 @@ interrupciones_fin:
 	# Restore Status register
 	lw   $t0, mascaraInterrup
 	
-	lw $v0 s1     # Restore other registers
+	# Restore other registers
+	lw $v0 s1
 	lw $a0 s2
+	lw $t0 s0
 
 	.set noat
 	move $at $k1  # Restore $at
