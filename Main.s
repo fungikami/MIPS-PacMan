@@ -36,8 +36,6 @@ main:
     la $a0, arcTablero
     jal pintar_tablero
 
-    b salir
-
 
 	lb $t1 seguir
 	beqz $t1 salir
