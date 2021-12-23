@@ -5,6 +5,7 @@
 # Fecha:   10-ene-2022
 
 	.data
+seguir:	.byte 1
 
 # ------------ Posiciones ------------
 xPacman:    .word 14
@@ -28,14 +29,16 @@ yPortal5:   .word 18
 xPortal6:   .word 0
 yPortal6:   .word 18
 	
-	.globl main
+	.globl seguir __init__
 
 	.text
-main:
+
+__init__:
     # Display tablero
     la $a0, arcTablero
     jal pintar_tablero
 
+main:
 	lb $t1 seguir
 	beqz $t1 salir
 

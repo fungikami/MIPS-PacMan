@@ -71,10 +71,6 @@ s2:	.word 0
 # Mensajes:
 prueba:  .asciiz "Hola es una prueba"
 
-
-
-
-
 # This is the exception handler code that the processor runs when
 # an exception occurs. It only prints some information about the
 # exception, but can server as a model of how to write a handler.
@@ -228,7 +224,6 @@ interrupciones_end:
 
 	.data
 # ------------ Variables globales ------------ 
-seguir:	.byte 1
 MAT:	.word 0x10008000	# Dirección base del Bitmat Display
 S:      .word 1             # Refrescamiento 
 C:      .word 1             # Base para la conversión con los tics del reloj
@@ -249,7 +244,7 @@ colorPortal: .word 0xF16406     # Naranja
 colorPared:  .word 0x33393B     # Gris oscuro
 colorComida: .word 0xFFFFFF     # Blanco
 
-	.globl seguir MAT S C D V
+	.globl MAT S C D V
 	.globl arcTablero
 	.globl colorPacman colorBlinky colorPinky colorInky colorClyde colorPortal colorPared colorComida
 
@@ -277,7 +272,7 @@ __start:
 	addiu $a2 $a1 4		# envp
 	sll $v0 $a0 2
 	addu $a2 $a2 $v0
-	jal main
+	jal __init__
 	nop
 
 	li $v0 10
