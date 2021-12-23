@@ -211,7 +211,7 @@ interrupciones_fin:
 	# Restore other registers
 	lw $v0 s1
 	lw $a0 s2
-	lw $t0 s0
+	lw $t0 t0
 
 	.set noat
 	move $at $k1  # Restore $at
