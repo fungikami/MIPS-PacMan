@@ -5,9 +5,9 @@
 # Fecha:   10-ene-2022
 
 	.data
-seguir:	       .byte 1
-pausar:        .byte 0
-avanzar_cuadro:.byte 0
+seguir:	        .byte 1
+pausar:         .byte 0
+avanzar_cuadro: .byte 0
 
 # ------------ Posiciones ------------
 xPacman:    .word 14
@@ -47,8 +47,6 @@ main:
 	lb  $t1, pausar
 	beq $t1, 1, pausar_partida
 
-    
-
 	# Aqui habrá un conjunto de instrucciones.
 	# Éstas respetaran las convenciones
 
@@ -82,11 +80,11 @@ PacMan:
 	addi $sp, $sp, -4
 
     # Reinicia la variable saltar
-    sw $zero, saltar
+    sw $zero, avanzar_cuadro
 
     li $v0, 11
-	li $a0, 'a'
-	syscall
+    li $a0, 't'
+    syscall
 
     # Epilogo
     move $sp,  $fp
@@ -94,4 +92,4 @@ PacMan:
 
     jr $ra
 
-    .include "Utilidades.s"
+.include "Utilidades.s"
