@@ -69,6 +69,10 @@ s2:	.word 0
 # Mensajes:
 prueba:  .asciiz "Hola es una prueba"
 
+
+
+
+
 # This is the exception handler code that the processor runs when
 # an exception occurs. It only prints some information about the
 # exception, but can server as a model of how to write a handler.
@@ -151,40 +155,48 @@ interrupciones:
 	j interrupciones_fin
 
 teclado:
-    # q (quit), p (pausa), w (arriba), a (izquierda), s (abajo), d (derecha)
-    # q (0x71), p (0x70), w (0x77), a (0x61), s (0x73), d (0x64)
+    # Tomar la tecla presionada (Receiver Data)
+    lw  $a0, 0xFFFF0004
 
-    # Tomar el comando
-    lw $a0, 0xFFFF0004
+	beq $a0, 'A', comando_mover # Arriba (A/a)
+    beq $a0, 'a', comando_mover
 
+    beq $a0, 'B', comando_mover # Abajo (B/b)
+    beq $a0, 'b', comando_mover
+
+    beq $a0, 'I', comando_mover # Izquierda (I/i)
+    beq $a0, 'i', comando_mover
+
+    beq $a0, 'D', comando_mover # Derecha (D/d)
+    beq $a0, 'd', comando_mover
+
+    beq $a0, 'P', comando_pausar # Pausa
+    beq $a0, 'p', comando_pausar
+
+    beq $a0, 'Q', comando_quitar # Quitar
+    beq $a0, 'q', comando_quitar
+
+	# --------- DEBUGGING ---------
 	li $v0, 11
 	syscall
-
-    # Ejecutar el comando
-	# Salir del juego ('q' o 'Q')
-	# beq $a0, 0x71, quit
-
-	# Pausar el juego ('p' o 'P')
-    # beq $a0, 0x70, pause
-
-    # # Si el juego esta pausado, no se puede ejecutar movimientos
-	# lw $a1, pauseS
-	# beq $a1, $zero, interrupciones_pause
-
-	# # Si no esta pausado, y el comando es valido, ejecutar
-    # beq $a0, 0x77, mover_arriba
-    # beq $a0, 0x73, mover_abajo
-    # beq $a0, 0x61, mover_izq
-    # beq $a0, 0x64, mover_der
+	# -----------------------------
 
 	j interrupciones_fin
 
-# quit:
-# 	la $a0, prueba
-# 	li $v0, 4
-# 	syscall 
+comando_mover:
+    la $v0, D 
+    sw $v0, ($v0)
+	j interrupciones_fin
 
-# 	j end_game
+comando_pausar:
+    la $v0, pausar
+    sw $v0, ($v0)
+	j interrupciones_fin
+
+comando_quitar:
+    la $v0, seguir
+    sw $zero, ($v0)
+	j interrupciones_fin
 
 
 ret:
@@ -231,9 +243,12 @@ C:      .word 1             # Base para la conversión con los tics del reloj
 D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas
 
+pausar: .word 0
+
+
 # ------------ Tablero ------------
-#arcTablero:  .asciiz "/home/fung/Downloads/Orga/proyecto2/tablero.txt"
-arcTablero:  .asciiz "/home/chus/Documents/Orga/Proyecto2/proyecto2/tablero.txt"
+arcTablero:  .asciiz "/home/fung/Downloads/Orga/proyecto2/tablero.txt"
+#arcTablero:  .asciiz "/home/chus/Documents/Orga/Proyecto2/proyecto2/tablero.txt"
 
 # ------------ Colores ------------
 colorPacman: .word 0xFFDE1E     # Amarillo
@@ -246,7 +261,7 @@ colorPared:  .word 0x33393B     # Gris oscuro
 colorComida: .word 0xFFFFFF     # Blanco
 
 	.globl MAT S C D V
-	.globl arcTablero
+	.globl pausar arcTablero
 	.globl colorPacman colorBlinky colorPinky colorInky colorClyde colorPortal colorPared colorComida
 
 # Standard startup code.  Invoke the routine "main" with arguments:

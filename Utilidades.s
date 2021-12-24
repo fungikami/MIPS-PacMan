@@ -4,6 +4,57 @@
 # Autores: Ka Fung & Christopher Gomez
 # Fecha: 10-ene-2022
 
+# Funcion: Abre y lee un archivo dado.
+# Entrada: $a0: Archivo.
+#          $a1: Buffer.
+#          $a2: Tamanio Buffer.
+# Salida:  $v0: negativo si no logro leer archivo.    
+# Planificacion de registros:
+# $t0: buffer
+# $t1: archivo
+leer_archivo: 
+    # Prologo
+	sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+	move $fp,    $sp
+	addi $sp,    $sp, -8
+
+    move $t0, $a0   # Archivo
+    move $t1, $a1   # Buffer
+    move $t2, $a2   # Tamanio Buffer
+
+    # Abrir archivo para leer
+    li $v0, 13
+    move $a0, $t0
+    li $a1, 0
+    syscall
+
+    bltz $v0, leer_archivo_fin
+    move $a0, $v0
+
+    # Leer archivo
+    li $v0, 14
+    move $a1, $t1
+    move $a2, $t2
+    syscall
+
+    bltz $v0, leer_archivo_fin
+
+    add $t1, $t1, $v0
+    sb $zero, ($t1) # Termina el buffer con un null
+
+    # Cerrar el archivo
+    li $v0, 16
+    syscall
+
+leer_archivo_fin:
+    # Epilogo
+    move $sp,    $fp
+    lw   $fp,   ($sp)
+    lw   $ra, -4($sp)
+
+    jr $ra
+
 # Funcion: Convierte una coordenada (x, y) en una 
 #          direccion del Bitmap Display.
 # Entrada: $a0: Coordenada x.
@@ -62,58 +113,7 @@ pintar_pixel:
     lw   $ra, -4($sp)
     lw   $s0, -8($sp)
 
-    jr $ra
-
-# Funcion: Abre y lee un archivo dado.
-# Entrada: $a0: Archivo.
-#          $a1: Buffer.
-#          $a2: Tamanio Buffer.
-# Salida:  $v0: negativo si no logro leer archivo.    
-# Planificacion de registros:
-# $t0: buffer
-# $t1: archivo
-leer_archivo: 
-    # Prologo
-	sw   $fp,   ($sp)
-    sw   $ra, -4($sp)
-	move $fp,    $sp
-	addi $sp,    $sp, -8
-
-    move $t0, $a0   # Archivo
-    move $t1, $a1   # Buffer
-    move $t2, $a2   # Tamanio Buffer
-
-    # Abrir archivo para leer
-    li $v0, 13
-    move $a0, $t0
-    li $a1, 0
-    syscall
-
-    bltz $v0, leer_archivo_fin
-    move $a0, $v0
-
-    # Leer archivo
-    li $v0, 14
-    move $a1, $t1
-    move $a2, $t2
-    syscall
-
-    bltz $v0, leer_archivo_fin
-
-    add $t1, $t1, $v0
-    sb $zero, ($t1) # Termina el buffer con un null
-
-    # Cerrar el archivo
-    li $v0, 16
-    syscall
-
-leer_archivo_fin:
-    # Epilogo
-    move $sp,    $fp
-    lw   $fp,   ($sp)
-    lw   $ra, -4($sp)
-
-    jr $ra
+    jr $ra 
 
 # Funcion: Pinta un tablero 32x32 desde un archivo donde cada caracter
 #          representa una celda, con el siguiente formato:
@@ -247,3 +247,28 @@ pintar_tablero_fin:
     lw   $s3, -20($sp)
 
     jr $ra
+
+# Funcion: Obtiene el color de un pixel del Bitmap Display.
+# Entrada: $a0: Coordenada x.
+#          $a1: Coordenada y. 
+obtener_color_pixel:
+    # Prologo
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -8
+
+    # Convierte la coordenada (x, y) en su dirección
+    # de memoria en el Bitmap Display.
+    jal coord_a_dir_bitmap
+
+    # Obtiene el color del pixel.
+    lw $v0, ($v0)
+
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+    lw   $ra, -4($sp)
+
+    jr $ra 
+
