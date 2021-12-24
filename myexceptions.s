@@ -196,7 +196,7 @@ comando_pausar:
 
 comando_quitar:
 	mfc0 $k0, $14
-	blt  $k0, main
+	blt  $k0, $k0, main
 
     sb $zero, seguir
 	j interrupciones_fin
@@ -263,7 +263,7 @@ colorPared:  .word 0x33393B     # Gris oscuro
 colorComida: .word 0xFFFFFF     # Blanco
 
 	.globl MAT S C D V
-	.globl pausar arcTablero
+	.globl arcTablero
 	.globl colorPacman colorBlinky colorPinky colorInky colorClyde colorPortal colorPared colorComida
 
 # Standard startup code.  Invoke the routine "main" with arguments:

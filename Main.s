@@ -30,7 +30,7 @@ yPortal5:   .word 18
 xPortal6:   .word 0
 yPortal6:   .word 18
 	
-	.globl seguir pausar __init__
+	.globl seguir pausar __init__ main
 
 	.text
 
@@ -85,3 +85,4 @@ PacMan:
 
     jr $ra
 
+    .include "Utilidades.s"
