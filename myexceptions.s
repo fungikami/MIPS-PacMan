@@ -195,9 +195,6 @@ comando_pausar:
 	j interrupciones_fin
 
 comando_quitar:
-	mfc0 $k0, $14
-	blt  $k0, $k0, main
-
     sb $zero, seguir
 	j interrupciones_fin
 

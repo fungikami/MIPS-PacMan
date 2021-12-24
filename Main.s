@@ -49,8 +49,9 @@ main:
 	# Aqui habrá un conjunto de instrucciones.
 	# Éstas respetaran las convenciones
 
-    li $t0, 'm'
-	sw $t0, 0xFFFF0008 
+    li $a0, 'm'
+	li $v0, 11
+    syscall
 
 	# Note que su implmentación de la función PacMan debe ser lo
 	# más eficiente posible. El Main tiene otras cosas qué hacer
@@ -68,8 +69,9 @@ pausar_partida:
 	lb   $t1, pausar
 	beqz $t1, main
 
-	li $t0, 'p'
-	sw $t0, 0xFFFF0008 
+	li $a0, 'p'
+	li $v0, 11
+    syscall
 	
 	j pausar_partida
 
