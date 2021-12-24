@@ -139,22 +139,32 @@ ok_pc:
 # Don't skip instruction at EPC since it has not executed.
 
 interrupciones:
-	# Si la interrupcion proviene del timer, redirigir
-	# Timer: bit 15 of $13
-	# mfc0 $a0, $13
-	# srl $a0, $a0, 15
-	# andi $a0, 1
-	# bgtz $a0, timer
-
+	# Revisa si la interrupcion es de hardware o una excepcion
+	mfc0 $a0, $13
+	andi $a0, 0x7C  # Enmascara los bits 2-6 (exception code)
+	bnez $a0, ret   # Si es una excepcion
+	
 	# Redirige la interrupcion si proviene del teclado
 	# (Keyboard: bit 8 de $13)
 	mfc0 $a0, $13
-	andi $a0, 0x7C  # Enmascara los bits 2-6 (exception code)
-	beqz $a0, teclado
+	srl  $a0, $a0, 8
+	andi $a0, 1
+    beq  $a0, 1, teclado
+
+	# Redirige la interrupcion si proviene del timer
+    # (Timer: bit 15 de $13)
+	mfc0 $a0, $13
+	srl  $a0, $a0, 15
+	andi $a0, 1
+	beq  $a0, 1, timer
 
 	j interrupciones_fin
 
 teclado:
+	mfc0 $k0, $13
+	andi $k0, 0xFEFF # Reinicia el bit 8 de Cause register
+	mtc0 $k0, $13
+
     # Tomar la tecla presionada (Receiver Data)
     lw  $a0, 0xFFFF0004
 
@@ -198,6 +208,19 @@ comando_quitar:
     sb $zero, seguir
 	j interrupciones_fin
 
+timer:
+	mfc0 $k0, $13
+	andi $k0, 0x7FFF # Reinicia el bit 15 de Cause register
+	mtc0 $k0, $13
+
+	# Reinicia Timer ($9)
+	mtc0 $zero, $9
+
+	# Se da permiso de avanzar un cuadro
+	li $k0, 1
+	sb $k0, avanzar_cuadro
+
+	j interrupciones_fin
 
 ret:
 # Return from (non-interrupt) exception. Skip offending instruction
@@ -239,7 +262,7 @@ interrupciones_fin:
 # ------------ Variables globales ------------ 
 MAT:	.word 0x10008000	# Dirección base del Bitmat Display
 S:      .word 1             # Refrescamiento 
-C:      .word 1             # Base para la conversión con los tics del reloj
+C:      .word 300           # Base para la conversión con los tics del reloj
 D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas
 
@@ -282,7 +305,7 @@ __start:
 	####################
 	
 	# Inicializa Status register ($11/Compare)
-	li $a0, 300
+	lw   $a0, C
 	mtc0 $a0, $11
 
 	# Inicializa Cause register ($12)

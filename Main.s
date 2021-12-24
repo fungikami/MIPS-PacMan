@@ -5,8 +5,9 @@
 # Fecha:   10-ene-2022
 
 	.data
-seguir:	.byte 1
-pausar: .byte 0
+seguir:	       .byte 1
+pausar:        .byte 0
+avanzar_cuadro:.byte 0
 
 # ------------ Posiciones ------------
 xPacman:    .word 14
@@ -30,7 +31,7 @@ yPortal5:   .word 18
 xPortal6:   .word 0
 yPortal6:   .word 18
 	
-	.globl seguir pausar __init__ main
+	.globl seguir pausar avanzar_cuadro __init__ main
 
 	.text
 
@@ -46,16 +47,19 @@ main:
 	lb  $t1, pausar
 	beq $t1, 1, pausar_partida
 
+    
+
 	# Aqui habrá un conjunto de instrucciones.
 	# Éstas respetaran las convenciones
-
-    li $a0, 'm'
-	li $v0, 11
-    syscall
 
 	# Note que su implmentación de la función PacMan debe ser lo
 	# más eficiente posible. El Main tiene otras cosas qué hacer
 	# Debe hacer la actividad requerida y regresar rápidamente aquí. 
+
+	# Cada S
+esperar:
+	lb   $t0, avanzar_cuadro
+	beqz $t0, esperar
 
 	jal PacMan
 
@@ -68,10 +72,6 @@ salir:
 pausar_partida:
 	lb   $t1, pausar
 	beqz $t1, main
-
-	li $a0, 'p'
-	li $v0, 11
-    syscall
 	
 	j pausar_partida
 
@@ -80,6 +80,13 @@ PacMan:
 	sw   $fp, ($sp)
 	move $fp, $sp
 	addi $sp, $sp, -4
+
+    # Reinicia la variable saltar
+    sw $zero, saltar
+
+    li $v0, 11
+	li $a0, 'a'
+	syscall
 
     # Epilogo
     move $sp,  $fp
