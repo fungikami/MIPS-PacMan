@@ -66,13 +66,6 @@ __excp:	.word __e0_, __e1_, __e2_, __e3_, __e4_, __e5_, __e6_, __e7_, __e8_, __e
 s1:	.word 0
 s2:	.word 0
 
-# Mensajes:
-prueba:  .asciiz "Hola es una prueba"
-
-
-
-
-
 # This is the exception handler code that the processor runs when
 # an exception occurs. It only prints some information about the
 # exception, but can server as a model of how to write a handler.
@@ -171,25 +164,28 @@ teclado:
 	syscall
 	# -----------------------------
 
-	beq $a0, 'A', comando_mover # Arriba (A/a)
-    beq $a0, 'a', comando_mover
+    beq $a0, 'a', comando_mover # Arriba (A/a)
+	beq $a0, 'A', comando_mover_mayus 
 
-    beq $a0, 'B', comando_mover # Abajo (B/b)
-    beq $a0, 'b', comando_mover
+    beq $a0, 'b', comando_mover # Abajo (B/b)
+    beq $a0, 'B', comando_mover_mayus 
 
-    beq $a0, 'I', comando_mover # Izquierda (I/i)
-    beq $a0, 'i', comando_mover
+    beq $a0, 'i', comando_mover # Izquierda (I/i)
+    beq $a0, 'I', comando_mover_mayus
 
-    beq $a0, 'D', comando_mover # Derecha (D/d)
-    beq $a0, 'd', comando_mover
+    beq $a0, 'd', comando_mover # Derecha (D/d)
+    beq $a0, 'D', comando_mover_mayus
 
-    beq $a0, 'P', comando_pausar # Pausa
-    beq $a0, 'p', comando_pausar
+    beq $a0, 'p', comando_pausar # Pausa
+    beq $a0, 'P', comando_pausar
 
-    beq $a0, 'Q', comando_quitar # Quitar
-    beq $a0, 'q', comando_quitar
+    beq $a0, 'q', comando_quitar # Quitar
+    beq $a0, 'Q', comando_quitar
 
 	j interrupciones_fin
+
+comando_mover_mayus:
+    addi $a0, $a0, 32
 
 comando_mover:
     sw $a0, D
@@ -273,9 +269,9 @@ interrupciones_fin:
 	.data
 # ------------ Variables globales ------------ 
 MAT:	.word 0x10008000	# Dirección base del Bitmat Display
-S:      .word 5             # Refrescamiento 
-C:      .word 2000          # Base para la conversión con los tics del reloj (Ka)
-# C:      .word 1300          # Base para la conversión con los tics del reloj (Chus)
+S:      .word 1             # Refrescamiento 
+C:      .word 1500          # Base para la conversión con los tics del reloj (Ka)
+# C:      .word 1000          # Base para la conversión con los tics del reloj (Chus)
 D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas
 
@@ -294,10 +290,11 @@ colorClyde:  .word 0x38D92B     # Verde
 colorPortal: .word 0xF16406     # Naranja
 colorPared:  .word 0x33393B     # Gris oscuro
 colorComida: .word 0xFFFFFF     # Blanco
+colorFondo:  .word 0x000000     # Negro
 
 	.globl MAT S C D V
 	.globl arcTablero
-	.globl colorPacman colorBlinky colorPinky colorInky colorClyde colorPortal colorPared colorComida
+	.globl colorPacman colorBlinky colorPinky colorInky colorClyde colorPortal colorPared colorComida colorFondo
 
 # Standard startup code.  Invoke the routine "main" with arguments:
 #	main(argc, argv, envp)

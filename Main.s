@@ -76,21 +76,92 @@ pausar_partida:
 
 PacMan:
     # Prologo
-	sw   $fp, ($sp)
-	move $fp, $sp
-	addi $sp, $sp, -4
+	sw   $fp,    ($sp)
+    sw   $ra,  -4($sp)
+    sw   $s0,  -8($sp)
+    sw   $s1, -12($sp)
+    sw   $s2, -16($sp)
+	move $fp,     $sp
+	addi $sp,     $sp, -20
 
     # Reinicia la variable saltar
     sb $zero, avanzar_cuadro
 
-    li $v0, 11
-    li $a0, 't'
-    syscall
+    # Movimiento Pac-Man
+    lw $s0, xPacman
+    lw $s1, yPacman
+    lw $s2, D
 
+    # Pintar de negro el pixel
+    move $a0, $s0
+    move $a1, $s1
+    lw   $a2, colorFondo
+    jal pintar_pixel
+
+    beq $s2, 'a', PacMan_mover_PacMan_arriba    # Arriba 
+    beq $s2, 'b', PacMan_mover_PacMan_abajo     # Abajo 
+    beq $s2, 'i', PacMan_mover_PacMan_izquierda # Izquierda 
+    beq $s2, 'd', PacMan_mover_PacMan_derecha   # Derecha 
+
+    PacMan_mover_PacMan_arriba:
+        addi $s1, $s1, 1
+        sw   $s1, yPacman
+
+        # Pintar PacMan
+        move $a0, $s0
+        move $a1, $s1
+        lw   $a2, colorPacman
+        jal pintar_pixel
+
+        j PacMan_fin
+
+    PacMan_mover_PacMan_abajo:
+        addi $s1, $s1, -1
+        sw   $s1, yPacman
+
+        # Pintar PacMan
+        move $a0, $s0
+        move $a1, $s1
+        lw   $a2, colorPacman
+        jal pintar_pixel
+
+        j PacMan_fin
+
+    PacMan_mover_PacMan_izquierda:
+        addi $s0, $s0, -1
+        sw   $s0, xPacman
+
+        # Pintar PacMan
+        move $a0, $s0
+        move $a1, $s1
+        lw   $a2, colorPacman
+        jal pintar_pixel
+
+        j PacMan_fin
+
+    PacMan_mover_PacMan_derecha:
+        addi $s0, $s0, 1
+        sw   $s0, xPacman
+
+        # Pintar PacMan
+        move $a0, $s0
+        move $a1, $s1
+        lw   $a2, colorPacman
+        jal pintar_pixel
+
+        j PacMan_fin
+
+PacMan_fin:
     # Epilogo
-    move $sp,  $fp
-    lw   $fp, ($sp)
+    move $sp,     $fp
+    lw   $fp,    ($sp)
+    lw   $ra,  -4($sp)
+    lw   $s0,  -8($sp)
+    lw   $s1, -12($sp)
+    lw   $s2, -16($sp)
 
     jr $ra
+
+
 
 .include "Utilidades.s"
