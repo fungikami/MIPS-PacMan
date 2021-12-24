@@ -6,6 +6,7 @@
 
 	.data
 seguir:	.byte 1
+pausar: .byte 0
 
 # ------------ Posiciones ------------
 xPacman:    .word 14
@@ -29,7 +30,7 @@ yPortal5:   .word 18
 xPortal6:   .word 0
 yPortal6:   .word 18
 	
-	.globl seguir __init__
+	.globl seguir pausar __init__
 
 	.text
 
@@ -39,11 +40,17 @@ __init__:
     jal pintar_tablero
 
 main:
-	lb $t1 seguir
-	beqz $t1 salir
+	lb   $t1, seguir
+	beqz $t1, salir
+
+	lb  $t1, pausar
+	beq $t1, 1, pausar_partida
 
 	# Aqui habrá un conjunto de instrucciones.
 	# Éstas respetaran las convenciones
+
+    li $t0, 'm'
+	sw $t0, 0xFFFF0008 
 
 	# Note que su implmentación de la función PacMan debe ser lo
 	# más eficiente posible. El Main tiene otras cosas qué hacer
@@ -54,8 +61,17 @@ main:
 	b main
 
 salir:	
-	li $v0 10
+	li $v0, 10
 	syscall
+
+pausar_partida:
+	lb   $t1, pausar
+	beqz $t1, main
+
+	li $t0, 'p'
+	sw $t0, 0xFFFF0008 
+	
+	j pausar_partida
 
 PacMan:
     # Prologo
@@ -69,4 +85,3 @@ PacMan:
 
     jr $ra
 
-.include "Utilidades.s"

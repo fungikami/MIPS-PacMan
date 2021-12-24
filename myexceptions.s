@@ -158,6 +158,11 @@ teclado:
     # Tomar la tecla presionada (Receiver Data)
     lw  $a0, 0xFFFF0004
 
+	# --------- DEBUGGING ---------
+	li $v0, 11
+	syscall
+	# -----------------------------
+
 	beq $a0, 'A', comando_mover # Arriba (A/a)
     beq $a0, 'a', comando_mover
 
@@ -176,26 +181,24 @@ teclado:
     beq $a0, 'Q', comando_quitar # Quitar
     beq $a0, 'q', comando_quitar
 
-	# --------- DEBUGGING ---------
-	li $v0, 11
-	syscall
-	# -----------------------------
-
 	j interrupciones_fin
 
 comando_mover:
-    la $v0, D 
-    sw $v0, ($v0)
+    sw $a0, D
 	j interrupciones_fin
 
 comando_pausar:
-    la $v0, pausar
-    sw $v0, ($v0)
+	lb	 $v0, pausar  # Niega el contenido de pausar
+    xori $v0, $v0, 1
+    sb   $v0, pausar
+	
 	j interrupciones_fin
 
 comando_quitar:
-    la $v0, seguir
-    sw $zero, ($v0)
+	mfc0 $k0, $14
+	blt  $k0, main
+
+    sb $zero, seguir
 	j interrupciones_fin
 
 
@@ -243,7 +246,6 @@ C:      .word 1             # Base para la conversión con los tics del reloj
 D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas
 
-pausar: .word 0
 
 
 # ------------ Tablero ------------
@@ -306,6 +308,9 @@ __start:
 
 	li $v0 10
 	syscall			# syscall 10 (exit)
+
+    # Archivos adicionales que utiliza el juego
+    .include "Utilidades.s"
 
 __eoth:
 
