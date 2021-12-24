@@ -8,6 +8,7 @@
 seguir:	        .byte 1
 pausar:         .byte 0
 avanzar_cuadro: .byte 0
+contador:       .word 0
 
 # ------------ Posiciones ------------
 xPacman:    .word 14
@@ -31,7 +32,7 @@ yPortal5:   .word 18
 xPortal6:   .word 0
 yPortal6:   .word 18
 	
-	.globl seguir pausar avanzar_cuadro __init__ main
+	.globl seguir pausar avanzar_cuadro contador __init__ main
 
 	.text
 
@@ -80,7 +81,7 @@ PacMan:
 	addi $sp, $sp, -4
 
     # Reinicia la variable saltar
-    sw $zero, avanzar_cuadro
+    sb $zero, avanzar_cuadro
 
     li $v0, 11
     li $a0, 't'

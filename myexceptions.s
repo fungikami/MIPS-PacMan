@@ -147,16 +147,14 @@ interrupciones:
 	# Redirige la interrupcion si proviene del teclado
 	# (Keyboard: bit 8 de $13)
 	mfc0 $a0, $13
-	srl  $a0, $a0, 8
-	andi $a0, 1
-    beq  $a0, 1, teclado
+	andi $a0, 0x0100
+    bnez $a0, teclado
 
 	# Redirige la interrupcion si proviene del timer
     # (Timer: bit 15 de $13)
 	mfc0 $a0, $13
-	srl  $a0, $a0, 15
-	andi $a0, 1
-	beq  $a0, 1, timer
+	andi $a0, 0x8000
+	bnez $a0, timer
 
 	j interrupciones_fin
 
@@ -216,10 +214,24 @@ timer:
 	# Reinicia Timer ($9)
 	mtc0 $zero, $9
 
+    # Aumenta contador
+    lw	 $k0, contador
+    addi $k0, $k0, 1
+
+	lw  $v0, S
+	beq $k0, $v0, reiniciar_contador
+    
+	sw $k0, contador
+	j interrupciones_fin
+
+reiniciar_contador:
+    # Reinicia contador
+    sw $zero, contador
+    
 	# Se da permiso de avanzar un cuadro
 	li $k0, 1
 	sb $k0, avanzar_cuadro
-
+	
 	j interrupciones_fin
 
 ret:
@@ -261,8 +273,9 @@ interrupciones_fin:
 	.data
 # ------------ Variables globales ------------ 
 MAT:	.word 0x10008000	# Dirección base del Bitmat Display
-S:      .word 1             # Refrescamiento 
-C:      .word 300           # Base para la conversión con los tics del reloj
+S:      .word 5             # Refrescamiento 
+C:      .word 2000          # Base para la conversión con los tics del reloj (Ka)
+# C:      .word 1300          # Base para la conversión con los tics del reloj (Chus)
 D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas
 
