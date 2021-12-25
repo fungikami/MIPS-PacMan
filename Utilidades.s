@@ -350,4 +350,66 @@ actualizar_alimento_restante_fin:
     lw   $ra, -4($sp)
     lw   $s0, -8($sp)
 
-    jr $ra 
+    jr $ra
+
+# Funcion: Hace los chequeos correpondientes al siguiente movimiento
+#          de Pac-Man, dependiendo si se encuentra con una pared, 
+#          alimento o un portal.
+# Entrada: $a0: Coordenada x de la siguiente posición de Pac-Man.
+#          $a1: Coordenada y de la siguiente posición de Pac-Man.
+#          $a2: Dir. de contador de alimentos restantes   
+# Planificacion de registros:
+# $t0: Color del pixel en (x, y).
+# $t1: Color de la comida/pared/portal.
+# $t2: Contador de alimentos restantes.
+# $s0: Dir. de contador de alimentos restantes
+manejar_prox_movimiento:
+    # Prologo
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    sw   $s0, -8($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -12
+
+    move $s0, $a2
+
+    # Convierte la coordenada (x, y) en su dirección
+    # de memoria en el Bitmap Display.
+    jal coord_a_dir_bitmap
+
+    # Obtiene el color del pixel.
+    lw $t0, ($v0)
+    
+    # Si se trata de una comida
+    lw $t1, colorComida
+    beq $t0, $t1, manejar_prox_movimiento_comida
+    
+    # Si se trata de una pared
+    lw $t1, colorPared
+    beq $t0, $t1, manejar_prox_movimiento_pared 
+
+    # Si se trata de un portal
+    lw $t1, colorPortal
+    beq $t0, $t1, manejar_prox_movimiento_portal
+
+manejar_prox_movimiento_pared:
+
+
+manejar_prox_movimiento_portal:
+
+
+manejar_prox_movimiento_comida:
+    # Actualiza el contador
+    lw  $t2, ($s0)
+    add $t2,  $t2, -1
+    sw  $t2, ($s0)
+
+
+manejar_prox_movimiento_fin:
+    # Epilogo
+    move $sp,    $fp
+    lw   $fp,   ($sp)
+    lw   $ra, -4($sp)
+    lw   $s0, -8($sp)
+
+    jr $ra
