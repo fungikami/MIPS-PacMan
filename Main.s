@@ -32,7 +32,7 @@ __init__:
     # Inicializa personajes
     jal  Pacman_crear
     bltz $v0, salir
-    sw   $v0, pacman
+    sw   $v0, Pacman
 
     # Display tablero
     la $a0, arcTablero
@@ -48,7 +48,7 @@ main:
 	# Aqui habrá un conjunto de instrucciones.
 	# Éstas respetaran las convenciones
 
-    lw $t0, alimRestante
+    lw   $t0, alimRestante
     bgtz $t0, esperar
     
     li $v0, 11
@@ -79,110 +79,31 @@ pausar_partida:
 	
 	j pausar_partida
 
-# Planificacion de registros
-# $s0: xPacman
-# $s1: yPacman
-# $s2: Direccion actual del PacMan
-# $s3: Direccion siguiente del PacMan
+# Función: Avanza por un cuadro el movimiento de los personajes
+#          en el tablero.
+# Planificacion de registros:
 PacMan:
     # Prologo
 	sw   $fp,    ($sp)
     sw   $ra,  -4($sp)
-    sw   $s0,  -8($sp)
-    sw   $s1, -12($sp)
-    sw   $s2, -16($sp)
-    sw   $s3, -20($sp)
 	move $fp,     $sp
-	addi $sp,     $sp, -24
+	addi $sp,     $sp, -8
 
     # Reinicia la variable saltar
     sb $zero, avanzarCuadro
     
     # Movimiento Pac-Man
-    lw $s0, xPacman
-    lw $s1, yPacman
-    lw $s2, D
-
-    beq $s2, 'a', PacMan_mover_pacman_arriba    # Arriba 
-    beq $s2, 'b', PacMan_mover_pacman_abajo     # Abajo 
-    beq $s2, 'i', PacMan_mover_pacman_izquierda # Izquierda 
-    beq $s2, 'd', PacMan_mover_pacman_derecha   # Derecha 
-
-    PacMan_mover_pacman_arriba:
-        move $a0, $s0
-        add  $s3, $s1, 1    
-        move $a1, $s3   # (x, y+1)
-        jal chequear_es_pared
-
-        beq $v0, 1, PacMan_fin
-        sw  $s3, yPacman
-
-        j PacMan_actualizar_alimento
-
-    PacMan_mover_pacman_abajo:
-        move $a0, $s0
-        add  $s3, $s1, -1    
-        move $a1, $s3   # (x, y-1)
-        jal chequear_es_pared
-
-        beq $v0, 1, PacMan_fin
-        sw  $s3, yPacman
-
-        j PacMan_actualizar_alimento
-
-    PacMan_mover_pacman_izquierda:
-        add  $s3, $s0, -1    
-        move $a0, $s3       
-        move $a1, $s1   # (x-1, y)
-        jal chequear_es_pared
-
-        beq $v0, 1, PacMan_fin
-        sw  $s3, xPacman
-
-        j PacMan_actualizar_alimento
-
-    PacMan_mover_pacman_derecha:
-        add  $s3, $s0, 1    
-        move $a0, $s3       
-        move $a1, $s1   # (x+1, y)
-        jal chequear_es_pared
-
-        beq $v0, 1, PacMan_fin
-        sw  $s3, xPacman
-
-    PacMan_actualizar_alimento:
-        lw $a0, xPacman
-        lw $a1, yPacman
-        la $a2, alimRestante
-        jal actualizar_alimento_restante
-
-    PacMan_mover_pacman_pintar:
-        # Pintar de negro el pixel
-        move $a0, $s0
-        move $a1, $s1
-        lw   $a2, colorFondo
-        jal pintar_pixel
-
-        # Pintar PacMan
-        lw $a0, xPacman
-        lw $a1, yPacman
-        lw $a2, colorPacman
-        jal pintar_pixel
-
-        j PacMan_fin
+    lw  $a0, Pacman
+    la  $a1, alimRestante
+    jal Pacman_mover
 
 PacMan_fin:
     # Epilogo
     move $sp,     $fp
-    lw   $fp,    ($sp)
+	lw   $fp,    ($sp)
     lw   $ra,  -4($sp)
-    lw   $s0,  -8($sp)
-    lw   $s1, -12($sp)
-    lw   $s2, -16($sp)
-    lw   $s3, -20($sp)
 
     jr $ra
 
-
-
 .include "Utilidades.s"
+.include "Pacman.s"

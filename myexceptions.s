@@ -279,8 +279,8 @@ D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas
 
 # ------------ Tablero ------------
-arcTablero:  .asciiz "/home/fung/Downloads/Orga/proyecto2/tablero.txt"
-#arcTablero:  .asciiz "/home/chus/Documents/Orga/Proyecto2/proyecto2/tablero.txt"
+# arcTablero:  .asciiz "/home/fung/Downloads/Orga/proyecto2/tablero.txt"
+arcTablero:  .asciiz "/home/chus/Documents/Orga/Proyecto2/proyecto2/tablero.txt"
 
 # ------------ Colores ------------
 colorPacman: .word 0xFFDE1E     # Amarillo

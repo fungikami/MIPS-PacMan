@@ -54,28 +54,29 @@ Pacman_crear_fin:
 # $s1: Dir. contador de alimentos restantes.
 # $s2: xPacman siguiente.
 # $s3: yPacman siguiente.
-# $s4: variable D direccion del movimiento del Pacman.
-# $s5:
 # $t0: Color del pixel siguiente.
 # $t1: Auxiliar.
 Pacman_mover:
     # Prologo
-    sw   $fp,   ($sp)
-    sw   $ra, -4($sp)
-    sw   $s0, -8($sp)
-    move $fp,    $sp
-    addi $sp,    $sp, -12
+    sw   $fp,    ($sp)
+    sw   $ra,  -4($sp)
+    sw   $s0,  -8($sp)
+    sw   $s1, -12($sp)
+    sw   $s2, -16($sp)
+    sw   $s3, -20($sp)
+    move $fp,     $sp
+    addi $sp,     $sp, -24
 
     move $s0, $a0   # Pacman
     move $s1, $a1   # Dir. contador de alimentos restantes
 
     # Movimiento Pac-Man
-    lw $s4, D
+    lw $t1, D
 
-    beq $s4, 'a', Pacman_mover_arriba   # Arriba 
-    beq $s4, 'b', Pacman_mover_abajo    # Abajo 
-    beq $s4, 'i', Pacman_mover_izq      # Izquierda 
-    beq $s4, 'd', Pacman_mover_der      # Derecha 
+    beq $t1, 'a', Pacman_mover_arriba   # Arriba 
+    beq $t1, 'b', Pacman_mover_abajo    # Abajo 
+    beq $t1, 'i', Pacman_mover_izq      # Izquierda 
+    beq $t1, 'd', Pacman_mover_der      # Derecha 
 
     Pacman_mover_arriba:
         # (x, y+1)       
@@ -120,17 +121,17 @@ Pacman_mover:
         lw $t0, ($v0)
 
         # Si se trata de un camino
-        lw $t1, colorComida
+        lw  $t1, colorComida
         beq $t0, $t1, Pacman_mover_actualizar_comida
-        lw $t1, colorFondo
+        lw  $t1, colorFondo
         beq $t0, $t1, Pacman_mover_siguiente_camino
 
-        # Si se trata de una pared
-        lw $t1, colorPared
+        # Si se trata de una pared (no hace nada)
+        lw  $t1, colorPared
         beq $t0, $t1, Pacman_mover_siguiente_pared 
 
         # Si se trata de un portal
-        lw $t1, colorPortal
+        lw  $t1, colorPortal
         beq $t0, $t1, Pacman_mover_siguiente_portal
         
         Pacman_mover_actualizar_comida:
@@ -140,21 +141,21 @@ Pacman_mover:
             sw  $t1, ($s1)
         
         Pacman_mover_siguiente_camino:
+            # Pintar de negro el pixel
+            lw $a0,  ($s0)
+            lw $a1, 4($s0)
+            lw $a2, colorFondo
+            jal pintar_pixel
+
             # Actualizar (x, y) de Pacman
             sw $s2,  ($s0)
             sw $s3, 4($s0)
-
-            # Pintar de negro el pixel
-            #    move $a0, $s0
-            #    move $a1, $s1
-            #    lw   $a2, colorFondo
-            #    jal pintar_pixel
-                  
-            #    # Pintar Pacman
-            #    lw $a0, xPacman
-            #    lw $a1, yPacman
-            #    lw $a2, colorPacman
-            #    jal pintar_pixel
+  
+            # Pintar Pacman
+            move $a0,   $s2
+            move $a1,   $s3
+            lw   $a2, 8($s0)
+            jal pintar_pixel
             
             j Pacman_mover_fin
 
@@ -162,15 +163,16 @@ Pacman_mover:
             
             j Pacman_mover_fin
 
-
         Pacman_mover_siguiente_portal:
-        
 
 Pacman_mover_fin:
     # Epilogo
     move $sp,    $fp
-    lw   $fp,   ($sp)
-    lw   $ra, -4($sp)
-    lw   $s0, -8($sp)
+    lw   $fp,    ($sp)
+    lw   $ra,  -4($sp)
+    lw   $s0,  -8($sp)
+    lw   $s1, -12($sp)
+    lw   $s2, -16($sp)
+    lw   $s3, -20($sp)
 
     jr $ra
