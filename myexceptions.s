@@ -226,7 +226,7 @@ reiniciar_contador:
     
 	# Se da permiso de avanzar un cuadro
 	li $k0, 1
-	sb $k0, avanzar_cuadro
+	sb $k0, avanzarCuadro
 	
 	j interrupciones_fin
 
@@ -270,7 +270,7 @@ interrupciones_fin:
 # ------------ Variables globales ------------ 
 MAT:	.word 0x10008000	# Dirección base del Bitmat Display
 S:      .word 1             # Refrescamiento 
-C:      .word 1500          # Base para la conversión con los tics del reloj (Ka)
+C:      .word 1000          # Base para la conversión con los tics del reloj (Ka)
 # C:      .word 1000          # Base para la conversión con los tics del reloj (Chus)
 D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas

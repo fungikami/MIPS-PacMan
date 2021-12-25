@@ -251,6 +251,7 @@ pintar_tablero_fin:
 # Funcion: Obtiene el color de un pixel del Bitmap Display.
 # Entrada: $a0: Coordenada x.
 #          $a1: Coordenada y. 
+# Salida:  $v0: Color del pixel en (x, y).
 obtener_color_pixel:
     # Prologo
     sw   $fp,   ($sp)
@@ -272,3 +273,81 @@ obtener_color_pixel:
 
     jr $ra 
 
+# Funcion: Indica si una posicion es una pared.
+# Entrada: $a0: Coordenada x.
+#          $a1: Coordenada y.
+# Salida:  $v0: 1 si (x, y) es una pared, 
+#               0 de otra forma.    
+# Planificacion de registros:
+# $t0: Color del pixel en (x, y).
+# $t1: Color de la pared.
+chequear_es_pared:
+    # Prologo
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -8
+
+    # Convierte la coordenada (x, y) en su dirección
+    # de memoria en el Bitmap Display.
+    jal coord_a_dir_bitmap
+
+    # Obtiene el color del pixel.
+    lw $t0, ($v0)
+
+    move $v0, $zero
+    lw   $t1, colorPared
+
+    bne $t0, $t1, chequear_es_pared_fin
+    li  $v0, 1
+
+chequear_es_pared_fin:
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+    lw   $ra, -4($sp)
+
+    jr $ra 
+
+# Funcion: Chequea y actualiza la cantidad de alimentos restantes.
+# Entrada: $a0: Coordenada x.
+#          $a1: Coordenada y.
+#          $a2: Dir. de contador de alimentos restantes   
+# Planificacion de registros:
+# $t0: Color del pixel en (x, y).
+# $t1: Color de la pared.
+# $t2: Contador de alimentos restantes.
+# $s0: Dir. de contador de alimentos restantes
+actualizar_alimento_restante:
+    # Prologo
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    sw   $s0, -8($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -12
+
+    move $s0, $a2
+
+    # Convierte la coordenada (x, y) en su dirección
+    # de memoria en el Bitmap Display.
+    jal coord_a_dir_bitmap
+
+    # Obtiene el color del pixel.
+    lw $t0, ($v0)
+    lw $t1, colorComida
+
+    bne $t0, $t1, actualizar_alimento_restante_fin
+    
+    # Actualiza el contador
+    lw  $t2, ($s0)
+    add $t2,  $t2, -1
+    sw  $t2, ($s0)
+
+actualizar_alimento_restante_fin:
+    # Epilogo
+    move $sp,    $fp
+    lw   $fp,   ($sp)
+    lw   $ra, -4($sp)
+    lw   $s0, -8($sp)
+
+    jr $ra 
