@@ -11,21 +11,12 @@ avanzarCuadro:  .byte 0
 contador:       .word 0
 alimRestante:   .word 569 # 573 con los fantasmas
 
-# ------------ Posiciones ------------
-xPacman:    .word 14
-yPacman:    .word 11
-
-xBlinky:    .word 27
-yBlinky:    .word 25
-
-xPinky:     .word 27
-yPinky:     .word 24
-
-xInky:      .word 27
-yInky:      .word 23
-
-xClyde:		.word 27
-yClyde:		.word 22
+# ------------ Personajes ------------
+Pacman: .word 0 # (14, 11) Amarillo
+Blinky: .word 0 # (27, 25) Rojo
+Pinky:  .word 0 # (27, 24) Marrón
+Inky:   .word 0 # (27, 23) Azul
+Clyde:  .word 0 # (27, 22) Verde
 
 xPortal5:   .word 31
 yPortal5:   .word 18
@@ -38,6 +29,11 @@ yPortal6:   .word 18
 	.text
 
 __init__:
+    # Inicializa personajes
+    jal  Pacman_crear
+    bltz $v0, salir
+    sw   $v0, pacman
+
     # Display tablero
     la $a0, arcTablero
     jal pintar_tablero
@@ -101,7 +97,7 @@ PacMan:
 
     # Reinicia la variable saltar
     sb $zero, avanzarCuadro
-
+    
     # Movimiento Pac-Man
     lw $s0, xPacman
     lw $s1, yPacman

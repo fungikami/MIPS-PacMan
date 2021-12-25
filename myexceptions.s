@@ -267,15 +267,16 @@ interrupciones_fin:
 #	 nop
 
 	.data
-# ------------ Variables globales ------------ 
+
+############# VARIABLES GLOBALES #############
+
+# ----------- Configuracion del juego ----------- 
 MAT:	.word 0x10008000	# Dirección base del Bitmat Display
 S:      .word 1             # Refrescamiento 
 C:      .word 1000          # Base para la conversión con los tics del reloj (Ka)
 # C:      .word 1000          # Base para la conversión con los tics del reloj (Chus)
 D:      .word 'A'           # Dirección actual del Pac-Man
 V:      .word 3             # Vidas
-
-
 
 # ------------ Tablero ------------
 arcTablero:  .asciiz "/home/fung/Downloads/Orga/proyecto2/tablero.txt"
