@@ -17,9 +17,9 @@
 # $t0: Variable auxiliar.
 Pacman_crear:
     # Prologo
-    sw   $fp,   ($sp)
-    move $fp,    $sp
-    addi $sp,    $sp, -4
+    sw   $fp, ($sp)
+    move $fp,  $sp
+    addi $sp,  $sp, -4
 
     # Reserva memoria para el Pacman
     li $a0, 12
@@ -39,8 +39,8 @@ Pacman_crear:
     
 Pacman_crear_fin:
     # Epilogo
-    move $sp,    $fp
-    lw   $fp,   ($sp)
+    move $sp,  $fp
+    lw   $fp, ($sp)
 
     jr $ra
 

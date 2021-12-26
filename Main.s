@@ -12,35 +12,38 @@ contador:       .word 0
 alimRestante:   .word 0 # 573 con los fantasmas
 
 # ------------ Personajes ------------
-Pacman: .word 0 # (14, 11) Amarillo
-Blinky: .word 0 # (27, 25) Rojo
-Pinky:  .word 0 # (27, 24) Marrón
-Inky:   .word 0 # (27, 23) Azul
-Clyde:  .word 0 # (27, 22) Verde
-
-# ------------ Portales ------------
-xPortal5:   .word 31
-yPortal5:   .word 18
-
-xPortal6:   .word 0
-yPortal6:   .word 18
+Pacman:    .word 0
+Fantasmas: .word 0
 	
 	.globl seguir pausar avanzarCuadro contador __init__ main
 
 	.text
 
 __init__:
-    # Inicializa personajes
+    # Inicializa Pac-Man
     jal  Pacman_crear
     bltz $v0, salir
     sw   $v0, Pacman
 
-    # Inicializar contador de alimentos restantes
+    # Inicializa los fantasmas
+    jal  Fantasmas_crear
+    bltz $v0, salir
+    sw   $v0, Fantasmas
 
-    # Display tablero
+	# Superclase Fantasmas
+	#	 lista = [Blinky, Pinky, Inky, Clyde]
+	#	 fun T(f: funcion):
+	# 		for (fantasma in lista):
+	# 			f(fantasma)
+	# Clase Fantasma
+
+    # Display del tablero
     la $a0, arcTablero
     la $a1, alimRestante
     jal pintar_tablero
+
+    # Inicializa el contador de alimentos restantes
+    
 
 main:
 	lb   $t1, seguir
@@ -111,3 +114,5 @@ PacMan_fin:
 
 .include "Utilidades.s"
 .include "Pacman.s"
+.include "Fantasmas.s"
+.include "Fantasma.s"
