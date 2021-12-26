@@ -128,7 +128,7 @@ Pacman_mover:
 
         # Si se trata de una pared (no hace nada)
         lw  $t1, colorPared
-        beq $t0, $t1, Pacman_mover_siguiente_pared 
+        beq $t0, $t1, Pacman_mover_fin 
 
         # Si se trata de un portal
         lw  $t1, colorPortal
@@ -156,10 +156,6 @@ Pacman_mover:
             move $a1,   $s3
             lw   $a2, 8($s0)
             jal pintar_pixel
-            
-            j Pacman_mover_fin
-
-        Pacman_mover_siguiente_pared:
             
             j Pacman_mover_fin
 

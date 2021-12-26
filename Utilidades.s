@@ -129,12 +129,15 @@ pintar_pixel:
 #                'V' representa verde (Clyde).
 #          Usa los colores definidos en Main.s
 # Entrada: $a0: Archivo.
-# Salida:  $v0: negativo si ocurrió algún error.    
+#          $a1: Direccion de contador de alimentos restantes.
+# Salida:  $v0: negativo si ocurrió algún error. 
 # Planificacion de registros:
 # $s0: Archivo del tablero.
 # $s1: Dir. memoria del tablero.
 # $s2: xActual.
 # $s3: yActual.
+# $s4: Direccion del contandor de alimentos restantes.
+# $t0: Auxiliar.
 pintar_tablero: 
     # Prologo
 	sw   $fp,    ($sp)
@@ -147,7 +150,8 @@ pintar_tablero:
 	addi $sp,     $sp, -24
 
     move $s0, $a0   # Archivo tablero
-
+    move $s4, $a1   # Contador
+    
     # Reservar memoria
     li $a0, 1055
     li $v0, 9
@@ -166,75 +170,82 @@ pintar_tablero:
     # Pintar cada pixel
     li $s2, 0   # Coordenada x
     li $s3, 31  # Coordenada y
-    for_pixel:
+    pintar_tablero_for_pixel:
         lb $t0, ($s1)
 
-        beq $t0, '\n', for_pixel_sig
+        beq $t0, '\n', pintar_tablero_for_pixel_sig
 
         # Argumentos para pintar
         move $a0, $s2
         move $a1, $s3
 
         # Pintar tablero
-        beq $t0, ' ', pintar_blanco
-        beq $t0, 'G', pintar_gris
-        beq $t0, 'N', pintar_naranja
-        beq $t0, 'P', pintar_amarillo
-        beq $t0, 'R', pintar_rojo
-        beq $t0, 'M', pintar_marron
-        beq $t0, 'A', pintar_azul
+        beq $t0, ' ', pintar_tablero_blanco
+        beq $t0, 'G', pintar_tablero_gris
+        beq $t0, 'N', pintar_tablero_naranja
+        beq $t0, 'P', pintar_tablero_amarillo
+        beq $t0, 'R', pintar_tablero_rojo
+        beq $t0, 'M', pintar_tablero_marron
+        beq $t0, 'A', pintar_tablero_azul
 
-        # Si no es ninguno de los anteriores es verde
-        lw $a2, colorClyde
-        jal pintar_pixel
-        j for_pixel_sig
-
-        pintar_gris:
-            lw $a2, colorPared
+        # Si no es ninguno de los demás es verde
+        pintar_tablero_verde:
+            lw  $a2, colorClyde
             jal pintar_pixel
-            j for_pixel_sig
+            j   pintar_tablero_aumentar_contador
 
-        pintar_blanco:
-            lw $a2, colorComida
+        pintar_tablero_gris:
+            lw  $a2, colorPared
             jal pintar_pixel
-            j for_pixel_sig
+            j   pintar_tablero_for_pixel_sig
 
-        pintar_naranja:
-            lw $a2, colorPortal
+        pintar_tablero_blanco:
+            lw  $a2, colorComida
             jal pintar_pixel
-            j for_pixel_sig
+            j   pintar_tablero_aumentar_contador
 
-        pintar_amarillo:
+        pintar_tablero_naranja:
+            lw  $a2, colorPortal
+            jal pintar_pixel
+            j   pintar_tablero_for_pixel_sig
+
+        pintar_tablero_amarillo:
             lw $a2, colorPacman
             jal pintar_pixel
-            j for_pixel_sig
+            j pintar_tablero_for_pixel_sig
 
-        pintar_rojo:
+        pintar_tablero_rojo:
             lw $a2, colorBlinky
             jal pintar_pixel
-            j for_pixel_sig
+            j   pintar_tablero_aumentar_contador
 
-        pintar_marron:
-            lw $a2, colorPinky
+        pintar_tablero_marron:
+            lw  $a2, colorPinky
             jal pintar_pixel
-            j for_pixel_sig
+            j   pintar_tablero_aumentar_contador
 
-        pintar_azul:
-            lw $a2, colorInky
+        pintar_tablero_azul:
+            lw  $a2, colorInky
             jal pintar_pixel
-            j for_pixel_sig
+            j   pintar_tablero_aumentar_contador
 
-    for_pixel_sig:
+    pintar_tablero_aumentar_contador:
+        # Aumenta contador de alimentos restantes
+        lw  $t0, ($s4)
+        add $t0,  $t0, 1
+        sw  $t0, ($s4)
+
+    pintar_tablero_for_pixel_sig:
         add $s1, $s1, 1
         add $s2, $s2, 1     # x++
 
-        bne  $s2, 33, for_pixel
+        bne  $s2, 33, pintar_tablero_for_pixel
 
         # Si llegó al final de la línea, reinicia x y aumenta y
         add  $s3, $s3, -1   # y--
         move $s2, $zero     # x = 0
         
-        bne $s3, -1, for_pixel
+        bne $s3, -1, pintar_tablero_for_pixel
 
 pintar_tablero_fin:
     # Epilogo

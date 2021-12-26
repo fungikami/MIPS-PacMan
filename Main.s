@@ -9,7 +9,7 @@ seguir:	        .byte 1
 pausar:         .byte 0
 avanzarCuadro:  .byte 0
 contador:       .word 0
-alimRestante:   .word 569 # 573 con los fantasmas
+alimRestante:   .word 0 # 573 con los fantasmas
 
 # ------------ Personajes ------------
 Pacman: .word 0 # (14, 11) Amarillo
@@ -36,6 +36,7 @@ __init__:
 
     # Display tablero
     la $a0, arcTablero
+    la $a1, alimRestante
     jal pintar_tablero
 
 main:
