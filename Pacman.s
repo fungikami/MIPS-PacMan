@@ -48,7 +48,6 @@ Pacman_crear_fin:
 #          con el entorno (según la variable global D).
 # Entrada: $a0: Pacman.
 #          $a1: Dirección de contador de alimentos restantes.
-# Salida:  $v0: .
 # Planificacion de registros:
 # $s0: Pacman.
 # $s1: Dir. contador de alimentos restantes.
@@ -150,16 +149,38 @@ Pacman_mover:
             # Actualizar (x, y) de Pacman
             sw $s2,  ($s0)
             sw $s3, 4($s0)
-  
+
+            j Pacman_mover_pintar_pacman
+
+        Pacman_mover_siguiente_portal:
+            # Pintar de negro el pixel
+            lw $a0,  ($s0)
+            lw $a1, 4($s0)
+            lw $a2, colorFondo
+            jal pintar_pixel
+
+            # Actualiza (x, y) de Pacman segun corresponda
+            beqz $s2, Pacman_mover_siguiente_portal_izq
+            
+            # De otra forma, se trata del portal derecho
+            # Se mueve al Pac-Man al portal izquierdo
+            li $s2, 1
+            sw $s2,  ($s0)
+            sw $s3, 4($s0)
+            j Pacman_mover_pintar_pacman
+            
+            Pacman_mover_siguiente_portal_izq:
+                # Se mueve al Pac-Man al portal derecho
+                li $s2, 30
+                sw $s2,  ($s0)
+                sw $s3, 4($s0)
+
+        Pacman_mover_pintar_pacman:
             # Pintar Pacman
             move $a0,   $s2
             move $a1,   $s3
             lw   $a2, 8($s0)
             jal pintar_pixel
-            
-            j Pacman_mover_fin
-
-        Pacman_mover_siguiente_portal:
 
 Pacman_mover_fin:
     # Epilogo

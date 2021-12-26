@@ -18,6 +18,7 @@ Pinky:  .word 0 # (27, 24) Marrón
 Inky:   .word 0 # (27, 23) Azul
 Clyde:  .word 0 # (27, 22) Verde
 
+# ------------ Portales ------------
 xPortal5:   .word 31
 yPortal5:   .word 18
 
@@ -33,6 +34,8 @@ __init__:
     jal  Pacman_crear
     bltz $v0, salir
     sw   $v0, Pacman
+
+    # Inicializar contador de alimentos restantes
 
     # Display tablero
     la $a0, arcTablero
