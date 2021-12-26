@@ -257,170 +257,48 @@ pintar_tablero_fin:
     lw   $s2, -16($sp)
     lw   $s3, -20($sp)
 
-    jr $ra
+    jr $ra 
 
-# Funcion: Obtiene el color de un pixel del Bitmap Display.
-# Entrada: $a0: Coordenada x.
-#          $a1: Coordenada y. 
-# Salida:  $v0: Color del pixel en (x, y).
-obtener_color_pixel:
+# Funcion: Escoge un argumento de entrada pseudo-aleatoriamente.
+# Entrada: $a0: Numero de argumentos (1-3). 
+#          $a1: Opcion 1.
+#          $a2: Opcion 2.
+#          $a3: Opcion 3.
+# Salida:  $v0: 
+# Planificacion de registros:
+# $t0: Auxiliar.
+escoger_aleatorio:
     # Prologo
-    sw   $fp,   ($sp)
-    sw   $ra, -4($sp)
-    move $fp,    $sp
-    addi $sp,    $sp, -8
+    sw   $fp, ($sp)
+    move $fp,  $sp
+    addi $sp,  $sp, -4
 
-    # Convierte la coordenada (x, y) en su dirección
-    # de memoria en el Bitmap Display.
-    jal coord_a_dir_bitmap
+    move $t0, $a0
+    beq  $a0, 1, escoger_aleatorio_unico
+    
+    # (tiempo del sistema) mod (numero de opciones)
+    li   $v0, 30
+	syscall
+    div  $a0, $t0
+	mfhi $t0
 
-    # Obtiene el color del pixel.
-    lw $v0, ($v0)
+    beqz $t0, escoger_aleatorio_primero
+    beq  $t0, 1, escoger_aleatorio_segundo
+    
+    # Si no es 0 o 1, es 2 (se escoge $a3)
+    move $v0, $a3
+    j escoger_aleatorio_fin
 
+escoger_aleatorio_unico:
+    move $v0, $a1
+    j escoger_aleatorio_fin
+
+escoger_aleatorio_segundo:
+    move $v0, $a2
+    
+escoger_aleatorio_fin:
     # Epilogo
     move $sp,  $fp
     lw   $fp, ($sp)
-    lw   $ra, -4($sp)
-
-    jr $ra 
-
-# Funcion: Indica si una posicion es una pared.
-# Entrada: $a0: Coordenada x.
-#          $a1: Coordenada y.
-# Salida:  $v0: 1 si (x, y) es una pared, 
-#               0 de otra forma.    
-# Planificacion de registros:
-# $t0: Color del pixel en (x, y).
-# $t1: Color de la pared.
-chequear_es_pared:
-    # Prologo
-    sw   $fp,   ($sp)
-    sw   $ra, -4($sp)
-    move $fp,    $sp
-    addi $sp,    $sp, -8
-
-    # Convierte la coordenada (x, y) en su dirección
-    # de memoria en el Bitmap Display.
-    jal coord_a_dir_bitmap
-
-    # Obtiene el color del pixel.
-    lw $t0, ($v0)
-
-    move $v0, $zero
-    lw   $t1, colorPared
-
-    bne $t0, $t1, chequear_es_pared_fin
-    li  $v0, 1
-
-chequear_es_pared_fin:
-    # Epilogo
-    move $sp,  $fp
-    lw   $fp, ($sp)
-    lw   $ra, -4($sp)
-
-    jr $ra 
-
-# Funcion: Chequea y actualiza la cantidad de alimentos restantes.
-# Entrada: $a0: Coordenada x.
-#          $a1: Coordenada y.
-#          $a2: Dir. de contador de alimentos restantes   
-# Planificacion de registros:
-# $t0: Color del pixel en (x, y).
-# $t1: Color de la pared.
-# $t2: Contador de alimentos restantes.
-# $s0: Dir. de contador de alimentos restantes
-actualizar_alimento_restante:
-    # Prologo
-    sw   $fp,   ($sp)
-    sw   $ra, -4($sp)
-    sw   $s0, -8($sp)
-    move $fp,    $sp
-    addi $sp,    $sp, -12
-
-    move $s0, $a2
-
-    # Convierte la coordenada (x, y) en su dirección
-    # de memoria en el Bitmap Display.
-    jal coord_a_dir_bitmap
-
-    # Obtiene el color del pixel.
-    lw $t0, ($v0)
-    lw $t1, colorComida
-
-    bne $t0, $t1, actualizar_alimento_restante_fin
-    
-    # Actualiza el contador
-    lw  $t2, ($s0)
-    add $t2,  $t2, -1
-    sw  $t2, ($s0)
-
-actualizar_alimento_restante_fin:
-    # Epilogo
-    move $sp,    $fp
-    lw   $fp,   ($sp)
-    lw   $ra, -4($sp)
-    lw   $s0, -8($sp)
-
-    jr $ra
-
-# Funcion: Hace los chequeos correpondientes al siguiente movimiento
-#          de Pac-Man, dependiendo si se encuentra con una pared, 
-#          alimento o un portal.
-# Entrada: $a0: Coordenada x de la siguiente posición de Pac-Man.
-#          $a1: Coordenada y de la siguiente posición de Pac-Man.
-#          $a2: Dir. de contador de alimentos restantes   
-# Planificacion de registros:
-# $t0: Color del pixel en (x, y).
-# $t1: Color de la comida/pared/portal.
-# $t2: Contador de alimentos restantes.
-# $s0: Dir. de contador de alimentos restantes
-manejar_prox_movimiento:
-    # Prologo
-    sw   $fp,   ($sp)
-    sw   $ra, -4($sp)
-    sw   $s0, -8($sp)
-    move $fp,    $sp
-    addi $sp,    $sp, -12
-
-    move $s0, $a2
-
-    # Convierte la coordenada (x, y) en su dirección
-    # de memoria en el Bitmap Display.
-    jal coord_a_dir_bitmap
-
-    # Obtiene el color del pixel.
-    lw $t0, ($v0)
-    
-    # Si se trata de una comida
-    lw $t1, colorComida
-    beq $t0, $t1, manejar_prox_movimiento_comida
-    
-    # Si se trata de una pared
-    lw $t1, colorPared
-    beq $t0, $t1, manejar_prox_movimiento_pared 
-
-    # Si se trata de un portal
-    lw $t1, colorPortal
-    beq $t0, $t1, manejar_prox_movimiento_portal
-
-manejar_prox_movimiento_pared:
-
-
-manejar_prox_movimiento_portal:
-
-
-manejar_prox_movimiento_comida:
-    # Actualiza el contador
-    lw  $t2, ($s0)
-    add $t2,  $t2, -1
-    sw  $t2, ($s0)
-
-
-manejar_prox_movimiento_fin:
-    # Epilogo
-    move $sp,    $fp
-    lw   $fp,   ($sp)
-    lw   $ra, -4($sp)
-    lw   $s0, -8($sp)
 
     jr $ra

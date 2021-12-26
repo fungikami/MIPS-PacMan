@@ -159,15 +159,15 @@ teclado:
     # Tomar la tecla presionada (Receiver Data)
     lw  $a0, 0xFFFF0004
 
-    beq $a0, 'p', comando_pausar # Pausa
+    beq $a0, 'p', comando_pausar # Pausa (P/p)
     beq $a0, 'P', comando_pausar
 
-    beq $a0, 'q', comando_quitar # Quitar
+    beq $a0, 'q', comando_quitar # Quitar (Q/q)
     beq $a0, 'Q', comando_quitar
 
     # Verificamos si el juego esta pausado 
     # (No se toma en cuenta el teclado)
-    lw   $k0, pausar
+    lb   $k0, pausar
     bnez $k0, interrupciones_fin
 
     beq $a0, 'a', comando_mover # Arriba (A/a)

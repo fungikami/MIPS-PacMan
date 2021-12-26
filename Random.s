@@ -40,11 +40,25 @@ test:
 
     # Reinicia la variable saltar
     sb $zero, avanzarCuadro
-    
-    # Movimiento Pac-Man
-    jal Pacman_mover
 
-PacMan_fin:
+    # Prueba del random
+    li $a0, 3
+    li $a1, 0
+    li $a2, 1
+    li $a3, 2
+    jal escoger_aleatorio
+
+    move $a0, $v0
+    li $v0, 1
+    syscall
+    
+	lb $a0, 0x72
+	li $a1, 256
+	li $a2, 88
+	lb $a3, 0x7F
+	syscall
+
+test_fin:
     # Epilogo
     move $sp,     $fp
 	lw   $fp,    ($sp)
@@ -56,3 +70,7 @@ PacMan_fin:
 .include "Pacman.s"
 .include "Fantasmas.s"
 .include "Fantasma.s"
+
+# beep:     .byte 72
+# duration: .byte 100
+# volume:   .byte 127
