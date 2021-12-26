@@ -20,6 +20,8 @@ Fantasmas: .word 0
 	.text
 
 __init__:
+	# Inicializacion de los personajes
+
     # Inicializa Pac-Man
     jal  Pacman_crear
     bltz $v0, salir
@@ -37,13 +39,10 @@ __init__:
 	# 			f(fantasma)
 	# Clase Fantasma
 
-    # Display del tablero
+    # Display tablero
     la $a0, arcTablero
     la $a1, alimRestante
     jal pintar_tablero
-
-    # Inicializa el contador de alimentos restantes
-    
 
 main:
 	lb   $t1, seguir
