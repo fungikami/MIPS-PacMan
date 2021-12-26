@@ -267,6 +267,7 @@ pintar_tablero_fin:
 # Salida:  $v0: 
 # Planificacion de registros:
 # $t0: Auxiliar.
+# $t1: Opcion 1.
 escoger_aleatorio:
     # Prologo
     sw   $fp, ($sp)
@@ -274,11 +275,14 @@ escoger_aleatorio:
     addi $sp,  $sp, -4
 
     move $t0, $a0
-    beq  $a0, 1, escoger_aleatorio_unico
+    move $t1, $a1
+
+    beq  $a0, 1, escoger_aleatorio_primero
     
     # (tiempo del sistema) mod (numero de opciones)
     li   $v0, 30
 	syscall
+    abs  $a0, $a0
     div  $a0, $t0
 	mfhi $t0
 
@@ -289,8 +293,8 @@ escoger_aleatorio:
     move $v0, $a3
     j escoger_aleatorio_fin
 
-escoger_aleatorio_unico:
-    move $v0, $a1
+escoger_aleatorio_primero:
+    move $v0, $t1
     j escoger_aleatorio_fin
 
 escoger_aleatorio_segundo:

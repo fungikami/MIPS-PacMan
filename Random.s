@@ -52,11 +52,12 @@ test:
     li $v0, 1
     syscall
     
-	lb $a0, 0x72
-	li $a1, 256
-	li $a2, 88
-	lb $a3, 0x7F
-	syscall
+	# lb $a0, 0x72
+	# li $a1, 256
+	# li $a2, 88
+	# lb $a3, 0x7F
+	# li $v0, 31
+	# syscall
 
 test_fin:
     # Epilogo
