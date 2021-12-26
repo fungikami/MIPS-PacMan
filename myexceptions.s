@@ -159,10 +159,16 @@ teclado:
     # Tomar la tecla presionada (Receiver Data)
     lw  $a0, 0xFFFF0004
 
-	# --------- DEBUGGING ---------
-	li $v0, 11
-	syscall
-	# -----------------------------
+    beq $a0, 'p', comando_pausar # Pausa
+    beq $a0, 'P', comando_pausar
+
+    beq $a0, 'q', comando_quitar # Quitar
+    beq $a0, 'Q', comando_quitar
+
+    # Verificamos si el juego esta pausado 
+    # (No se toma en cuenta el teclado)
+    lw   $k0, pausar
+    bnez $k0, interrupciones_fin
 
     beq $a0, 'a', comando_mover # Arriba (A/a)
 	beq $a0, 'A', comando_mover_mayus 
@@ -176,11 +182,6 @@ teclado:
     beq $a0, 'd', comando_mover # Derecha (D/d)
     beq $a0, 'D', comando_mover_mayus
 
-    beq $a0, 'p', comando_pausar # Pausa
-    beq $a0, 'P', comando_pausar
-
-    beq $a0, 'q', comando_quitar # Quitar
-    beq $a0, 'Q', comando_quitar
 
 	j interrupciones_fin
 
