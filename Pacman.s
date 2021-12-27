@@ -72,10 +72,10 @@ Pacman_mover:
     # Movimiento Pac-Man
     lw $t1, D
 
-    beq $t1, 'a', Pacman_mover_arriba   # Arriba 
+    beq $t1, 'A', Pacman_mover_arriba   # Arriba 
     beq $t1, 'b', Pacman_mover_abajo    # Abajo 
-    beq $t1, 'i', Pacman_mover_izq      # Izquierda 
-    beq $t1, 'd', Pacman_mover_der      # Derecha 
+    beq $t1, 'I', Pacman_mover_izq      # Izquierda 
+    beq $t1, 'D', Pacman_mover_der      # Derecha 
 
     Pacman_mover_arriba:
         # (x, y+1)       

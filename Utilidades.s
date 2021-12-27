@@ -307,3 +307,45 @@ escoger_aleatorio_fin:
 
     jr $ra
 
+
+# Funcion: Verifica si (x, y) es un camino.
+# Entrada: $a0: Coordenada x.
+#          $a1: Coordenada y.
+# Salida:  $v0: 0 si (x, y) es un camino.
+#               1 de otra forma.
+# Planificacion de registros:
+# $t0: Color de comida
+# $t1: Color de fondo
+# $t2: Color de camino
+# $t3: Color del pixel en (x, y)
+es_camino:
+    # Prologo
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -8
+
+    lw $t0, colorComida
+    lw $t1, colorFondo
+    lw $t2, colorPortal
+
+    # Convierte la coordenada (x, y) en su dirección
+    # de memoria en el Bitmap Display.
+    jal coord_a_dir_bitmap
+    lw  $t3, ($v0)
+
+    move $v0, $zero
+
+    beq $t3, $t0, es_camino_fin
+    beq $t3, $t1, es_camino_fin
+    beq $t3, $t2, es_camino_fin
+
+    li $v0, 1
+    
+es_camino_fin:
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+    lw   $ra, -4($sp)
+    
+    jr $ra 

@@ -35,8 +35,8 @@ __init__:
     # Inicializa los fantasmas
     
     # Inicializa Blinky
-    li   $a0, 27
-    li   $a1, 25
+    li   $a0, 9
+    li   $a1, 8
     lw   $a2, colorBlinky
     jal  Fantasma_crear
     bltz $v0, salir
@@ -109,16 +109,18 @@ PacMan:
     lw $a0, Fantasma
     jal Fantasma_chequear_interseccion
 
+    move $t0, $v0
+
     li $v0, 4
-    lw $a0, dots
+    la $a0, dots
     syscall
     
-    move $a0, $v0
+    move $a0, $t0
     li   $v0, 1
     syscall
 
     li $v0, 4
-    lw $a0, dots
+    la $a0, dots
     syscall
 
 PacMan_fin:

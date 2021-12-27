@@ -170,23 +170,26 @@ teclado:
     lb   $k0, pausar
     bnez $k0, interrupciones_fin
 
-    beq $a0, 'a', comando_mover # Arriba (A/a)
-	beq $a0, 'A', comando_mover_mayus 
+    beq $a0, 'A', comando_mover # Arriba (A/a)
+	beq $a0, 'a', comando_convertir_mayuscula
 
     beq $a0, 'b', comando_mover # Abajo (B/b)
-    beq $a0, 'B', comando_mover_mayus 
+    beq $a0, 'B', comando_convertir_minuscula 
 
-    beq $a0, 'i', comando_mover # Izquierda (I/i)
-    beq $a0, 'I', comando_mover_mayus
+    beq $a0, 'I', comando_mover # Izquierda (I/i)
+    beq $a0, 'i', comando_convertir_mayuscula 
 
-    beq $a0, 'd', comando_mover # Derecha (D/d)
-    beq $a0, 'D', comando_mover_mayus
-
+    beq $a0, 'D', comando_mover # Derecha (D/d)
+    beq $a0, 'd', comando_convertir_mayuscula 
 
 	j interrupciones_fin
 
-comando_mover_mayus:
-    addi $a0, $a0, 32
+comando_convertir_minuscula:
+    add $a0, $a0, 32
+    j comando_mover
+
+comando_convertir_mayuscula:
+    add $a0, $a0, -32
 
 comando_mover:
     sw $a0, D
