@@ -264,7 +264,7 @@ pintar_tablero_fin:
 #          $a1: Opcion 1.
 #          $a2: Opcion 2.
 #          $a3: Opcion 3.
-# Salida:  $v0: 
+# Salida:  $v0: Opcion elegida pseudo-aleatoriamente.
 # Planificacion de registros:
 # $t0: Auxiliar.
 # $t1: Opcion 1.
@@ -306,3 +306,4 @@ escoger_aleatorio_fin:
     lw   $fp, ($sp)
 
     jr $ra
+

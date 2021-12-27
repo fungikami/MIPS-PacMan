@@ -1,10 +1,4 @@
-# Proyecto 2
-# Implementacion del juego Pac-Man.
-#
-# Autores: Ka Fung & Christopher Gomez
-# Fecha:   10-ene-2022
-
-	.data
+    .data
 # ------------ Variables ------------
 seguir:	        .byte 1
 pausar:         .byte 0
@@ -26,7 +20,7 @@ newLine:        .asciiz "\n"
 
 # ------------ Personajes ------------
 Pacman:         .word 0
-Fantasmas:      .word 0
+Fantasma:      .word 0
 	
 	.globl seguir pausar avanzarCuadro contador __init__ main
 
@@ -39,16 +33,14 @@ __init__:
     sw   $v0, Pacman
 
     # Inicializa los fantasmas
-    jal  Fantasmas_crear
+    
+    # Inicializa Blinky
+    li   $a0, 27
+    li   $a1, 25
+    lw   $a2, colorBlinky
+    jal  Fantasma_crear
     bltz $v0, salir
-    sw   $v0, Fantasmas
-
-	# Superclase Fantasmas
-	#	 lista = [Blinky, Pinky, Inky, Clyde]
-	#	 fun T(f: funcion):
-	# 		for (fantasma in lista):
-	# 			f(fantasma)
-	# Clase Fantasma
+    sw   $v0, Fantasma
 
     # Display tablero
     la $a0, arcTablero
@@ -56,29 +48,19 @@ __init__:
     jal pintar_tablero
 
 main:
-    # Revisa si el juego ya finalizo
-	lb   $t1, seguir
-	beqz $t1, salir
+    
 
-    # Revisa si el juego esta pausado
-	lb  $t1, pausar
-	beq $t1, 1, pausar_partida
+    # Movimiento de los fantasmas
+    lw $a0, Fantasma
+    jal Fantasma_chequear_interseccion
 
-	# Aqui habrá un conjunto de instrucciones.
-	# Éstas respetaran las convenciones
-
-    # Revisa si Pac-Man se ha comido todo el alimento
-    lw   $t0, alimRestante
-    bgtz $t0, esperar
+    move $a0, $v0
+    li   $v0, 1
+    syscall
 
     # Revisa si quedan vidas disponibles
-    lw   $t0, V
-    bltz $t0, salir
-    
-    li $v0, 11
-    li $a0, 'w'
-    syscall
-    b salir
+    # lw   $t0, V
+    # bltz $t0, salir
 
 	# Note que su implmentación de la función PacMan debe ser lo
 	# más eficiente posible. El Main tiene otras cosas qué hacer
@@ -124,7 +106,20 @@ PacMan:
     jal Pacman_mover
 
     # Movimiento de los fantasmas
+    lw $a0, Fantasma
+    jal Fantasma_chequear_interseccion
 
+    li $v0, 4
+    lw $a0, dots
+    syscall
+    
+    move $a0, $v0
+    li   $v0, 1
+    syscall
+
+    li $v0, 4
+    lw $a0, dots
+    syscall
 
 PacMan_fin:
     # Epilogo
