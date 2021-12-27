@@ -17,7 +17,7 @@
 #         8($v0): Color del Fantasma.
 #        12($v0): Color de la capa de fondo.
 #        16($v0): Dir. de movimiento del fantasma.
-#                 (0: Arriba, 1: Izquierda, 2: Derecha, 3: Abajo)
+#                 (0: Izquierda, 1: Arriba, 2: Abajo, 3: Derecha)
 # Planificacion de registros:
 # $t0: Coordenada x del fantasma.
 # $t1: Variable auxiliar.
@@ -55,7 +55,11 @@ Fantasma_crear_fin:
 #          tomando en cuenta su posicion actual
 # Entrada: $a0: Fantasma.
 # Planificacion de registros:
-# $s0: Fantasma
+# $s0: xFantasma
+# $s1: yFantasma
+# $s2: Direccion actual de movimiento del fantasma
+# $s3: Contador de direcciones disponibles
+# $t0: Auxiliar
 Fantasma_mover:
     # Prologo
     sw   $fp,    ($sp)
@@ -67,19 +71,101 @@ Fantasma_mover:
     move $fp,     $sp
     addi $sp,     $sp, -24
 
-    move $s0, $a0
+    # Guarda xFantasma, yFantasma y Dir. de movimiento
+    lw   $s0,   ($a0)
+    lw   $s1,  4($a0)
+    move $s2, 16($a0)
 
-    # Verificar si se encuentra en una interseccion
+    # Verifica si se encuentra en una interseccion
     jal Fantasma_chequear_interseccion
     
     beqz $v0, Fantasma_mover_chequear_colision
     
-    # Si es una interseccion
+    # Si es una interseccion, chequea caminos disponibles
+    # No tomara en cuenta la direccion actual como disponible
+    move $s3, $zero
+
+    # Arriba (salta la direccion si es la misma actual)
+    beq $s2, 1, Fantasma_mover_chequear_derecha
+    
+    # (x, y+1) es camino
+    move $a0, $s0
+    add  $a1, $s1, 1
+    jal es_camino
+
+    bnez $v0, Fantasma_mover_chequear_derecha
+    
+    # Se van cargando en la pila las direcciones disponibles para moverse
+    li  $t0, 1
+    sw  $t0, ($sp)
+    add $s3, $s3, 1 
+
+Fantasma_mover_chequear_derecha:
+    beq $s2, 3, Fantasma_mover_chequear_abajo
+    
+    # (x+1, y) es camino
+    add  $a0, $s0, 1
+    move $a1, $s1
+    jal es_camino
+
+    bnez $v0, Fantasma_mover_chequear_abajo
+
+    li  $t0,  3
+    sll $t1,  $s3, 2
+    sub $t1,  $sp, $t1
+    sw  $t0, ($t1)
+    add $s3,  $s3, 1
+
+Fantasma_mover_chequear_abajo:
+    beq $s2, 2, Fantasma_mover_chequear_izquierda
+
+    # (x, y-1) es camino
+    move $a0, $s0
+    add  $a1, $s1, -1
+    jal es_camino
+
+    bnez $v0, Fantasma_mover_chequear_izquierda
+
+    li  $t0,  2
+    sll $t1,  $s3, 2
+    sub $t1,  $sp, $t1
+    sw  $t0, ($t1)
+    add $s3,  $s3, 1
+
+Fantasma_mover_chequear_izquierda:
+    beq $s2, 0, Fantasma_mover_chequear_arriba
+
+    # (x-1, y) es camino
+    add  $a0, $s0, -1
+    move $a1, $s1
+    jal es_camino
+
+    bnez $v0, Fantasma_mover_verificar
+
+    li  $t0,  0
+    sll $t1,  $s3, 2
+    sub $t1,  $sp, $t1
+    sw  $t0, ($t1)
+    add $s3,  $s3, 1
+
+Fantasma_mover_verificar:
+    bnez $s3, Fantasma_mover_escoger_direccion
+
+    # Se mueve en la direccion contraria si es la unica opción
+    li  $t0, $t0, 3
+    sub $t0, $t0, $s2 # 3 - dir. actual de movimiento = dir. contraria
+    sw  $t0, ($sp)
+    add $s3, $s3, 1
+
+Fantasma_mover_escoger_direccion:
+    move 
+
     # Contador = 0
     # arriba es dir actual ? arriba es camino ? guardar, contador++: derecha: saltar
     # derecha es dir actual ? derecha es camino ? guardar, contador++: abajo: saltar
     # abajo es dir actual ? abajo es camino ? guardar, contador++: izquierda: saltar
     # izquierda es dir actual ? izquierda es camino ? guardar, contador++: escoger: escoger
+    # si contador = 0, guardar direccion contraria
     # cambiar direccion y llamar mover
     
     j Fantasma_mover_fin
