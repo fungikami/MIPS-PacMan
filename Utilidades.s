@@ -293,12 +293,12 @@ escoger_aleatorio:
     move $v0, $a3
     j escoger_aleatorio_fin
 
-escoger_aleatorio_primero:
-    move $v0, $t1
-    j escoger_aleatorio_fin
+    escoger_aleatorio_primero:
+        move $v0, $t1
+        j escoger_aleatorio_fin
 
-escoger_aleatorio_segundo:
-    move $v0, $a2
+    escoger_aleatorio_segundo:
+        move $v0, $a2
     
 escoger_aleatorio_fin:
     # Epilogo

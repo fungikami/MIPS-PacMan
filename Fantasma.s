@@ -42,11 +42,45 @@ Fantasma_crear:
     lw $t1, colorComida
     sw $t1, 12($v0)     # Color capa de fondo
     li $t1, 2
-    sw $t1, 16($v0)     # Dir. de movimiento inicial
+    sw $t1, 16($v0)     # Dir. de movimiento inicial (izq)
     
 Fantasma_crear_fin:
     # Epilogo
     move $sp,  $fp
     lw   $fp, ($sp)
+
+    jr $ra
+
+# Funcion: Se encarga del movimiento de un fantasma y su interacción
+#          con el entorno.
+# Entrada: $a0: Fantasma.
+# Planificacion de registros:
+#
+Fantasma_mover:
+    # Prologo
+    sw   $fp,    ($sp)
+    sw   $ra,  -4($sp)
+    sw   $s0,  -8($sp)
+    sw   $s1, -12($sp)
+    sw   $s2, -16($sp)
+    sw   $s3, -20($sp)
+    move $fp,     $sp
+    addi $sp,     $sp, -24
+
+    # Si se encuentra en una interseccion o choca con una pared
+
+
+    # En cambio, continua en la misma direccion 
+
+    
+Fantasma_mover_fin:
+    # Epilogo
+    move $sp,    $fp
+    lw   $fp,    ($sp)
+    lw   $ra,  -4($sp)
+    lw   $s0,  -8($sp)
+    lw   $s1, -12($sp)
+    lw   $s2, -16($sp)
+    lw   $s3, -20($sp)
 
     jr $ra

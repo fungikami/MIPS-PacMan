@@ -132,6 +132,9 @@ Pacman_mover:
         # Si se trata de un portal
         lw  $t1, colorPortal
         beq $t0, $t1, Pacman_mover_siguiente_portal
+
+        # En cambio, se trata de un fantasma
+        
         
         Pacman_mover_actualizar_comida:
             # Actualiza el contador

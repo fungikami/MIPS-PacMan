@@ -5,11 +5,24 @@
 # Fecha:   10-ene-2022
 
 	.data
+# ------------ Variables ------------
 seguir:	        .byte 1
 pausar:         .byte 0
 avanzarCuadro:  .byte 0
 contador:       .word 0
 alimRestante:   .word 0 # 573 con los fantasmas
+
+# ------------ Mensajes ------------
+mensajePausa:   .asciiz "... JUEGO PAUSADO ..."
+mensajeNoPausa: .asciiz "... JUEGO DESPAUSADO ..."
+mensajeSalida:  .asciiz "... JUEGO FINALIZADO ..."
+mensajeVictoria:.asciiz "... VICTORIA :) ..."
+mensajeDerrota: .asciiz "... DERROTA :( ..."
+mensajePuntos:  .asciiz "Puntuacion: "
+mensajeTiempo:  .asciiz "Tiempo: "
+mensajeSeg:     .asciiz " segundos." 
+dots:      .asciiz "..............................................................."
+newLine:   .asciiz "\n"
 
 # ------------ Personajes ------------
 Pacman:    .word 0
@@ -20,8 +33,6 @@ Fantasmas: .word 0
 	.text
 
 __init__:
-	# Inicializacion de los personajes
-
     # Inicializa Pac-Man
     jal  Pacman_crear
     bltz $v0, salir
@@ -45,17 +56,24 @@ __init__:
     jal pintar_tablero
 
 main:
+    # Revisa si el juego ya finalizo
 	lb   $t1, seguir
 	beqz $t1, salir
 
+    # Revisa si el juego esta pausado
 	lb  $t1, pausar
 	beq $t1, 1, pausar_partida
 
 	# Aqui habrá un conjunto de instrucciones.
 	# Éstas respetaran las convenciones
 
+    # Revisa si Pac-Man se ha comido todo el alimento
     lw   $t0, alimRestante
     bgtz $t0, esperar
+
+    # Revisa si quedan vidas disponibles
+    lw   $t0, V
+    bltz $t0, salir
     
     li $v0, 11
     li $a0, 'w'
@@ -66,7 +84,6 @@ main:
 	# más eficiente posible. El Main tiene otras cosas qué hacer
 	# Debe hacer la actividad requerida y regresar rápidamente aquí. 
 
-	# Cada S
 esperar:
 	lb   $t0, avanzarCuadro
 	beqz $t0, esperar
@@ -75,15 +92,18 @@ esperar:
 
 	b main
 
-salir:	
-	li $v0, 10
-	syscall
-
 pausar_partida:
 	lb   $t1, pausar
 	beqz $t1, main
 	
 	j pausar_partida
+
+salir:	
+    # Imprimir mensaje de salida
+
+
+	li $v0, 10
+	syscall
 
 # Función: Avanza por un cuadro el movimiento de los personajes
 #          en el tablero.
@@ -102,6 +122,9 @@ PacMan:
     lw  $a0, Pacman
     la  $a1, alimRestante
     jal Pacman_mover
+
+    # Movimiento de los fantasmas
+
 
 PacMan_fin:
     # Epilogo
