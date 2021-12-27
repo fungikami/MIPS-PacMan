@@ -259,11 +259,9 @@ pintar_tablero_fin:
 
     jr $ra 
 
-# Funcion: Escoge un argumento de entrada pseudo-aleatoriamente.
+# Funcion: Escoge una palabra pseudo-aleatoriamente del arreglo de entrada.
 # Entrada: $a0: Numero de argumentos (1-3). 
-#          $a1: Opcion 1.
-#          $a2: Opcion 2.
-#          $a3: Opcion 3.
+#          $a1: Direccion de arreglo de $a0 palabras
 # Salida:  $v0: Opcion elegida pseudo-aleatoriamente.
 # Planificacion de registros:
 # $t0: Auxiliar.
@@ -290,15 +288,15 @@ escoger_aleatorio:
     beq  $t0, 1, escoger_aleatorio_segundo
     
     # Si no es 0 o 1, es 2 (se escoge $a3)
-    move $v0, $a3
-    j escoger_aleatorio_fin
+    lw $v0, 8($t1)
+    j  escoger_aleatorio_fin 
 
     escoger_aleatorio_primero:
-        move $v0, $t1
-        j escoger_aleatorio_fin
+        lw $v0, ($t1)
+        j  escoger_aleatorio_fin
 
     escoger_aleatorio_segundo:
-        move $v0, $a2
+        lw $v0, 4($t1)
     
 escoger_aleatorio_fin:
     # Epilogo
@@ -306,7 +304,6 @@ escoger_aleatorio_fin:
     lw   $fp, ($sp)
 
     jr $ra
-
 
 # Funcion: Verifica si (x, y) es un camino.
 # Entrada: $a0: Coordenada x.
@@ -325,19 +322,20 @@ es_camino:
     move $fp,    $sp
     addi $sp,    $sp, -8
 
-    lw $t0, colorComida
-    lw $t1, colorFondo
-    lw $t2, colorPortal
-
     # Convierte la coordenada (x, y) en su dirección
     # de memoria en el Bitmap Display.
     jal coord_a_dir_bitmap
     lw  $t3, ($v0)
 
+    # Si es un camino (comida, fondo o portal)
     move $v0, $zero
+    lw   $t0, colorComida
+    beq  $t3, $t0, es_camino_fin
 
-    beq $t3, $t0, es_camino_fin
+    lw  $t1, colorFondo
     beq $t3, $t1, es_camino_fin
+    
+    lw  $t2, colorPortal
     beq $t3, $t2, es_camino_fin
 
     li $v0, 1

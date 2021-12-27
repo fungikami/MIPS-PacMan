@@ -72,8 +72,21 @@ Fantasma_mover:
     # Verificar si se encuentra en una interseccion
     jal Fantasma_chequear_interseccion
     
-    beqz $v0, Fantasma_mover_fin
+    beqz $v0, Fantasma_mover_chequear_colision
     
+    # Si es una interseccion
+    # Contador = 0
+    # arriba es dir actual ? arriba es camino ? guardar, contador++: derecha: saltar
+    # derecha es dir actual ? derecha es camino ? guardar, contador++: abajo: saltar
+    # abajo es dir actual ? abajo es camino ? guardar, contador++: izquierda: saltar
+    # izquierda es dir actual ? izquierda es camino ? guardar, contador++: escoger: escoger
+    # cambiar direccion y llamar mover
+    
+    j Fantasma_mover_fin
+    
+    Fantasma_mover_chequear_colision:
+        
+
 Fantasma_mover_fin:
     # Epilogo
     move $sp,    $fp

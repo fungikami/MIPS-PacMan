@@ -35,8 +35,8 @@ __init__:
     # Inicializa los fantasmas
     
     # Inicializa Blinky
-    li   $a0, 9
-    li   $a1, 8
+    li   $a0, 1
+    li   $a1, 18
     lw   $a2, colorBlinky
     jal  Fantasma_crear
     bltz $v0, salir
