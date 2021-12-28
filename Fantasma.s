@@ -29,20 +29,19 @@ Fantasma_crear:
 
     move $t0, $a0
 
-    # Reserva memoria para el Fantasma
+    # Reserva memoria para el fantasma
     li $a0, 17
     li $v0, 9
     syscall
     bltz $v0, Fantasma_crear_fin
 
     # Inicializa el fantasma
-    sw $t0,  ($v0)      # Coordenada x inicial
-    sw $a1, 4($v0)      # Coordenada y inicial
-    sw $a2, 8($v0)      # Color del fantasma
-    lw $t1, colorComida
-    sw $t1, 12($v0)     # Color capa de fondo
-    li $t1, 1
-    sb $zero, 16($v0)   # Direccion de movimiento
+    sw $t0,     ($v0)       # Coordenada x inicial
+    sw $a1,    4($v0)       # Coordenada y inicial
+    sw $a2,    8($v0)       # Color del fantasma
+    lw $t1,   colorComida
+    sw $t1,   12($v0)       # Color capa de fondo
+    sb $zero, 16($v0)       # Direccion de movimiento
     
 Fantasma_crear_fin:
     # Epilogo
@@ -51,144 +50,71 @@ Fantasma_crear_fin:
 
     jr $ra
 
-# Funcion: Se encarga de decidir el movimiento de un fantasma 
-#          tomando en cuenta su posicion actual
 # Entrada: $a0: Fantasma.
 # Planificacion de registros:
-# $s0: xFantasma
-# $s1: yFantasma
-# $s2: Direccion actual de movimiento del fantasma
-# $s3: Contador de direcciones disponibles / Auxiliar
+# $s0: Fantasma
 # $t0: Auxiliar
 Fantasma_mover:
     # Prologo
     sw   $fp,    ($sp)
     sw   $ra,  -4($sp)
     sw   $s0,  -8($sp)
-    sw   $s1, -12($sp)
-    sw   $s2, -16($sp)
-    sw   $s3, -20($sp)
     move $fp,     $sp
-    addi $sp,     $sp, -24
+    addi $sp,     $sp, -12
 
-    # Guarda xFantasma, yFantasma y Dir. de movimiento
-    lw   $s0,   ($a0)
-    lw   $s1,  4($a0)
-    move $s2, 16($a0)
+    # Guarda fantasma
+    move $s0, $a0
 
     # Verifica si se encuentra en una interseccion
     jal Fantasma_chequear_interseccion
     
-    beqz $v0, Fantasma_mover_chequear_colision
+    beqz $v0, Fantasma_mover_revisar_sig
     
-    # Si es una interseccion, chequea caminos disponibles
-    # No tomara en cuenta la direccion actual como disponible
-    move $s3, $zero
-
-    # Arriba (salta la direccion si es la misma actual)
-    beq $s2, 1, Fantasma_mover_chequear_derecha
-    
-    # (x, y+1) es camino
     move $a0, $s0
-    add  $a1, $s1, 1
-    jal es_camino
-
-    bnez $v0, Fantasma_mover_chequear_derecha
+    jal  Fantasma_cambiar_dir
     
-    # Empila las direcciones disponibles para moverse
-    li  $t0, 1
-    sw  $t0, ($sp)
-    add $s3, $s3, 1 
-
-Fantasma_mover_chequear_derecha:
-    beq $s2, 3, Fantasma_mover_chequear_abajo
-    
-    # (x+1, y) es camino
-    add  $a0, $s0, 1
-    move $a1, $s1
-    jal es_camino
-
-    bnez $v0, Fantasma_mover_chequear_abajo
-
-    li  $t0,  3
-    sll $t1,  $s3, 2
-    sub $t1,  $sp, $t1
-    sw  $t0, ($t1)
-    add $s3,  $s3, 1
-
-Fantasma_mover_chequear_abajo:
-    beq $s2, 2, Fantasma_mover_chequear_izquierda
-
-    # (x, y-1) es camino
-    move $a0, $s0
-    add  $a1, $s1, -1
-    jal es_camino
-
-    bnez $v0, Fantasma_mover_chequear_izquierda
-
-    li  $t0,  2
-    sll $t1,  $s3, 2
-    sub $t1,  $sp, $t1
-    sw  $t0, ($t1)
-    add $s3,  $s3, 1
-
-Fantasma_mover_chequear_izquierda:
-    beq $s2, 0, Fantasma_mover_chequear_arriba
-
-    # (x-1, y) es camino
-    add  $a0, $s0, -1
-    move $a1, $s1
-    jal es_camino
-
-    bnez $v0, Fantasma_mover_verificar
-
-    li  $t0,  0
-    sll $t1,  $s3, 2
-    sub $t1,  $sp, $t1
-    sw  $t0, ($t1)
-    add $s3,  $s3, 1
-
-Fantasma_mover_verificar:
-    bnez $s3, Fantasma_mover_escoger_direccion
-
-    # Se mueve en la direccion contraria si es la unica opción
-    li  $t0, $t0, 3
-    sub $t0, $t0, $s2 # 3 - dir. actual de movimiento = dir. contraria
-    sw  $t0, ($sp)
-    add $s3, $s3, 1
-
-Fantasma_mover_escoger_direccion:
-    move $a0, $s3
-    la   $a1, $sp
-
-    add $s3, $s3, 1
-    sll $s3, $t0, 2
-    add $sp, $sp, $s3
-    jal escoger_aleatorio
-
-    # Desempila direcciones disponibles
-    sub $sp, $sp, $s3
-    
-    # Necesito el fantasma x.x
-    sw $v0 16(fantasma)
-
     j Fantasma_mover_ejecutar
     
+    Fantasma_mover_revisar_sig:
+        # Guarda xFantasma y yFantasma
+        lw $a0,  ($s0)
+        lw $a1, 4($s0)
+        
+        # Revisa la direccion actual del fantasma
+        lb   $t0, 16($a0)
+        beqz $t0, Fantasma_mover_revisar_sig_izq
+        beq  $t0, 1, Fantasma_mover_revisar_sig_arriba
+        beq  $t0, 2, Fantasma_mover_revisar_sig_abajo
+        
+        # Derecha (x+1, y)
+        add $a0, $a0, 1  
+        j   Fantasma_mover_chequear_colision
 
-    # Contador = 0
-    # arriba es dir actual ? arriba es camino ? guardar, contador++: derecha: saltar
-    # derecha es dir actual ? derecha es camino ? guardar, contador++: abajo: saltar
-    # abajo es dir actual ? abajo es camino ? guardar, contador++: izquierda: saltar
-    # izquierda es dir actual ? izquierda es camino ? guardar, contador++: escoger: escoger
-    # si contador = 0, guardar direccion contraria
-    # cambiar direccion y llamar mover
+        Fantasma_mover_revisar_sig_izq:
+            # (x-1, y)
+            add $a0, $a0, -1  
+            j   Fantasma_mover_chequear_colision
+            
+        Fantasma_mover_revisar_sig_arriba:
+            # (x, y+1)    
+            add $a1, $a1, 1  
+            j   Fantasma_mover_chequear_colision
+
+        Fantasma_mover_revisar_sig_abajo:
+            # (x, y-1)
+            add $a1, $a1, -1
+
+    Fantasma_mover_chequear_colision: 
+        jal  es_camino
+        beqz $v0, Fantasma_mover_ejecutar
+
+        # Si hay alguna colision, se busca una nueva dir. aleatoria
+        move $a0, $s0
+        jal  Fantasma_cambiar_dir
     
-    Fantasma_mover_chequear_colision:
-
     Fantasma_mover_ejecutar:
-
-    # Cargar args
-    jal Fantasma_ejecutar_mov
+        move $a0, $s0
+        jal  Fantasma_ejecutar_mov
 
 Fantasma_mover_fin:
     # Epilogo
@@ -196,17 +122,16 @@ Fantasma_mover_fin:
     lw   $fp,    ($sp)
     lw   $ra,  -4($sp)
     lw   $s0,  -8($sp)
-    lw   $s1, -12($sp)
-    lw   $s2, -16($sp)
-    lw   $s3, -20($sp)
 
     jr $ra
 
-# Funcion: Se encarga de ejecutar el movimiento del fantasma
-#
-# Entrada: $a0: Fantasma.
+# Funcion: .
+# Entrada:  $a0:  Fantasma.
 # Planificacion de registros:
-#
+# $s0: Fantasma.
+# $s1: xFantasma siguiente.
+# $s2: yFantasma siguiente.
+# $t0: Auxiliar.
 Fantasma_ejecutar_mov:
     # Prologo
     sw   $fp,    ($sp)
@@ -214,16 +139,73 @@ Fantasma_ejecutar_mov:
     sw   $s0,  -8($sp)
     sw   $s1, -12($sp)
     sw   $s2, -16($sp)
-    sw   $s3, -20($sp)
     move $fp,     $sp
-    addi $sp,     $sp, -24
+    addi $sp,     $sp, -20
 
-    # Si se encuentra en una interseccion o choca con una pared
+    # Guarda Fantasma
+    move $s0, $a0
+    
+    # Guarda xFantasma y yFantasma
+    lw $s1,  ($s0)
+    lw $s2, 4($s0)
+            
+    # Revisa la direccion actual del fantasma
+    lb   $t0, 16($s0)
+    beqz $t0, Fantasma_ejecutar_mov_izq
+    beq  $t0, 1, Fantasma_ejecutar_mov_arriba
+    beq  $t0, 2, Fantasma_ejecutar_mov_abajo
+    
+    # Derecha (x+1, y)
+    add $s1, $s1, 1  
+    j   Fantasma_ejecutar_mov_verif_portal
 
-    # Si se dirige a un portal
+    Fantasma_ejecutar_mov_izq:
+        # (x-1, y)
+        add $s1, $s1, -1  
+        j   Fantasma_ejecutar_mov_verif_portal
+        
+    Fantasma_ejecutar_mov_arriba:
+        # (x, y+1)    
+        add $s2, $s2, 1  
+        j   Fantasma_ejecutar_mov_verif_portal
 
-    # En cambio, continua en la misma direccion 
+    Fantasma_ejecutar_mov_abajo:
+        # (x, y-1)
+        add $s2, $s2, -1
 
+    Fantasma_ejecutar_mov_verif_portal:
+        bnez $s1, Fantasma_ejecutar_mov_verif_portal_der
+        li   $s1, 30
+        j    Fantasma_ejecutar_mov_pintar
+
+    Fantasma_ejecutar_mov_verif_portal_der:
+        bne $s1, 31, Fantasma_ejecutar_mov_pintar
+        li  $s1, 1    
+    
+    Fantasma_ejecutar_mov_pintar:
+        # Pinta (x, y) del color de la capa de fondo del fantasma
+        lw $a0,   ($s0)
+        lw $a1,  4($s0)
+        lw $a2, 12($s0)
+        jal pintar_pixel
+
+        # Actualiza fondo del fantasma
+        move $a0, $s1
+        move $a1, $s2
+        jal  coord_a_dir_bitmap
+        lw   $t0,   ($v0)
+        sw   $t0, 12($s0)
+
+        # Actualiza nuevo (x, y) del fantasma
+        sw $s1,  ($s0)
+        sw $s2, 4($s0)
+
+        # Pinta el nuevo (x, y) del fantasma
+        lw $a0,  ($s0)
+        lw $a1, 4($s0)
+        lw $a2, 8($s0)
+        jal pintar_pixel
+        
 Fantasma_ejecutar_mov_fin:
     # Epilogo
     move $sp,    $fp
@@ -232,7 +214,6 @@ Fantasma_ejecutar_mov_fin:
     lw   $s0,  -8($sp)
     lw   $s1, -12($sp)
     lw   $s2, -16($sp)
-    lw   $s3, -20($sp)
 
     jr $ra
 
@@ -382,4 +363,135 @@ Fantasma_chequear_interseccion_fin:
     lw   $s4, -24($sp)
 
     jr $ra
+
+
+# Funcion: Crea un Fantasma con su posición y color.
+# Entrada:  $a0: Fantasma.
+# Planificacion de registros:
+# $s0: Fantasma
+# $s1: xFantasma
+# $s2: yFantasma
+# $s3: Direccion opuesta al movimiento del fantasma
+# $s4: Contador de direcciones disponibles / Auxiliar
+# $t0: Auxiliar
+Fantasma_cambiar_dir:
+    # Prologo
+    sw   $fp,    ($sp)
+    sw   $ra,  -4($sp)
+    sw   $s0,  -8($sp)
+    sw   $s1, -12($sp)
+    sw   $s2, -16($sp)
+    sw   $s3, -20($sp)
+    sw   $s4, -24($sp)
+    move $fp,     $sp
+    addi $sp,     $sp, -28
+
+    # Guarda Fantasma, xFantasma, yFantasma y Dir. opuesta de movimiento
+    move $s0,    $a0    
+    lw   $s1,   ($a0)  
+    lw   $s2,  4($a0)   
+    move $s3, 16($a0)  
+    andi $s3,    $s3, 0xF
+    sub  $s3,    $s3, 3 
+
+    # Si es una interseccion, chequea caminos disponibles
+    # No tomara en cuenta la direccion opuesta como disponible
+    move $s4, $zero
+
+    # Arriba (salta la direccion si es la opuesta)
+    beq $s3, 1, Fantasma_cambiar_dir_chequear_derecha
     
+    # (x, y+1) es camino
+    move $a0, $s1
+    add  $a1, $s2, 1
+    jal es_camino
+
+    bnez $v0, Fantasma_cambiar_dir_chequear_derecha
+    
+    # Empila las direcciones disponibles para moverse
+    li  $t0,  1
+    sw  $t0, ($sp)
+    add $s4,  $s4, 1 
+
+    Fantasma_cambiar_dir_chequear_derecha:
+        beq $s3, 3, Fantasma_cambiar_dir_chequear_abajo
+        
+        # (x+1, y) es camino
+        add  $a0, $s1, 1
+        move $a1, $s2
+        jal es_camino
+
+        bnez $v0, Fantasma_cambiar_dir_chequear_abajo
+
+        li  $t0,  3
+        sll $t1,  $s4, 2
+        sub $t1,  $sp, $t1
+        sw  $t0, ($t1)
+        add $s4,  $s4, 1
+
+    Fantasma_cambiar_dir_chequear_abajo:
+        beq $s3, 2, Fantasma_cambiar_dir_chequear_izquierda
+
+        # (x, y-1) es camino
+        move $a0, $s1
+        add  $a1, $s2, -1
+        jal es_camino
+
+        bnez $v0, Fantasma_cambiar_dir_chequear_izquierda
+
+        li  $t0,  2
+        sll $t1,  $s4, 2
+        sub $t1,  $sp, $t1
+        sw  $t0, ($t1)
+        add $s4,  $s4, 1
+
+    Fantasma_cambiar_dir_chequear_izquierda:
+        beqz $s3, Fantasma_cambiar_dir_chequear_arriba
+
+        # (x-1, y) es camino
+        add  $a0, $s1, -1
+        move $a1, $s2
+        jal es_camino
+
+        bnez $v0, Fantasma_cambiar_dir_verificar
+
+        li  $t0,  0
+        sll $t1,  $s4, 2
+        sub $t1,  $sp, $t1
+        sw  $t0, ($t1)
+        add $s4,  $s4, 1
+
+    Fantasma_cambiar_dir_verificar:
+        bnez $s4, Fantasma_cambiar_dir_escoger_direccion
+
+        # Se mueve en la direccion contraria si es la unica opción
+        sw  $s3, ($sp)
+        add $s4, $s4, 1
+
+    Fantasma_cambiar_dir_escoger_direccion:
+        move $a0, $s4
+        la   $a1, $sp
+
+        add $s4, $s4, 1
+        sll $s4, $t0, 2
+        add $sp, $sp, $s4
+
+        # Guarda la nueva direccion del fantasma
+        jal escoger_aleatorio
+        sb  $v0, 16($s0)
+
+        # Desempila direcciones disponibles
+        sub $sp, $sp, $s4
+    
+Fantasma_cambiar_dir:
+    # Epilogo
+    move $sp,    $fp
+    lw   $fp,    ($sp)
+    lw   $ra,  -4($sp)
+    lw   $s0,  -8($sp)
+    lw   $s1, -12($sp)
+    lw   $s2, -16($sp)
+    lw   $s3, -20($sp)
+    lw   $s4, -24($sp)
+
+    jr $ra
