@@ -260,7 +260,7 @@ pintar_tablero_fin:
     jr $ra 
 
 # Funcion: Escoge una palabra pseudo-aleatoriamente del arreglo de entrada.
-# Entrada: $a0: Numero de argumentos (1-3). 
+# Entrada: $a0: Numero de elementos del arreglo (1-3). 
 #          $a1: Direccion de arreglo de $a0 palabras
 # Salida:  $v0: Opcion elegida pseudo-aleatoriamente.
 # Planificacion de registros:

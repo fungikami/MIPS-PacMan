@@ -58,7 +58,7 @@ Fantasma_crear_fin:
 # $s0: xFantasma
 # $s1: yFantasma
 # $s2: Direccion actual de movimiento del fantasma
-# $s3: Contador de direcciones disponibles
+# $s3: Contador de direcciones disponibles / Auxiliar
 # $t0: Auxiliar
 Fantasma_mover:
     # Prologo
@@ -95,7 +95,7 @@ Fantasma_mover:
 
     bnez $v0, Fantasma_mover_chequear_derecha
     
-    # Se van cargando en la pila las direcciones disponibles para moverse
+    # Empila las direcciones disponibles para moverse
     li  $t0, 1
     sw  $t0, ($sp)
     add $s3, $s3, 1 
@@ -158,7 +158,22 @@ Fantasma_mover_verificar:
     add $s3, $s3, 1
 
 Fantasma_mover_escoger_direccion:
-    move 
+    move $a0, $s3
+    la   $a1, $sp
+
+    add $s3, $s3, 1
+    sll $s3, $t0, 2
+    add $sp, $sp, $s3
+    jal escoger_aleatorio
+
+    # Desempila direcciones disponibles
+    sub $sp, $sp, $s3
+    
+    # Necesito el fantasma x.x
+    sw $v0 16(fantasma)
+
+    j Fantasma_mover_ejecutar
+    
 
     # Contador = 0
     # arriba es dir actual ? arriba es camino ? guardar, contador++: derecha: saltar
@@ -168,10 +183,12 @@ Fantasma_mover_escoger_direccion:
     # si contador = 0, guardar direccion contraria
     # cambiar direccion y llamar mover
     
-    j Fantasma_mover_fin
-    
     Fantasma_mover_chequear_colision:
-        
+
+    Fantasma_mover_ejecutar:
+
+    # Cargar args
+    jal Fantasma_ejecutar_mov
 
 Fantasma_mover_fin:
     # Epilogo
