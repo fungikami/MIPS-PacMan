@@ -367,7 +367,6 @@ Fantasma_chequear_interseccion_fin:
 
     jr $ra
 
-
 # Funcion: Escoge aleatoriamente una direccion valida para el siguiente
 #          movimiento del fantasma. Solo retorna la direccion contraria
 #          a la actual si es la unica disponible
@@ -391,7 +390,7 @@ Fantasma_cambiar_dir:
     sw   $s2, -16($sp)
     sw   $s3, -20($sp)
     sw   $s4, -24($sp)
-    sw   $s4, -28($sp)
+    sw   $s5, -28($sp)
     move $fp,     $sp
     addi $sp,     $sp, -32
 
@@ -415,7 +414,7 @@ Fantasma_cambiar_dir:
     # (x, y+1) es camino
     move $a0, $s1
     add  $a1, $s2, 1
-    jal es_camino
+    jal  es_camino
 
     bnez $v0, Fantasma_cambiar_dir_chequear_derecha
     
@@ -431,7 +430,7 @@ Fantasma_cambiar_dir:
         # (x+1, y) es camino
         add  $a0, $s1, 1
         move $a1, $s2
-        jal es_camino
+        jal  es_camino
 
         bnez $v0, Fantasma_cambiar_dir_chequear_abajo
 
@@ -446,7 +445,7 @@ Fantasma_cambiar_dir:
         # (x, y-1) es camino
         move $a0, $s1
         add  $a1, $s2, -1
-        jal es_camino
+        jal  es_camino
 
         bnez $v0, Fantasma_cambiar_dir_chequear_izquierda
 
@@ -461,7 +460,7 @@ Fantasma_cambiar_dir:
         # (x-1, y) es camino
         add  $a0, $s1, -1
         move $a1, $s2
-        jal es_camino
+        jal  es_camino
 
         bnez $v0, Fantasma_cambiar_dir_verificar
 
@@ -476,11 +475,11 @@ Fantasma_cambiar_dir:
         # Se mueve en la direccion contraria si es la unica opcion
         sw  $s3, ($sp)
         add $s4,  $s4,  1
-        add $sp,  $sp, -4
 
     Fantasma_cambiar_dir_escoger_direccion:
         move $a0, $s4
-        move $a1, $s5
+        move $a1, $sp
+        add  $sp,  $sp, -4
 
         jal escoger_aleatorio
         sb  $v0, 16($s0)
@@ -498,6 +497,6 @@ Fantasma_cambiar_dir_fin:
     lw   $s2, -16($sp)
     lw   $s3, -20($sp)
     lw   $s4, -24($sp)
-    lw   $s5, -24($sp)
+    lw   $s5, -28($sp)
 
     jr $ra
