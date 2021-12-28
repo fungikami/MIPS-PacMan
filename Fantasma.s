@@ -475,11 +475,11 @@ Fantasma_cambiar_dir:
         # Se mueve en la direccion contraria si es la unica opcion
         sw  $s3, ($sp)
         add $s4,  $s4,  1
+        add $sp,  $sp, -4
 
     Fantasma_cambiar_dir_escoger_direccion:
         move $a0, $s4
-        move $a1, $sp
-        add  $sp,  $sp, -4
+        add  $a1, $sp,  4
 
         jal escoger_aleatorio
         sb  $v0, 16($s0)
