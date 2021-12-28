@@ -64,6 +64,8 @@ Fantasmas_crear:
     bltz $v0, Fantasmas_crear_fin
     sw   $v0, 12($s0)
     
+    move $v0, $s0
+    
 Fantasmas_crear_fin:
     # Epilogo
     move $sp,    $fp

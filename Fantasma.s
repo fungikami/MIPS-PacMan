@@ -83,7 +83,7 @@ Fantasma_mover:
         lw $a1, 4($s0)
         
         # Revisa la direccion actual del fantasma
-        lb   $t0, 16($a0)
+        lb   $t0, 16($s0)
         beqz $t0, Fantasma_mover_revisar_sig_izq
         beq  $t0, 1, Fantasma_mover_revisar_sig_arriba
         beq  $t0, 2, Fantasma_mover_revisar_sig_abajo
@@ -315,7 +315,7 @@ Fantasma_chequear_interseccion:
         move $a0, $s0
         add  $a1, $s1, -1
         jal  es_camino
-        bnez $v0, Fantasma_chequear_interseccion_abajo_izq
+        bnez $v0, Fantasma_chequear_interseccion_izq_arriba
 
         # Verifica si (x-1, y) es camino / Izquierda
         add  $a0, $s0, -1
@@ -380,6 +380,7 @@ Fantasma_chequear_interseccion_fin:
 # $s2: yFantasma
 # $s3: Direccion opuesta al movimiento del fantasma
 # $s4: Contador de direcciones disponibles / Auxiliar
+# $s5: Dir. inicial de la pila donde se guarda dir. de movimientos validos
 # $t0: Auxiliar
 Fantasma_cambiar_dir:
     # Prologo
@@ -390,8 +391,9 @@ Fantasma_cambiar_dir:
     sw   $s2, -16($sp)
     sw   $s3, -20($sp)
     sw   $s4, -24($sp)
+    sw   $s4, -28($sp)
     move $fp,     $sp
-    addi $sp,     $sp, -28
+    addi $sp,     $sp, -32
 
     # Guarda Fantasma, xFantasma, yFantasma y Dir. opuesta de movimiento
     move $s0,    $a0    
@@ -404,6 +406,8 @@ Fantasma_cambiar_dir:
     # Si es una interseccion, chequea caminos disponibles
     # No tomara en cuenta la direccion opuesta como disponible
     move $s4, $zero
+
+    la $s5, ($sp)
 
     # Arriba (salta la direccion si es la opuesta)
     beq $s3, 1, Fantasma_cambiar_dir_chequear_derecha
@@ -418,7 +422,8 @@ Fantasma_cambiar_dir:
     # Empila las direcciones disponibles para moverse
     li  $t0,  1
     sw  $t0, ($sp)
-    add $s4,  $s4, 1 
+    add $s4,  $s4, 1
+    add $sp, $sp, -4
 
     Fantasma_cambiar_dir_chequear_derecha:
         beq $s3, 3, Fantasma_cambiar_dir_chequear_abajo
@@ -431,10 +436,9 @@ Fantasma_cambiar_dir:
         bnez $v0, Fantasma_cambiar_dir_chequear_abajo
 
         li  $t0,  3
-        sll $t1,  $s4, 2
-        sub $t1,  $sp, $t1
-        sw  $t0, ($t1)
-        add $s4,  $s4, 1
+        sw  $t0, ($sp)
+        add $s4,  $s4,  1
+        add $sp,  $sp, -4
 
     Fantasma_cambiar_dir_chequear_abajo:
         beq $s3, 2, Fantasma_cambiar_dir_chequear_izquierda
@@ -447,10 +451,9 @@ Fantasma_cambiar_dir:
         bnez $v0, Fantasma_cambiar_dir_chequear_izquierda
 
         li  $t0,  2
-        sll $t1,  $s4, 2
-        sub $t1,  $sp, $t1
-        sw  $t0, ($t1)
-        add $s4,  $s4, 1
+        sw  $t0, ($sp)
+        add $s4,  $s4,  1
+        add $sp,  $sp, -4
 
     Fantasma_cambiar_dir_chequear_izquierda:
         beqz $s3, Fantasma_cambiar_dir_verificar
@@ -462,33 +465,28 @@ Fantasma_cambiar_dir:
 
         bnez $v0, Fantasma_cambiar_dir_verificar
 
-        li  $t0,  0
-        sll $t1,  $s4, 2
-        sub $t1,  $sp, $t1
-        sw  $t0, ($t1)
-        add $s4,  $s4, 1
+        move $t0, $zero
+        sw   $t0, ($sp)
+        add  $s4,  $s4,  1
+        add  $sp,  $sp, -4
 
     Fantasma_cambiar_dir_verificar:
         bnez $s4, Fantasma_cambiar_dir_escoger_direccion
 
         # Se mueve en la direccion contraria si es la unica opcion
         sw  $s3, ($sp)
-        add $s4, $s4, 1
+        add $s4,  $s4,  1
+        add $sp,  $sp, -4
 
     Fantasma_cambiar_dir_escoger_direccion:
         move $a0, $s4
-        la   $a1, ($sp)
+        move $a1, $s5
 
-        add $s4, $s4, 1
-        sll $s4, $t0, 2
-        add $sp, $sp, $s4
-
-        # Guarda la nueva direccion del fantasma
         jal escoger_aleatorio
         sb  $v0, 16($s0)
 
         # Desempila direcciones disponibles
-        sub $sp, $sp, $s4
+        move $sp, $s5
     
 Fantasma_cambiar_dir_fin:
     # Epilogo
@@ -500,5 +498,6 @@ Fantasma_cambiar_dir_fin:
     lw   $s2, -16($sp)
     lw   $s3, -20($sp)
     lw   $s4, -24($sp)
+    lw   $s5, -24($sp)
 
     jr $ra
