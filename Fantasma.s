@@ -397,7 +397,7 @@ Fantasma_cambiar_dir:
     move $s0,    $a0    
     lw   $s1,   ($a0)  
     lw   $s2,  4($a0)   
-    move $s3, 16($a0)  
+    lw   $s3, 16($a0)  
     andi $s3,    $s3, 0xF
     sub  $s3,    $s3, 3 
 
@@ -453,7 +453,7 @@ Fantasma_cambiar_dir:
         add $s4,  $s4, 1
 
     Fantasma_cambiar_dir_chequear_izquierda:
-        beqz $s3, Fantasma_cambiar_dir_chequear_arriba
+        beqz $s3, Fantasma_cambiar_dir_verificar
 
         # (x-1, y) es camino
         add  $a0, $s1, -1
@@ -477,7 +477,7 @@ Fantasma_cambiar_dir:
 
     Fantasma_cambiar_dir_escoger_direccion:
         move $a0, $s4
-        la   $a1, $sp
+        la   $a1, ($sp)
 
         add $s4, $s4, 1
         sll $s4, $t0, 2
@@ -490,7 +490,7 @@ Fantasma_cambiar_dir:
         # Desempila direcciones disponibles
         sub $sp, $sp, $s4
     
-Fantasma_cambiar_dir:
+Fantasma_cambiar_dir_fin:
     # Epilogo
     move $sp,    $fp
     lw   $fp,    ($sp)
