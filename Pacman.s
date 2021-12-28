@@ -7,7 +7,7 @@
 
         .text
 
-# Funcion: Crea un Pacman con su posición y color (variable global
+# Funcion: Crea un Pacman con su posicion y color (variable global
 #          definida como colorPacman en myexception.s).
 # Salida:   $v0:  Pacman (negativo si no se pudo crear).
 #          ($v0): Coordenada x.
@@ -44,10 +44,10 @@ Pacman_crear_fin:
 
     jr $ra
 
-# Funcion: Se encarga del movimiento del Pac-Man y su interacción
-#          con el entorno (según la variable global D).
+# Funcion: Se encarga del movimiento del Pac-Man y su interaccion
+#          con el entorno (segun la variable global D).
 # Entrada: $a0: Pacman.
-#          $a1: Dirección de contador de alimentos restantes.
+#          $a1: Direccion de contador de alimentos restantes.
 # Planificacion de registros:
 # $s0: Pacman.
 # $s1: Dir. contador de alimentos restantes.
@@ -110,7 +110,7 @@ Pacman_mover:
         j Pacman_mover_siguiente
 
     Pacman_mover_siguiente:
-        # Convierte la coordenada (x, y) en su dirección
+        # Convierte la coordenada (x, y) en su direccion
         # de memoria en el Bitmap Display.
         move $a0, $s2
         move $a1, $s3

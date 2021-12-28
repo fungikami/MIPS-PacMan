@@ -100,11 +100,11 @@ pintar_pixel:
 
     move $s0, $a2
 
-    # Convierte la coordenada (x, y) en su dirección
+    # Convierte la coordenada (x, y) en su direccion
     # de memoria en el Bitmap Display.
     jal coord_a_dir_bitmap
 
-    # Pinta el pixel en la dirección del Bitmap Display.
+    # Pinta el pixel en la direccion del Bitmap Display.
     sw $s0, ($v0)
 
     # Epilogo
@@ -130,7 +130,7 @@ pintar_pixel:
 #          Usa los colores definidos en Main.s
 # Entrada: $a0: Archivo.
 #          $a1: Direccion de contador de alimentos restantes.
-# Salida:  $v0: negativo si ocurrió algún error. 
+# Salida:  $v0: negativo si ocurrio algun error. 
 # Planificacion de registros:
 # $s0: Archivo del tablero.
 # $s1: Dir. memoria del tablero.
@@ -188,7 +188,7 @@ pintar_tablero:
         beq $t0, 'M', pintar_tablero_marron
         beq $t0, 'A', pintar_tablero_azul
 
-        # Si no es ninguno de los demás es verde
+        # Si no es ninguno de los demas es verde
         pintar_tablero_verde:
             lw  $a2, colorClyde
             jal pintar_pixel
@@ -241,7 +241,7 @@ pintar_tablero:
 
         bne  $s2, 33, pintar_tablero_for_pixel
 
-        # Si llegó al final de la línea, reinicia x y aumenta y
+        # Si llego al final de la línea, reinicia x y aumenta y
         add  $s3, $s3, -1   # y--
         move $s2, $zero     # x = 0
         
@@ -322,7 +322,7 @@ es_camino:
     move $fp,    $sp
     addi $sp,    $sp, -8
 
-    # Convierte la coordenada (x, y) en su dirección
+    # Convierte la coordenada (x, y) en su direccion
     # de memoria en el Bitmap Display.
     jal coord_a_dir_bitmap
     lw  $t3, ($v0)

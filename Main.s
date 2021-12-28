@@ -64,8 +64,8 @@ main:
 	lb  $t1, pausar
 	beq $t1, 1, pausar_partida
 
-	# Aqui habrá un conjunto de instrucciones.
-	# Éstas respetaran las convenciones
+	# Aqui habra un conjunto de instrucciones.
+	# Estas respetaran las convenciones
 
     # Revisa si Pac-Man se ha comido todo el alimento
     lw   $t0, alimRestante
@@ -80,9 +80,9 @@ main:
     syscall
     b salir
 
-	# Note que su implmentación de la función PacMan debe ser lo
-	# más eficiente posible. El Main tiene otras cosas qué hacer
-	# Debe hacer la actividad requerida y regresar rápidamente aquí. 
+	# Note que su implmentacion de la funcion PacMan debe ser lo
+	# mas eficiente posible. El Main tiene otras cosas que hacer
+	# Debe hacer la actividad requerida y regresar rapidamente aquí. 
 
 esperar:
 	lb   $t0, avanzarCuadro
@@ -105,7 +105,7 @@ salir:
 	li $v0, 10
 	syscall
 
-# Función: Avanza por un cuadro el movimiento de los personajes
+# Funcion: Avanza por un cuadro el movimiento de los personajes
 #          en el tablero.
 # Planificacion de registros:
 PacMan:
@@ -118,13 +118,14 @@ PacMan:
     # Reinicia la variable saltar
     sb $zero, avanzarCuadro
     
-    # Movimiento Pac-Man
+    # Movimiento de Pac-Man
     lw  $a0, Pacman
     la  $a1, alimRestante
     jal Pacman_mover
 
     # Movimiento de los fantasmas
-
+    lw  $a0, Fantasmas
+    jal Fantasmas_mover
 
 PacMan_fin:
     # Epilogo

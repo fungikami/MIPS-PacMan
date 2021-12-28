@@ -7,7 +7,7 @@
 
         .text
 
-# Funcion: Crea un Fantasma con su posición y color.
+# Funcion: Crea un Fantasma con su posicion y color.
 # Entrada:  $a0:  Coordenada x.
 #           $a1:  Coordenada y.
 #           $a2:  Color del fantasma.
@@ -50,6 +50,8 @@ Fantasma_crear_fin:
 
     jr $ra
 
+# Funcion: Se encarga del movimiento del fantasma por el tablero, tomando
+#          en cuenta las intersecciones y colisiones.
 # Entrada: $a0: Fantasma.
 # Planificacion de registros:
 # $s0: Fantasma
@@ -125,7 +127,8 @@ Fantasma_mover_fin:
 
     jr $ra
 
-# Funcion: .
+# Funcion: Mueve el pixel del fantasma a la direccion especificada
+#          en la estructura.
 # Entrada:  $a0:  Fantasma.
 # Planificacion de registros:
 # $s0: Fantasma.
@@ -254,7 +257,7 @@ Fantasma_chequear_interseccion:
     lw $s4, colorPared
     lw $s5, colorPortal
     
-    # La condición de intersección consiste en chequear que
+    # La condicion de interseccion consiste en chequear que
     # las adyacencias sean caminos y la diagonal una pared
     
     # Verifica si (x+1, y+1) es pared / Noroeste
@@ -365,8 +368,12 @@ Fantasma_chequear_interseccion_fin:
     jr $ra
 
 
-# Funcion: Crea un Fantasma con su posición y color.
-# Entrada:  $a0: Fantasma.
+# Funcion: Escoge aleatoriamente una direccion valida para el siguiente
+#          movimiento del fantasma. Solo retorna la direccion contraria
+#          a la actual si es la unica disponible
+# Entrada: $a0: Fantasma.
+# Salida:  $v0: Dir. aleatoria valida de movimiento del fantasma.
+#               (0: Izquierda, 1: Arriba, 2: Abajo, 3: Derecha)
 # Planificacion de registros:
 # $s0: Fantasma
 # $s1: xFantasma
@@ -464,7 +471,7 @@ Fantasma_cambiar_dir:
     Fantasma_cambiar_dir_verificar:
         bnez $s4, Fantasma_cambiar_dir_escoger_direccion
 
-        # Se mueve en la direccion contraria si es la unica opción
+        # Se mueve en la direccion contraria si es la unica opcion
         sw  $s3, ($sp)
         add $s4, $s4, 1
 

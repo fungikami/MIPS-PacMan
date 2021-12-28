@@ -62,9 +62,9 @@ main:
     # lw   $t0, V
     # bltz $t0, salir
 
-	# Note que su implmentación de la función PacMan debe ser lo
-	# más eficiente posible. El Main tiene otras cosas qué hacer
-	# Debe hacer la actividad requerida y regresar rápidamente aquí. 
+	# Note que su implmentacion de la funcion PacMan debe ser lo
+	# mas eficiente posible. El Main tiene otras cosas que hacer
+	# Debe hacer la actividad requerida y regresar rapidamente aquí. 
 
 esperar:
 	lb   $t0, avanzarCuadro
@@ -87,7 +87,7 @@ salir:
 	li $v0, 10
 	syscall
 
-# Función: Avanza por un cuadro el movimiento de los personajes
+# Funcion: Avanza por un cuadro el movimiento de los personajes
 #          en el tablero.
 # Planificacion de registros:
 PacMan:
