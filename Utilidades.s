@@ -168,7 +168,7 @@ pintar_tablero:
     bltz $v0, pintar_tablero_fin
 
     # Calcular dir. final
-    li   $a0, 32
+    li   $a0, 31
     li   $a1, 31
     jal  coord_a_dir_bitmap
     move $t3, $v0
@@ -237,8 +237,8 @@ pintar_tablero:
         sw  $t0, ($s2)
 
     pintar_tablero_for_pixel_sig:
+        beq $t1, $t3, pintar_tablero_fin
         add $t1, $t1, 4
-        beq $s1, $t3, pintar_tablero_fin
         j   pintar_tablero_for_pixel
 
 pintar_tablero_fin:
