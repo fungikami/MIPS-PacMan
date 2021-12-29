@@ -151,7 +151,7 @@ pintar_tablero:
 	addi $sp,     $sp, -20
 
     move $s0, $a0   # Archivo tablero
-    move $s2, $a1   # Contador
+    move $s2, $a1   # Contador comida
     
     # Reservar memoria
     li $a0, 1055
@@ -168,7 +168,7 @@ pintar_tablero:
     bltz $v0, pintar_tablero_fin
 
     # Calcular dir. final
-    li   $a0, 31
+    li   $a0, 0
     li   $a1, 31
     jal  coord_a_dir_bitmap
     move $t3, $v0
