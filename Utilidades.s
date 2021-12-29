@@ -168,8 +168,8 @@ pintar_tablero:
     bltz $v0, pintar_tablero_fin
 
     # Calcular dir. final
-    li   $a0, 0
-    li   $a1, 31
+    li   $a0, 31
+    li   $a1, 0
     jal  coord_a_dir_bitmap
     move $t3, $v0
 
