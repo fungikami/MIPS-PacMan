@@ -90,9 +90,8 @@ pintar_pixel:
 pintar_tablero: 
     # Prologo
 	sw   $fp,    ($sp)
-    sw   $ra,  -4($sp)
 	move $fp,     $sp
-	addi $sp,     $sp, -8
+	addi $sp,     $sp, -4
  
     lw $t1, MAT
     lw $t3, colorPared
@@ -122,7 +121,7 @@ pintar_tablero:
             j  pintar_tablero_for_pixel_sig
 
         pintar_tablero_blanco:
-            sw $t3, ($t1)
+            sw $t4, ($t1)
             j  pintar_tablero_aumentar_contador
 
         pintar_tablero_naranja:
@@ -164,11 +163,6 @@ pintar_tablero_fin:
     # Epilogo
     move $sp,     $fp
     lw   $fp,    ($sp)
-    lw   $ra,  -4($sp)
-    lw   $s0,  -8($sp)
-    lw   $s1, -12($sp)
-    lw   $s2, -16($sp)
-    lw   $s3, -20($sp)
 
     jr $ra 
 
