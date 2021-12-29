@@ -4,57 +4,6 @@
 # Autores: Ka Fung & Christopher Gomez
 # Fecha: 10-ene-2022
 
-# Funcion: Abre y lee un archivo dado.
-# Entrada: $a0: Archivo.
-#          $a1: Buffer.
-#          $a2: Tamanio Buffer.
-# Salida:  $v0: negativo si no logro leer archivo.    
-# Planificacion de registros:
-# $t0: buffer
-# $t1: archivo
-leer_archivo: 
-    # Prologo
-	sw   $fp,   ($sp)
-    sw   $ra, -4($sp)
-	move $fp,    $sp
-	addi $sp,    $sp, -8
-
-    move $t0, $a0   # Archivo
-    move $t1, $a1   # Buffer
-    move $t2, $a2   # Tamanio Buffer
-
-    # Abrir archivo para leer
-    li $v0, 13
-    move $a0, $t0
-    li $a1, 0
-    syscall
-
-    bltz $v0, leer_archivo_fin
-    move $a0, $v0
-
-    # Leer archivo
-    li $v0, 14
-    move $a1, $t1
-    move $a2, $t2
-    syscall
-
-    bltz $v0, leer_archivo_fin
-
-    add $t1, $t1, $v0
-    sb $zero, ($t1) # Termina el buffer con un null
-
-    # Cerrar el archivo
-    li $v0, 16
-    syscall
-
-leer_archivo_fin:
-    # Epilogo
-    move $sp,    $fp
-    lw   $fp,   ($sp)
-    lw   $ra, -4($sp)
-
-    jr $ra
-
 # Funcion: Convierte una coordenada (x, y) en una 
 #          direccion del Bitmap Display.
 # Entrada: $a0: Coordenada x.
@@ -115,10 +64,10 @@ pintar_pixel:
 
     jr $ra 
 
-# Funcion: Pinta un tablero 32x32 desde un archivo donde cada caracter
-#          representa una celda, con el siguiente formato:
-#             32 líneas de 32 caracteres y \n al final de cada una.
-#             El tamaño del archivo es de 1055 bytes (32*32 + 31).
+# Funcion: Pinta un tablero 32x32 desde una cadena de caracteres terminada
+#          en nulo, donde cada caracter representa una celda, con el siguiente
+#          formato:
+#             El tamaño de la cadena es de 1025 bytes (32*32 + 1).
 #                'G' representa gris oscuro (pared).
 #                ' ' representa blanco (alimento).
 #                'N' representa naranja (portal).
@@ -128,57 +77,31 @@ pintar_pixel:
 #                'A' representa azul (Inky).
 #                'V' representa verde (Clyde).
 #          Usa los colores definidos en Main.s
-# Entrada: $a0: Archivo.
+#          Cuenta y actualiza a su vez la cantidad de alimento en el mapa.
+# Entrada: $a0: Direccion de la cadena que contiene el tablero.
 #          $a1: Direccion de contador de alimentos restantes.
 # Salida:  $v0: negativo si ocurrio algun error. 
 # Planificacion de registros:
-# $s0: Archivo del tablero.
-# $s1: Dir. memoria del tablero.
-# $s2: Direccion del contandor de alimentos restantes.
 # $t0: Auxiliar.
-# $t1: Dirección a escribir en el Bitmap Display.
+# $t1: Direccion a escribir en el Bitmap Display.
 # $t2: Color del pixel a pintar.
-# $t3: Dirección final del Bitmap Display.
-# 
+# $t3: colorPared.
+# $t4: colorComida.
 pintar_tablero: 
     # Prologo
 	sw   $fp,    ($sp)
     sw   $ra,  -4($sp)
-    sw   $s0,  -8($sp)
-    sw   $s1, -12($sp)
-    sw   $s2, -16($sp)
 	move $fp,     $sp
-	addi $sp,     $sp, -20
-
-    move $s0, $a0   # Archivo tablero
-    move $s2, $a1   # Contador comida
-    
-    # Reservar memoria
-    li $a0, 1055
-    li $v0, 9
-    syscall
-    bltz $v0, pintar_tablero_fin
-    move $s1, $v0   # Dir. Memoria
-    
-    # Abrir y leer el archivo
-    move $a0, $s0   # Archivo
-    move $a1, $v0   # Dir. Memoria
-    li   $a2, 1055  # Tamanio de memoria
-    jal  leer_archivo
-    bltz $v0, pintar_tablero_fin
-
-    # Calcular dir. final
-    li   $a0, 31
-    li   $a1, 0
-    jal  coord_a_dir_bitmap
-    move $t3, $v0
-
-    # Pintar cada pixel
+	addi $sp,     $sp, -8
+ 
     lw $t1, MAT
+    lw $t3, colorPared
+    lw $t4, colorComida
+
     pintar_tablero_for_pixel:
-        lb  $t0, ($s1)
-        add $s1, $s1, 1
-        beq $t0, '\n', pintar_tablero_for_pixel
+        lb  $t0, ($a0)
+        beq $t0, $zero, pintar_tablero_for_pixel_end
+        add $a0, $a0, 1
 
         # Pintar tablero
         beq $t0, ' ', pintar_tablero_blanco
@@ -190,19 +113,16 @@ pintar_tablero:
         beq $t0, 'A', pintar_tablero_azul
 
         # Si no es ninguno de los demas es verde
-        pintar_tablero_verde:
             lw $t2, colorClyde
             sw $t2, ($t1)
             j  pintar_tablero_aumentar_contador
 
         pintar_tablero_gris:
-            lw $t2, colorPared
-            sw $t2, ($t1)
+            sw $t3, ($t1)
             j  pintar_tablero_for_pixel_sig
 
         pintar_tablero_blanco:
-            lw $t2, colorComida
-            sw $t2, ($t1)
+            sw $t3, ($t1)
             j  pintar_tablero_aumentar_contador
 
         pintar_tablero_naranja:
@@ -232,12 +152,11 @@ pintar_tablero:
 
     pintar_tablero_aumentar_contador:
         # Aumenta contador de alimentos restantes
-        lw  $t0, ($s2)
+        lw  $t0, ($a1)
         add $t0,  $t0, 1
-        sw  $t0, ($s2)
+        sw  $t0, ($a1)
 
     pintar_tablero_for_pixel_sig:
-        beq $t1, $t3, pintar_tablero_fin
         add $t1, $t1, 4
         j   pintar_tablero_for_pixel
 
@@ -252,9 +171,6 @@ pintar_tablero_fin:
     lw   $s3, -20($sp)
 
     jr $ra 
-
-
-
 
 # Funcion: Escoge una palabra pseudo-aleatoriamente del arreglo de entrada.
 # Entrada: $a0: Numero de elementos del arreglo (1-3). 
