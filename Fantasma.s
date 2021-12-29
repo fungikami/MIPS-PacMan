@@ -400,7 +400,8 @@ Fantasma_cambiar_dir:
     lw   $s2,  4($a0)   
     lw   $s3, 16($a0)  
     andi $s3,    $s3, 0xF
-    sub  $s3,    $s3, 3 
+    li   $t0,	 3
+    sub  $s3,    $t0, $s3 
 
     # Si es una interseccion, chequea caminos disponibles
     # No tomara en cuenta la direccion opuesta como disponible
@@ -472,7 +473,7 @@ Fantasma_cambiar_dir:
     Fantasma_cambiar_dir_verificar:
         bnez $s4, Fantasma_cambiar_dir_escoger_direccion
 
-        # Se mueve en la direccion contraria si es la unica opcion
+        # Se mueve en la direccions contraria si es la unica opcion
         sw  $s3, ($sp)
         add $s4,  $s4,  1
         add $sp,  $sp, -4
