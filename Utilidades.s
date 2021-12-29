@@ -232,9 +232,9 @@ pintar_tablero:
 
     pintar_tablero_aumentar_contador:
         # Aumenta contador de alimentos restantes
-        lw  $t0, ($s4)
+        lw  $t0, ($s2)
         add $t0,  $t0, 1
-        sw  $t0, ($s4)
+        sw  $t0, ($s2)
 
     pintar_tablero_for_pixel_sig:
         add $t1, $t1, 4
