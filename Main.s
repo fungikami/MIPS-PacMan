@@ -51,7 +51,7 @@ __init__:
 	# Clase Fantasma
 
     # Display tablero
-    la $a0, arcTablero
+    la $a0, tablero
     la $a1, alimRestante
     jal pintar_tablero
 

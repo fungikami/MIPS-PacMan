@@ -100,7 +100,7 @@ pintar_tablero:
 
     pintar_tablero_for_pixel:
         lb  $t0, ($a0)
-        beq $t0, $zero, pintar_tablero_for_pixel_end
+        beq $t0, $zero, pintar_tablero_fin
         add $a0, $a0, 1
 
         # Pintar tablero
