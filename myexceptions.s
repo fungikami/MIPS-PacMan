@@ -81,10 +81,10 @@ s2:	.word 0
 	.set noat
 	move $k1 $at		# Save $at
 	.set at
-	sw $v0 s1        # Not re-entrant and we can't trust $sp
-	sw $a0 s2	     # But we need to use these registers
+	sw $v0 s1           # Not re-entrant and we can't trust $sp
+	sw $a0 s2	        # But we need to use these registers
 	
-	mtc0 $0 $12		# Disable interrupts		
+	mtc0 $0 $12		    # Disable interrupts		
 
 	mfc0 $k0 $13		# Cause register
 	srl $a0 $k0 2		# Extract ExcCode Field
@@ -92,16 +92,16 @@ s2:	.word 0
 
 	# Print information about exception.
 	#
-	li $v0 4		# syscall 4 (print_str)
+	li $v0 4		    # syscall 4 (print_str)
 	la $a0 __m1_
 	syscall
 
-	li $v0 1		# syscall 1 (print_int)
+	li $v0 1		    # syscall 1 (print_int)
 	srl $a0 $k0 2		# Extract ExcCode Field
 	andi $a0 $a0 0x1F
 	syscall
 
-	li $v0 4		# syscall 4 (print_str)
+	li $v0 4		    # syscall 4 (print_str)
 	andi $a0 $k0 0x7C
 	lw $a0 __excp($a0)
 	nop
@@ -115,11 +115,11 @@ s2:	.word 0
 	beq $a0 0 ok_pc
 	nop
 
-	li $v0 10		# Exit on really bad PC
+	li $v0 10		    # Exit on really bad PC
 	syscall
 
 ok_pc:
-	li $v0 4		# syscall 4 (print_str)
+	li $v0 4		    # syscall 4 (print_str)
 	la $a0 __m2_
 	syscall
 
@@ -277,14 +277,9 @@ interrupciones_fin:
 # ----------- Configuracion del juego ----------- 
 MAT:	.word 0x10008000	# Direccion base del Bitmat Display
 S:      .word 1             # Refrescamiento 
-C:      .word 50          # Base para la conversion con los tics del reloj (Ka)
-# C:      .word 1000          # Base para la conversion con los tics del reloj (Chus)
+C:      .word 100           # Base para la conversion con los tics del reloj
 D:      .word 'A'           # Direccion actual del Pac-Man
 V:      .word 3             # Vidas
-
-# ------------ Tablero ------------
-# arcTablero:  .asciiz "/home/fung/Downloads/Orga/proyecto2/tablero.txt"
-arcTablero:  .asciiz "/home/chus/Documents/Orga/Proyecto2/proyecto2/tablero.txt"
 
 # ------------ Colores ------------
 colorPacman: .word 0xFFDE1E     # Amarillo
@@ -297,8 +292,47 @@ colorPared:  .word 0x33393B     # Gris oscuro
 colorComida: .word 0xFFFFFF     # Blanco
 colorFondo:  .word 0x0F0015     # Morado oscuro
 
+# ------------ Tablero ------------
+arcTablero:  .asciiz "/home/fung/Downloads/Orga/proyecto2/tablero.txt"
+# arcTablero:  .asciiz "/home/chus/Documents/Orga/Proyecto2/proyecto2/tablero.txt"
+
+tablero: 
+
+.word colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared, colorPared
+.word colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorPared,  colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorBlinky, colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorPinky,  colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorInky,   colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorClyde,  colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared
+.word colorPortal, colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPortal
+.word colorPortal, colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPortal
+.word colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorPacman, colorComida, colorPared,  colorComida, colorComida, colorPared,  colorPared,  colorComida, colorComida, colorComida, colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorPared,  colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared,  colorPared,  colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorPared,  colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared,  colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorPared,  colorComida, colorComida, colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorComida, colorComida, colorPared
+.word colorPared,  colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorComida, colorPared
+.word colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared,  colorPared
+
 	.globl MAT S C D V
-	.globl arcTablero
+	.globl arcTablero tablero
 	.globl colorPacman colorBlinky colorPinky colorInky colorClyde colorPortal colorPared colorComida colorFondo
 
 # Standard startup code.  Invoke the routine "main" with arguments:

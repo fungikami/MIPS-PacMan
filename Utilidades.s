@@ -134,10 +134,12 @@ pintar_pixel:
 # Planificacion de registros:
 # $s0: Archivo del tablero.
 # $s1: Dir. memoria del tablero.
-# $s2: xActual.
-# $s3: yActual.
-# $s4: Direccion del contandor de alimentos restantes.
+# $s2: Direccion del contandor de alimentos restantes.
 # $t0: Auxiliar.
+# $t1: Dirección a escribir en el Bitmap Display.
+# $t2: Color del pixel a pintar.
+# $t3: Dirección final del Bitmap Display.
+# 
 pintar_tablero: 
     # Prologo
 	sw   $fp,    ($sp)
@@ -145,39 +147,38 @@ pintar_tablero:
     sw   $s0,  -8($sp)
     sw   $s1, -12($sp)
     sw   $s2, -16($sp)
-    sw   $s3, -20($sp)
 	move $fp,     $sp
-	addi $sp,     $sp, -24
+	addi $sp,     $sp, -20
 
     move $s0, $a0   # Archivo tablero
-    move $s4, $a1   # Contador
+    move $s2, $a1   # Contador
     
     # Reservar memoria
     li $a0, 1055
     li $v0, 9
     syscall
     bltz $v0, pintar_tablero_fin
-
     move $s1, $v0   # Dir. Memoria
     
     # Abrir y leer el archivo
     move $a0, $s0   # Archivo
     move $a1, $v0   # Dir. Memoria
     li   $a2, 1055  # Tamanio de memoria
-    jal leer_archivo
+    jal  leer_archivo
     bltz $v0, pintar_tablero_fin
 
+    # Calcular dir. final
+    li   $a0, 32
+    li   $a1, 31
+    jal  coord_a_dir_bitmap
+    move $t3, $v0
+
     # Pintar cada pixel
-    li $s2, 0   # Coordenada x
-    li $s3, 31  # Coordenada y
+    lw $t1, MAT
     pintar_tablero_for_pixel:
-        lb $t0, ($s1)
-
-        beq $t0, '\n', pintar_tablero_for_pixel_sig
-
-        # Argumentos para pintar
-        move $a0, $s2
-        move $a1, $s3
+        lb  $t0, ($s1)
+        add $s1, $s1, 1
+        beq $t0, '\n', pintar_tablero_for_pixel
 
         # Pintar tablero
         beq $t0, ' ', pintar_tablero_blanco
@@ -190,44 +191,44 @@ pintar_tablero:
 
         # Si no es ninguno de los demas es verde
         pintar_tablero_verde:
-            lw  $a2, colorClyde
-            jal pintar_pixel
-            j   pintar_tablero_aumentar_contador
+            lw $t2, colorClyde
+            sw $t2, ($t1)
+            j  pintar_tablero_aumentar_contador
 
         pintar_tablero_gris:
-            lw  $a2, colorPared
-            jal pintar_pixel
-            j   pintar_tablero_for_pixel_sig
+            lw $t2, colorPared
+            sw $t2, ($t1)
+            j  pintar_tablero_for_pixel_sig
 
         pintar_tablero_blanco:
-            lw  $a2, colorComida
-            jal pintar_pixel
-            j   pintar_tablero_aumentar_contador
+            lw $t2, colorComida
+            sw $t2, ($t1)
+            j  pintar_tablero_aumentar_contador
 
         pintar_tablero_naranja:
-            lw  $a2, colorPortal
-            jal pintar_pixel
-            j   pintar_tablero_for_pixel_sig
+            lw $t2, colorPortal
+            sw $t2, ($t1)
+            j  pintar_tablero_for_pixel_sig
 
         pintar_tablero_amarillo:
-            lw $a2, colorPacman
-            jal pintar_pixel
-            j pintar_tablero_for_pixel_sig
+            lw $t2, colorPacman
+            sw $t2, ($t1)
+            j  pintar_tablero_for_pixel_sig
 
         pintar_tablero_rojo:
-            lw $a2, colorBlinky
-            jal pintar_pixel
-            j   pintar_tablero_aumentar_contador
+            lw $t2, colorBlinky
+            sw $t2, ($t1)
+            j  pintar_tablero_aumentar_contador
 
         pintar_tablero_marron:
-            lw  $a2, colorPinky
-            jal pintar_pixel
-            j   pintar_tablero_aumentar_contador
+            lw $t2, colorPinky
+            sw $t2, ($t1)
+            j  pintar_tablero_aumentar_contador
 
         pintar_tablero_azul:
-            lw  $a2, colorInky
-            jal pintar_pixel
-            j   pintar_tablero_aumentar_contador
+            lw $t2, colorInky
+            sw $t2, ($t1)
+            j  pintar_tablero_aumentar_contador
 
     pintar_tablero_aumentar_contador:
         # Aumenta contador de alimentos restantes
@@ -236,16 +237,9 @@ pintar_tablero:
         sw  $t0, ($s4)
 
     pintar_tablero_for_pixel_sig:
-        add $s1, $s1, 1
-        add $s2, $s2, 1     # x++
-
-        bne  $s2, 33, pintar_tablero_for_pixel
-
-        # Si llego al final de la línea, reinicia x y aumenta y
-        add  $s3, $s3, -1   # y--
-        move $s2, $zero     # x = 0
-        
-        bne $s3, -1, pintar_tablero_for_pixel
+        add $t1, $t1, 4
+        beq $s1, $t3, pintar_tablero_fin
+        j   pintar_tablero_for_pixel
 
 pintar_tablero_fin:
     # Epilogo
@@ -258,6 +252,9 @@ pintar_tablero_fin:
     lw   $s3, -20($sp)
 
     jr $ra 
+
+
+
 
 # Funcion: Escoge una palabra pseudo-aleatoriamente del arreglo de entrada.
 # Entrada: $a0: Numero de elementos del arreglo (1-3). 

@@ -401,7 +401,7 @@ Fantasma_cambiar_dir:
     lw   $s3, 16($a0)  
     andi $s3,    $s3, 0xF
     li   $t0,	 3
-    sub  $s3,    $t0, $s3 
+    sub  $s3,    $t0, $s3
 
     # Si es una interseccion, chequea caminos disponibles
     # No tomara en cuenta la direccion opuesta como disponible
