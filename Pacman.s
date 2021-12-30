@@ -86,15 +86,15 @@ Pacman_mover:
 
     # Si no es ninguna de las anteriores, es derecha
         jal obtener_dir_derecha
-        j Pacman_mover_siguiente
+        j   Pacman_mover_siguiente
 
     Pacman_mover_arriba:
         jal obtener_dir_arriba
-        j Pacman_mover_siguiente
+        j   Pacman_mover_siguiente
 
     Pacman_mover_abajo:
         jal obtener_dir_abajo
-        j Pacman_mover_siguiente
+        j   Pacman_mover_siguiente
 
     Pacman_mover_izq:
         jal obtener_dir_izquierda
@@ -110,7 +110,7 @@ Pacman_mover:
 
         # Pinta de negro el pixel actual
         lw $t1, colorFondo
-        sw $t1, ($s0)
+        sw $t1, ($s2)
 
         # Si se trata de un camino (comida o fondo)
         lw  $t1, colorComida
