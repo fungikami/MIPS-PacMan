@@ -138,7 +138,7 @@ Fantasma_mover_fin:
 # $s0: Fantasma.
 # $s1: Direccion del Bitmap Display siguiente del fantasma.
 # $t0: Auxiliar.
-# $t1: Color de Pac-Man / Fondo /  Portal.
+# $t1: Color de Pac-Man / Fondo
 Fantasma_ejecutar_mov:
     # Prologo
     sw   $fp,    ($sp)
@@ -193,12 +193,12 @@ Fantasma_ejecutar_mov:
 
         # De otra forma, se trata del portal 5
         # Mueve el Fantasma al portal izquierdo
-        add $s1, $s1, -116     # DIRSIGUIENTE = DIRACTUAL - 29*4
+        add $s1, $s1, -120     # DIRSIGUIENTE = DIRACTUAL - 30*4
         j   Fantasma_ejecutar_mov_pintar
         
         Fantasma_ejecutar_mov_portal_der:
             # Mueve el Fantasma al portal derecho
-            add $s1, $s1, 116  # DIRSIGUIENTE = DIRACTUAL + 29*4
+            add $s1, $s1, 120  # DIRSIGUIENTE = DIRACTUAL + 30*4
     
     Fantasma_ejecutar_mov_pintar:
         # Pinta (x, y) del color de la capa de fondo del fantasma
@@ -223,9 +223,8 @@ Fantasma_ejecutar_mov:
         
 Fantasma_ejecutar_mov_pintar_nuevo:
     # Pinta el fantasma en la nueva direccion
-    lw $t0,  ($s0)  # Dir. actual del fantasma
     lw $t1, 4($s0)  # Color del fantasma
-    sw $t1,  ($t0)  
+    sw $t1,  ($s1)  
 
 Fantasma_ejecutar_mov_fin:
     # Epilogo
