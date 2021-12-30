@@ -219,6 +219,9 @@ Fantasma_ejecutar_mov:
         lw  $t1, colorPacman
         bne $t0, $t1, Fantasma_ejecutar_mov_pintar_nuevo
         
+        lw $t0, colorFondo
+        sw $t0, 8($s0)
+        
         li $t1, 1
         sb $t1, fueComido
         

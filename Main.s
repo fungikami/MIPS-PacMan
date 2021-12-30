@@ -92,8 +92,6 @@ pausar_partida:
 	
 	j pausar_partida
 
-
-
 salir:	
     # Imprimir mensaje de salida
 	li $v0, 10
