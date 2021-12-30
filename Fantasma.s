@@ -241,10 +241,7 @@ Fantasma_ejecutar_mov_fin:
 # Planificacion de registros:
 # $s0: xFantasma
 # $s1: yFantasma
-# $s2: colorComida
-# $s3: colorFondo
-# $s4: colorPared
-# $s5: colorPortal
+# $s2: colorPared
 # $t0: Color del pixel que se chequea
 # $t1: Booleanos auxiliares
 # $t2: Booleanos auxiliares
@@ -255,30 +252,24 @@ Fantasma_chequear_interseccion:
     sw   $s0,  -8($sp)
     sw   $s1, -12($sp)
     sw   $s2, -16($sp)
-    sw   $s3, -20($sp)
-    sw   $s4, -24($sp)
     move $fp,     $sp
-    addi $sp,     $sp, -28
+    addi $sp,     $sp, -20
 
     # Guarda la posicion del fantasma
     lw $s0,  ($a0)
     lw $s1, 4($a0)
  
-    # Guarda los colores a comparar
-    lw $s2, colorComida
-    lw $s3, colorFondo
-    lw $s4, colorPared
-    lw $s5, colorPortal
+    lw $s2, colorPared
     
     # La condicion de interseccion consiste en chequear que
     # las adyacencias sean caminos y la diagonal una pared
     
-    # Verifica si (x+1, y+1) es pared / Noroeste
+    # Verifica si (x+1, y+1) es pared / Noreste
     add $a0, $s0, 1
     add $a1, $s1, 1
     jal coord_a_dir_bitmap
     lw  $t0, ($v0)
-    bne $t0, $s4, Fantasma_chequear_interseccion_der_abajo
+    bne $t0, $s2, Fantasma_chequear_interseccion_der_abajo
 
     # Verifica si (x, y+1) es camino / Arriba
     move $a0, $s0
@@ -300,7 +291,7 @@ Fantasma_chequear_interseccion:
         add $a1, $s1, -1
         jal coord_a_dir_bitmap
         lw  $t0, ($v0)
-        bne $t0, $s4, Fantasma_chequear_interseccion_abajo_izq
+        bne $t0, $s2, Fantasma_chequear_interseccion_abajo_izq
 
         # Verifica si (x+1, y) es camino / Derecha
         add  $a0, $s0, 1
@@ -322,7 +313,7 @@ Fantasma_chequear_interseccion:
         add $a1, $s1, -1
         jal coord_a_dir_bitmap
         lw  $t0, ($v0)
-        bne $t0, $s4, Fantasma_chequear_interseccion_izq_arriba
+        bne $t0, $s2, Fantasma_chequear_interseccion_izq_arriba
 
         # Verifica si (x, y-1) es camino / Abajo
         move $a0, $s0
@@ -344,7 +335,7 @@ Fantasma_chequear_interseccion:
         add $a1, $s1, 1
         jal coord_a_dir_bitmap
         lw  $t0, ($v0)
-        bne $t0, $s4, Fantasma_chequear_interseccion_retornar_falso
+        bne $t0, $s2, Fantasma_chequear_interseccion_retornar_falso
 
         # Verifica si (x-1, y) es camino / Izquierda
         add  $a0, $s0, -1
@@ -375,8 +366,6 @@ Fantasma_chequear_interseccion_fin:
     lw   $s0,  -8($sp)
     lw   $s1, -12($sp)
     lw   $s2, -16($sp)
-    lw   $s3, -20($sp)
-    lw   $s4, -24($sp)
 
     jr $ra
 
