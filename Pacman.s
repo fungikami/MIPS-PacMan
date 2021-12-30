@@ -38,6 +38,8 @@ Pacman_crear:
     sw $v0,  ($s0)
     lw $t0, colorPacman
     sw $t0, 4($s0)
+
+    move $v0, $s0
     
 Pacman_crear_fin:
     # Epilogo
