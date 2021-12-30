@@ -70,7 +70,9 @@ Pacman_mover:
     move $s1, $a1   # Dir. contador de alimentos restantes
 
     # Movimiento Pac-Man
-    lw $t1, D
+    lw $t1, D  
+    lw $s2,  ($s0)
+    lw $s3, 4($s0)
 
     beq $t1, 'A', Pacman_mover_arriba   # Arriba 
     beq $t1, 'b', Pacman_mover_abajo    # Abajo 
@@ -78,35 +80,23 @@ Pacman_mover:
     beq $t1, 'D', Pacman_mover_der      # Derecha 
 
     Pacman_mover_arriba:
-        # (x, y+1)       
-        lw  $s2,  ($s0)
-        lw  $s3, 4($s0)
-        add $s3,   $s3, 1 
-        
+        # (x, y+1)     
+        add $s3, $s3, 1 
         j Pacman_mover_siguiente
 
     Pacman_mover_abajo:
         # (x, y-1)
-        lw  $s2,  ($s0)
-        lw  $s3, 4($s0)
-        add $s3,   $s3, -1
-        
+        add $s3, $s3, -1
         j Pacman_mover_siguiente
 
     Pacman_mover_izq:
         # (x-1, y)
-        lw  $s2,  ($s0)
-        add $s2,   $s2, -1  
-        lw  $s3, 4($s0)
-        
+        add $s2, $s2, -1  
         j Pacman_mover_siguiente
 
     Pacman_mover_der:
         # (x+1, y)
-        lw  $s2,  ($s0)
-        add $s2,   $s2, 1  
-        lw  $s3, 4($s0)
-        
+        add $s2, $s2, 1  
         j Pacman_mover_siguiente
 
     Pacman_mover_siguiente:
@@ -119,7 +109,7 @@ Pacman_mover:
         # Obtiene el color del pixel.
         lw $t0, ($v0)
 
-        # Si se trata de un camino
+        # Si se trata de un camino (comida o fondo)
         lw  $t1, colorComida
         beq $t0, $t1, Pacman_mover_actualizar_comida
         lw  $t1, colorFondo
@@ -134,7 +124,16 @@ Pacman_mover:
         beq $t0, $t1, Pacman_mover_siguiente_portal
 
         # En cambio, se trata de un fantasma
+        # Pintar de negro el pixel
+        lw $a0,  ($s0)
+        lw $a1, 4($s0)
+        lw $a2, colorFondo
+        jal pintar_pixel
         
+        li $t1, 1
+        sw $t1, fueComido
+
+        j Pacman_mover_fin
         
         Pacman_mover_actualizar_comida:
             # Actualiza el contador
@@ -187,7 +186,7 @@ Pacman_mover:
 
 Pacman_mover_fin:
     # Epilogo
-    move $sp,    $fp
+    move $sp,     $fp
     lw   $fp,    ($sp)
     lw   $ra,  -4($sp)
     lw   $s0,  -8($sp)

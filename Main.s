@@ -11,6 +11,7 @@ pausar:         .byte 0
 avanzarCuadro:  .byte 0
 contador:       .word 0
 alimRestante:   .word 0 # 573 con los fantasmas
+fueComido:      .byte 0
 
 # ------------ Mensajes ------------
 mensajePausa:   .asciiz "... JUEGO PAUSADO ..."
@@ -28,7 +29,7 @@ newLine:        .asciiz "\n"
 Pacman:         .word 0
 Fantasmas:      .word 0
 	
-	.globl seguir pausar avanzarCuadro contador __init__ main
+	.globl seguir pausar avanzarCuadro contador fueComido __init__ main
 
 	.text
 

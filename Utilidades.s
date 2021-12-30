@@ -218,10 +218,8 @@ escoger_aleatorio_fin:
 # Salida:  $v0: 0 si (x, y) es un camino.
 #               1 de otra forma.
 # Planificacion de registros:
-# $t0: Color de comida
-# $t1: Color de fondo
-# $t2: Color de camino
-# $t3: Color del pixel en (x, y)
+# $t0: Color de comida / fondo / portal / Pac-Man
+# $t1: Color del pixel en (x, y)
 es_camino:
     # Prologo
     sw   $fp,   ($sp)
@@ -232,18 +230,21 @@ es_camino:
     # Convierte la coordenada (x, y) en su direccion
     # de memoria en el Bitmap Display.
     jal coord_a_dir_bitmap
-    lw  $t3, ($v0)
+    lw  $t1, ($v0)
 
-    # Si es un camino (comida, fondo o portal)
+    # Si es un camino (comida, fondo, portal o Pac-Man)
     move $v0, $zero
     lw   $t0, colorComida
-    beq  $t3, $t0, es_camino_fin
+    beq  $t1, $t0, es_camino_fin
 
-    lw  $t1, colorFondo
-    beq $t3, $t1, es_camino_fin
+    lw  $t0, colorFondo
+    beq $t1, $t0, es_camino_fin
     
-    lw  $t2, colorPortal
-    beq $t3, $t2, es_camino_fin
+    lw  $t0, colorPortal
+    beq $t1, $t0, es_camino_fin
+
+    lw  $t0, colorPacman
+    beq $t1, $t0, es_camino_fin
 
     li $v0, 1
     
