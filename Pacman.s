@@ -10,11 +10,11 @@
 # Funcion: Crea un Pacman con su posicion y color (variable global
 #          definida como colorPacman en myexception.s).
 # Salida:   $v0:  Pacman (negativo si no se pudo crear).
-#          ($v0): Coordenada x.
-#         4($v0): Coordenada y.
-#         8($v0): Color del Pacman.
+#          ($v0): Direccion del Bitmap Display.
+#         4($v0): Color del Pacman.
 # Planificacion de registros:
-# $t0: Variable auxiliar.
+# $s0: Direccion de memoria asignada para el Pacman.
+# $t0: Auxiliar.
 Pacman_crear:
     # Prologo
     sw   $fp, ($sp)
@@ -22,20 +22,20 @@ Pacman_crear:
     addi $sp,  $sp, -4
 
     # Reserva memoria para el Pacman
-    li $a0, 12
     li $v0, 9
+    li $a0, 8
     syscall
     bltz $v0, Pacman_crear_fin
+    move $s0, $v0
 
     # Inicializa el Pac-Man amarillo en (14, 11)
-    li $t0, 14          # Coordenada x inicial
-    sw $t0, ($v0)
-
-    li $t0, 11          # Coordenada y inicial
-    sw $t0, 4($v0)
+    li  $a0, 14          
+    li  $a1, 11          
+    jal coord_a_dir_bitmap
     
+    sw $v0,  ($s0)
     lw $t0, colorPacman
-    sw $t0, 8($v0)
+    sw $t0, 4($s0)
     
 Pacman_crear_fin:
     # Epilogo
@@ -51,8 +51,8 @@ Pacman_crear_fin:
 # Planificacion de registros:
 # $s0: Pacman.
 # $s1: Dir. contador de alimentos restantes.
-# $s2: xPacman siguiente.
-# $s3: yPacman siguiente.
+# $s2: Direccion actual del Pacman en el Bitmat Display.
+# $s3: Direccion siguiente del Pacman en el Bitmat Display.
 # $t0: Color del pixel siguiente.
 # $t1: Auxiliar.
 Pacman_mover:
@@ -71,8 +71,7 @@ Pacman_mover:
 
     # Movimiento Pac-Man
     lw $t1, D  
-    lw $s2,  ($s0)
-    lw $s3, 4($s0)
+    lw $s2, ($s0)
 
     beq $t1, 'A', Pacman_mover_arriba   # Arriba 
     beq $t1, 'b', Pacman_mover_abajo    # Abajo 
@@ -80,8 +79,6 @@ Pacman_mover:
     beq $t1, 'D', Pacman_mover_der      # Derecha 
 
     Pacman_mover_arriba:
-        # (x, y+1)     
-        add $s3, $s3, 1 
         j Pacman_mover_siguiente
 
     Pacman_mover_abajo:

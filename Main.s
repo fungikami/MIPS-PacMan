@@ -44,13 +44,6 @@ __init__:
     bltz $v0, salir
     sw   $v0, Fantasmas
 
-	# Superclase Fantasmas
-	#	 lista = [Blinky, Pinky, Inky, Clyde]
-	#	 fun T(f: funcion):
-	# 		for (fantasma in lista):
-	# 			f(fantasma)
-	# Clase Fantasma
-
     # Display tablero
     la $a0, tablero
     la $a1, alimRestante
@@ -99,6 +92,8 @@ pausar_partida:
 	
 	j pausar_partida
 
+
+
 salir:	
     # Imprimir mensaje de salida
 	li $v0, 10
@@ -121,9 +116,6 @@ PacMan:
     lw  $a0, Pacman
     la  $a1, alimRestante
     jal Pacman_mover
-
-    lb  $t0, fueComido
-    beq $t0, 1, salir
 
     # Movimiento de los fantasmas
     lw  $a0, Fantasmas

@@ -6,6 +6,7 @@
 
 # Funcion: Convierte una coordenada (x, y) en una 
 #          direccion del Bitmap Display.
+#          Toma como origen (0, 0) la esquina inferior izquierda.
 # Entrada: $a0: Coordenada x.
 #          $a1: Coordenada y.
 # Salida:  $v0: Direccion del Bitmap Display 
@@ -33,36 +34,149 @@ coord_a_dir_bitmap:
 
     jr $ra
 
-# Funcion: Pinta un pixel del Bitmap Display.
-# Entrada: $a0: Coordenada x.
-#          $a1: Coordenada y.
-#          $a2: Color (24-bit RGB).    
-# Planificacion de registros:
-# $s0: Color
-pintar_pixel:
+# Funcion: Retorna la dirección del Bitmap Display correspondiente
+#          al pixel de arriba en el tablero de 32x32.
+# Entrada: $a0: Direccion del Bitmap Display.
+# Salida:  $v0: Direccion del Bitmap Display.
+obtener_dir_arriba: 
     # Prologo
-    sw   $fp,   ($sp)
-    sw   $ra, -4($sp)
-    sw   $s0, -8($sp)
-    move $fp,    $sp
-    addi $sp,    $sp, -12
-
-    move $s0, $a2
-
-    # Convierte la coordenada (x, y) en su direccion
-    # de memoria en el Bitmap Display.
-    jal coord_a_dir_bitmap
-
-    # Pinta el pixel en la direccion del Bitmap Display.
-    sw $s0, ($v0)
+    sw   $fp, ($sp)
+    move $fp,  $sp
+    addi $sp,  $sp, -4
+    
+    add $v0, $v0, -128 # DIRRETORNO = DIRACTUAL - 32*4
 
     # Epilogo
     move $sp,  $fp
     lw   $fp, ($sp)
-    lw   $ra, -4($sp)
-    lw   $s0, -8($sp)
 
-    jr $ra 
+    jr $ra
+
+# Funcion: Retorna la dirección del Bitmap Display correspondiente
+#          al pixel de noreste en el tablero de 32x32.
+# Entrada: $a0: Direccion del Bitmap Display.
+# Salida:  $v0: Direccion del Bitmap Display.
+obtener_dir_noreste: 
+    # Prologo
+    sw   $fp, ($sp)
+    move $fp,  $sp
+    addi $sp,  $sp, -4
+    
+    add $v0, $v0, -124 # DIRRETORNO = DIRACTUAL - 32*4 + 4
+
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+
+    jr $ra
+
+# Funcion: Retorna la dirección del Bitmap Display correspondiente
+#          al pixel de derecha en el tablero de 32x32.
+# Entrada: $a0: Direccion del Bitmap Display.
+# Salida:  $v0: Direccion del Bitmap Display.
+obtener_dir_derecha: 
+    # Prologo
+    sw   $fp, ($sp)
+    move $fp,  $sp
+    addi $sp,  $sp, -4
+    
+    add $v0, $v0, 4 # DIRRETORNO = DIRACTUAL + 4
+
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+
+    jr $ra
+
+# Funcion: Retorna la dirección del Bitmap Display correspondiente
+#          al pixel de sureste en el tablero de 32x32.
+# Entrada: $a0: Direccion del Bitmap Display.
+# Salida:  $v0: Direccion del Bitmap Display.
+obtener_dir_sureste: 
+    # Prologo
+    sw   $fp, ($sp)
+    move $fp,  $sp
+    addi $sp,  $sp, -4
+    
+    add $v0, $v0, 132 # DIRRETORNO = DIRACTUAL + 32*4 + 4
+
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+
+    jr $ra
+
+# Funcion: Retorna la dirección del Bitmap Display correspondiente
+#          al pixel de abajo en el tablero de 32x32.
+# Entrada: $a0: Direccion del Bitmap Display.
+# Salida:  $v0: Direccion del Bitmap Display.
+obtener_dir_abajo: 
+    # Prologo
+    sw   $fp, ($sp)
+    move $fp,  $sp
+    addi $sp,  $sp, -4
+    
+    add $v0, $v0, 128 # DIRRETORNO = DIRACTUAL + 32*4
+
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+
+    jr $ra
+
+# Funcion: Retorna la dirección del Bitmap Display correspondiente
+#          al pixel del suroeste en el tablero de 32x32.
+# Entrada: $a0: Direccion del Bitmap Display.
+# Salida:  $v0: Direccion del Bitmap Display.
+obtener_dir_suroeste: 
+    # Prologo
+    sw   $fp, ($sp)
+    move $fp,  $sp
+    addi $sp,  $sp, -4
+    
+    add $v0, $v0, 124 # DIRRETORNO = DIRACTUAL + 32*4 - 4
+
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+
+    jr $ra
+
+# Funcion: Retorna la dirección del Bitmap Display correspondiente
+#          al pixel de izquierda en el tablero de 32x32.
+# Entrada: $a0: Direccion del Bitmap Display.
+# Salida:  $v0: Direccion del Bitmap Display.
+obtener_dir_izquierda: 
+    # Prologo
+    sw   $fp, ($sp)
+    move $fp,  $sp
+    addi $sp,  $sp, -4
+    
+    add $v0, $v0, -4 # DIRRETORNO = DIRACTUAL - 4
+
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+
+    jr $ra
+
+# Funcion: Retorna la dirección del Bitmap Display correspondiente
+#          al pixel de noroeste en el tablero de 32x32.
+# Entrada: $a0: Direccion del Bitmap Display.
+# Salida:  $v0: Direccion del Bitmap Display.
+obtener_dir_noroeste: 
+    # Prologo
+    sw   $fp, ($sp)
+    move $fp,  $sp
+    addi $sp,  $sp, -4
+    
+    add $v0, $v0, -132 # DIRRETORNO = DIRACTUAL - 32*4 - 4
+
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+
+    jr $ra
 
 # Funcion: Pinta un tablero 32x32 desde una cadena de caracteres terminada
 #          en nulo, donde cada caracter representa una celda, con el siguiente
@@ -212,14 +326,13 @@ escoger_aleatorio_fin:
 
     jr $ra
 
-# Funcion: Verifica si (x, y) es un camino.
-# Entrada: $a0: Coordenada x.
-#          $a1: Coordenada y.
-# Salida:  $v0: 0 si (x, y) es un camino.
+# Funcion: Verifica si el pixel en la direccion es un camino.
+# Entrada: $a0: Direccion del Bit
+# Salida:  $v0: 0 si el pixel es un camino.
 #               1 de otra forma.
 # Planificacion de registros:
 # $t0: Color de comida / fondo / portal / Pac-Man
-# $t1: Color del pixel en (x, y)
+# $t1: Color del pixel en la direccion
 es_camino:
     # Prologo
     sw   $fp,   ($sp)
@@ -227,10 +340,8 @@ es_camino:
     move $fp,    $sp
     addi $sp,    $sp, -8
 
-    # Convierte la coordenada (x, y) en su direccion
-    # de memoria en el Bitmap Display.
-    jal coord_a_dir_bitmap
-    lw  $t1, ($v0)
+    # Color del pixel
+    lw  $t1, ($a0)
 
     # Si es un camino (comida, fondo, portal o Pac-Man)
     move $v0, $zero
