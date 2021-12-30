@@ -20,7 +20,7 @@
 # Planificacion de registros:
 # $s0: Color del fantasma.
 # $t0: Coordenada x del fantasma.
-# $t1: Variable auxiliar.
+# $t1: Auxiliar.
 Fantasma_crear:
     # Prologo
     sw   $fp,   ($sp)
@@ -42,11 +42,12 @@ Fantasma_crear:
     bltz $v0, Fantasma_crear_fin
 
     # Inicializa el fantasma
-    sw $t0,     ($v0)       # Direccion
-    sw $s0,    4($v0)       # Color del fantasma
-    lw $t1,   colorComida
-    sw $t1,    8($v0)       # Color capa de fondo
-    sb $zero, 12($v0)       # Direccion de movimiento
+    sw $t0,   ($v0)       # Direccion
+    sw $s0,  4($v0)       # Color del fantasma
+    lw $t1, colorComida
+    sw $t1,  8($v0)       # Color capa de fondo
+    li $t1,  3
+    sb $t1, 12($v0)       # Direccion de movimiento
     
 Fantasma_crear_fin:
     # Epilogo
@@ -214,7 +215,7 @@ Fantasma_ejecutar_mov:
         sw $s1, ($s0)
 
         # Revisa si el fantasma se ha comido a Pac-Man
-        lw  $t0, ($s0)
+        lw  $t0, ($s1)
         lw  $t1, colorPacman
         bne $t0, $t1, Fantasma_ejecutar_mov_pintar_nuevo
         

@@ -277,7 +277,7 @@ interrupciones_fin:
 # ----------- Configuracion del juego ----------- 
 MAT:	.word 0x10008000	# Direccion base del Bitmat Display
 S:      .word 1             # Refrescamiento 
-C:      .word 50            # Base para la conversion con los tics del reloj
+C:      .word 1000          # Base para la conversion con los tics del reloj
 D:      .word 'A'           # Direccion actual del Pac-Man
 V:      .word 3             # Vidas
 
