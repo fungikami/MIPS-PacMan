@@ -138,7 +138,7 @@ Fantasma_mover_fin:
 # $s0: Fantasma.
 # $s1: Direccion del Bitmap Display siguiente del fantasma.
 # $t0: Auxiliar.
-# $t1: Color de Pac-Man / Fondo.
+# $t1: Color de Pac-Man / Fondo /  Portal.
 Fantasma_ejecutar_mov:
     # Prologo
     sw   $fp,    ($sp)
@@ -149,8 +149,7 @@ Fantasma_ejecutar_mov:
     addi $sp,     $sp, -16
 
     move $s0,  $a0      # Fantasma
-    lw   $s1, ($s0)     # Dir. del fantasma
-    move $a0,  $s1
+    lw   $a0, ($s0)     # Dir. del fantasma
             
     # Revisa la direccion actual del fantasma
     lb   $t0, 12($s0)
@@ -174,6 +173,14 @@ Fantasma_ejecutar_mov:
         jal obtener_dir_abajo
 
     Fantasma_ejecutar_mov_verif_portal:
+        # Guarda la direccion siguiente del fantasma
+        move $s1, $v0
+        
+        # Verifica si hay un portal
+        lw  $t0, colorPortal
+        lw  $t1, ($v0)
+        bne $t0,  $t1,  Fantasma_ejecutar_mov_pintar
+
         # Portal 6 (0, 18)
         li  $a0, 0
         li  $a1, 18
