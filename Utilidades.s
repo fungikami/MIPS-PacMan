@@ -44,7 +44,7 @@ obtener_dir_arriba:
     move $fp,  $sp
     addi $sp,  $sp, -4
     
-    add $v0, $v0, -128 # DIRRETORNO = DIRACTUAL - 32*4
+    add $v0, $a0, -128 # DIRRETORNO = DIRACTUAL - 32*4
 
     # Epilogo
     move $sp,  $fp
@@ -62,7 +62,7 @@ obtener_dir_noreste:
     move $fp,  $sp
     addi $sp,  $sp, -4
     
-    add $v0, $v0, -124 # DIRRETORNO = DIRACTUAL - 32*4 + 4
+    add $v0, $a0, -124 # DIRRETORNO = DIRACTUAL - 32*4 + 4
 
     # Epilogo
     move $sp,  $fp
@@ -80,7 +80,7 @@ obtener_dir_derecha:
     move $fp,  $sp
     addi $sp,  $sp, -4
     
-    add $v0, $v0, 4 # DIRRETORNO = DIRACTUAL + 4
+    add $v0, $a0, 4 # DIRRETORNO = DIRACTUAL + 4
 
     # Epilogo
     move $sp,  $fp
@@ -98,7 +98,7 @@ obtener_dir_sureste:
     move $fp,  $sp
     addi $sp,  $sp, -4
     
-    add $v0, $v0, 132 # DIRRETORNO = DIRACTUAL + 32*4 + 4
+    add $v0, $a0, 132 # DIRRETORNO = DIRACTUAL + 32*4 + 4
 
     # Epilogo
     move $sp,  $fp
@@ -116,7 +116,7 @@ obtener_dir_abajo:
     move $fp,  $sp
     addi $sp,  $sp, -4
     
-    add $v0, $v0, 128 # DIRRETORNO = DIRACTUAL + 32*4
+    add $v0, $a0, 128 # DIRRETORNO = DIRACTUAL + 32*4
 
     # Epilogo
     move $sp,  $fp
@@ -134,7 +134,7 @@ obtener_dir_suroeste:
     move $fp,  $sp
     addi $sp,  $sp, -4
     
-    add $v0, $v0, 124 # DIRRETORNO = DIRACTUAL + 32*4 - 4
+    add $v0, $a0, 124 # DIRRETORNO = DIRACTUAL + 32*4 - 4
 
     # Epilogo
     move $sp,  $fp
@@ -152,7 +152,7 @@ obtener_dir_izquierda:
     move $fp,  $sp
     addi $sp,  $sp, -4
     
-    add $v0, $v0, -4 # DIRRETORNO = DIRACTUAL - 4
+    add $v0, $a0, -4 # DIRRETORNO = DIRACTUAL - 4
 
     # Epilogo
     move $sp,  $fp
@@ -170,7 +170,7 @@ obtener_dir_noroeste:
     move $fp,  $sp
     addi $sp,  $sp, -4
     
-    add $v0, $v0, -132 # DIRRETORNO = DIRACTUAL - 32*4 - 4
+    add $v0, $a0, -132 # DIRRETORNO = DIRACTUAL - 32*4 - 4
 
     # Epilogo
     move $sp,  $fp
