@@ -97,7 +97,6 @@ Pacman_mover:
     Pacman_mover_der:
         # (x+1, y)
         add $s2, $s2, 1  
-        j Pacman_mover_siguiente
 
     Pacman_mover_siguiente:
         # Convierte la coordenada (x, y) en su direccion

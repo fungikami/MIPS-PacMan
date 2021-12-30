@@ -44,13 +44,6 @@ __init__:
     bltz $v0, salir
     sw   $v0, Fantasmas
 
-	# Superclase Fantasmas
-	#	 lista = [Blinky, Pinky, Inky, Clyde]
-	#	 fun T(f: funcion):
-	# 		for (fantasma in lista):
-	# 			f(fantasma)
-	# Clase Fantasma
-
     # Display tablero
     la $a0, tablero
     la $a1, alimRestante
