@@ -108,7 +108,7 @@ Pacman_mover:
 
         # Pinta de negro el pixel actual
         lw $t1, colorFondo
-        sw $t1, ($s2)
+        sw $t1, ($s0)
 
         # Si se trata de un camino (comida o fondo)
         lw  $t1, colorComida
