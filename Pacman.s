@@ -129,9 +129,9 @@ Pacman_mover:
         lw $a1, 4($s0)
         lw $a2, colorFondo
         jal pintar_pixel
-        
+
         li $t1, 1
-        sw $t1, fueComido
+        sb $t1, fueComido
 
         j Pacman_mover_fin
         

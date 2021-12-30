@@ -135,6 +135,7 @@ Fantasma_mover_fin:
 # $s1: xFantasma siguiente.
 # $s2: yFantasma siguiente.
 # $t0: Auxiliar.
+# $t1: Color de Pac-Man.
 Fantasma_ejecutar_mov:
     # Prologo
     sw   $fp,    ($sp)
@@ -203,6 +204,18 @@ Fantasma_ejecutar_mov:
         sw $s1,  ($s0)
         sw $s2, 4($s0)
 
+        # Revisa si el fantasma se ha comido a Pac-Man
+        lw  $a0,  ($s0)
+        lw  $a1, 4($s0)
+        jal coord_a_dir_bitmap
+        lw  $t0, ($v0)
+        lw  $t1, colorPacman
+        bne $t0, $t1, Fantasma_ejecutar_mov_pintar_nuevo
+        
+        li $t1, 1
+        sb $t1, fueComido
+        
+Fantasma_ejecutar_mov_pintar_nuevo:
         # Pinta el nuevo (x, y) del fantasma
         lw $a0,  ($s0)
         lw $a1, 4($s0)

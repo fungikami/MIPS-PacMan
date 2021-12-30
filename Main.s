@@ -65,6 +65,10 @@ main:
 	lb  $t1, pausar
 	beq $t1, 1, pausar_partida
 
+    # Revisa si el Pac-Man ha sido comido
+    lb  $t0, fueComido
+    beq $t0, 1, salir
+
 	# Aqui habra un conjunto de instrucciones.
 	# Estas respetaran las convenciones
 
@@ -72,12 +76,8 @@ main:
     lw   $t0, alimRestante
     bgtz $t0, esperar
 
-    # Revisa si quedan vidas disponibles
-    lw   $t0, V
-    bltz $t0, salir
-    
     li $v0, 11
-    li $a0, 'w'
+    li $a0, 'W'
     syscall
     b salir
 
@@ -101,8 +101,6 @@ pausar_partida:
 
 salir:	
     # Imprimir mensaje de salida
-
-
 	li $v0, 10
 	syscall
 
@@ -123,6 +121,9 @@ PacMan:
     lw  $a0, Pacman
     la  $a1, alimRestante
     jal Pacman_mover
+
+    lb  $t0, fueComido
+    beq $t0, 1, salir
 
     # Movimiento de los fantasmas
     lw  $a0, Fantasmas
