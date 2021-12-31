@@ -85,6 +85,8 @@ siguiente_partida:
     # Se reinicia el tablero si se consumio todos los alimentos
     lw     $t0, alimRestante
     add    $t0, $t0, -1
+    la     $a0, tablero
+    la     $a1, alimRestante
     bltzal $t0, pintar_tablero
 
     # Reinicia Fantasmas
