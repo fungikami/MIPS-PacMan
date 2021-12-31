@@ -348,7 +348,7 @@ tablero:
     .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
     .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
     .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
-    .ascii  "G             P                G"
+    .ascii  "G             P             GGGG"
     .ascii  "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
     .ascii  "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
     .ascii  "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
