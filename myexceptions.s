@@ -277,9 +277,9 @@ interrupciones_fin:
 # ----------- Configuracion del juego ----------- 
 MAT:	.word 0x10008000	# Direccion base del Bitmat Display
 S:      .word 1             # Refrescamiento 
-C:      .word 1000           # Base para la conversion con los tics del reloj
+C:      .word 1700          # Base para la conversion con los tics del reloj
 D:      .word 'A'           # Direccion actual del Pac-Man
-V:      .word 3             # Vidas
+V:      .word 1000          # Vidas
 
 # ------------ Colores ------------
 colorPacman: .word 0xFFDE1E     # Amarillo
@@ -294,39 +294,38 @@ colorFondo:  .word 0x0F0015     # Morado oscuro
 
 # ------------ Tablero ------------
 tablero: 
-
-.ascii  "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
-.ascii  "G                              G"
-.ascii  "G G GGGGGGGGGGGGGGGGGGGGGGGGG  G"
-.ascii  "G G GGGGGG              GGGGG  G"
-.ascii  "G G         GG     GGG         G"
-.ascii  "G G  GGGGG  GG  G  GGG  GGGGG  G"
-.ascii  "G G  G          G          RG  G"
-.ascii  "G G  G GGGGGGGG G GGGGGGG  MG  G"
-.ascii  "G G  G G        G       G  AG  G"
-.ascii  "G G  G G G      G       G  VG  G"
-.ascii  "G G  G G G GGGGGGGGGGG  G   G  G"
-.ascii  "G G  G          G       G   G  G"
-.ascii  "G G      GG GGG G GGG G G   G  G"
-.ascii  "N G  G G GG GGG G GGG G G      N"
-.ascii  "N G  G G GG GGG G GGG G        N"
-.ascii  "G G GG G GG     G GGG GGGGGG   G"
-.ascii  "G G G  G GG GGG   GGG G        G"
-.ascii  "G G G  G    GGG G GGG G    GGG G"
-.ascii  "G G G  G GG GGG G GGG G GG G   G"
-.ascii  "G G G  G        G       GG G   G"
-.ascii  "G G G  GGGGG  P G  GG   GG G   G"
-.ascii  "G G             G       GG     G"
-.ascii  "G G  G  G  GGGGGGGGGGG  GG  G  G"
-.ascii  "G G  G          G           G  G"
-.ascii  "G G  G        G G   G       G  G"
-.ascii  "G G  G  GG    G G   G   GG  G  G"
-.ascii  "G G  G  GG GGGG G GGGGG GG  G  G"
-.ascii  "G G  GGGGG G    G   G   GGGGG  G"
-.ascii  "G G        G        G          G"
-.ascii  "G GGGGG      GGG       GGGGGG  G"
-.ascii  "G                              G"
-.asciiz "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
+    .ascii  "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
+    .ascii  "G                              G"
+    .ascii  "G G GGGGGGGGGGGGGGGGGGGGGGGGG  G"
+    .ascii  "G G GGGGGG              GGGGG  G"
+    .ascii  "G G         GG     GGG         G"
+    .ascii  "G G  GGGGG  GG  G  GGG  GGGGG  G"
+    .ascii  "G G  G          G          RG  G"
+    .ascii  "G G  G GGGGGGGG G GGGGGGG  MG  G"
+    .ascii  "G G  G G        G       G  AG  G"
+    .ascii  "G G  G G G      G       G  VG  G"
+    .ascii  "G G  G G G GGGGGGGGGGG  G   G  G"
+    .ascii  "G G  G          G       G   G  G"
+    .ascii  "G G      GG GGG G GGG G G   G  G"
+    .ascii  "N G  G G GG GGG G GGG G G      N"
+    .ascii  "N G  G G GG GGG G GGG G        N"
+    .ascii  "G G GG G GG     G GGG GGGGGG   G"
+    .ascii  "G G G  G GG GGG   GGG G        G"
+    .ascii  "G G G  G    GGG G GGG G    GGG G"
+    .ascii  "G G G  G GG GGG G GGG G GG G   G"
+    .ascii  "G G G  G        G       GG G   G"
+    .ascii  "G G G  GGGGG  P G  GG   GG G   G"
+    .ascii  "G G             G       GG     G"
+    .ascii  "G G  G  G  GGGGGGGGGGG  GG  G  G"
+    .ascii  "G G  G          G           G  G"
+    .ascii  "G G  G        G G   G       G  G"
+    .ascii  "G G  G  GG    G G   G   GG  G  G"
+    .ascii  "G G  G  GG GGGG G GGGGG GG  G  G"
+    .ascii  "G G  GGGGG G    G   G   GGGGG  G"
+    .ascii  "G G        G        G          G"
+    .ascii  "G GGGGG      GGG       GGGGGG  G"
+    .ascii  "G                              G"
+    .asciiz "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
 
 	.globl MAT S C D V
 	.globl tablero

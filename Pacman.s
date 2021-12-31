@@ -10,37 +10,76 @@
 # Funcion: Crea un Pacman con su posicion y color (variable global
 #          definida como colorPacman en myexception.s).
 # Salida:   $v0:  Pacman (negativo si no se pudo crear).
-#          ($v0): Coordenada x.
-#         4($v0): Coordenada y.
-#         8($v0): Color del Pacman.
+#          ($v0): Direccion del Bitmap Display.
+#         4($v0): Color del Pacman.
 # Planificacion de registros:
-# $t0: Variable auxiliar.
+# $s0: Direccion de memoria asignada para el Pacman.
+# $t0: Auxiliar.
 Pacman_crear:
     # Prologo
-    sw   $fp, ($sp)
-    move $fp,  $sp
-    addi $sp,  $sp, -4
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    sw   $s0, -8($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -12
 
     # Reserva memoria para el Pacman
-    li $a0, 12
     li $v0, 9
+    li $a0, 8
     syscall
     bltz $v0, Pacman_crear_fin
+    move $s0, $v0
 
     # Inicializa el Pac-Man amarillo en (14, 11)
-    li $t0, 14          # Coordenada x inicial
-    sw $t0, ($v0)
-
-    li $t0, 11          # Coordenada y inicial
-    sw $t0, 4($v0)
+    li  $a0, 14          
+    li  $a1, 11          
+    jal coord_a_dir_bitmap
     
+    sw $v0,  ($s0)
     lw $t0, colorPacman
-    sw $t0, 8($v0)
+    sw $t0, 4($s0)
+
+    move $v0, $s0
     
 Pacman_crear_fin:
     # Epilogo
-    move $sp,  $fp
-    lw   $fp, ($sp)
+    move $sp,    $fp
+    lw   $fp,   ($sp)
+    lw   $ra, -4($sp)
+    lw   $s0, -8($sp)
+
+    jr $ra
+
+# Funcion: Reinicia Pacman con su posicion inicial.
+# Entrada:  $a0:  Pacman
+# Planificacion de registros:
+# $s0: Pacman.
+# $t0: Color de Pac-Man.
+Pacman_reiniciar:
+    # Prologo
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    sw   $s0, -8($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -12
+
+    move $s0, $a0
+
+    # Inicializa nuevamente el Pac-Man amarillo en (14, 11)
+    li  $a0, 14          
+    li  $a1, 11          
+    jal coord_a_dir_bitmap
+    sw  $v0, ($s0)
+
+    # Pinta el Pac-Man 
+    lw $t0, colorPacman
+    sw $t0, ($v0)
+    
+    # Epilogo
+    move $sp,    $fp
+    lw   $fp,   ($sp)
+    lw   $ra, -4($sp)
+    lw   $s0, -8($sp)
 
     jr $ra
 
@@ -51,8 +90,8 @@ Pacman_crear_fin:
 # Planificacion de registros:
 # $s0: Pacman.
 # $s1: Dir. contador de alimentos restantes.
-# $s2: xPacman siguiente.
-# $s3: yPacman siguiente.
+# $s2: Direccion actual del Pacman en el Bitmat Display.
+# $s3: Direccion siguiente del Pacman en el Bitmat Display.
 # $t0: Color del pixel siguiente.
 # $t1: Auxiliar.
 Pacman_mover:
@@ -70,65 +109,53 @@ Pacman_mover:
     move $s1, $a1   # Dir. contador de alimentos restantes
 
     # Movimiento Pac-Man
-    lw $t1, D  
-    lw $s2,  ($s0)
-    lw $s3, 4($s0)
+    lw   $t1, D
+    lw   $s2, ($s0)
+    move $a0,  $s2
 
     beq $t1, 'A', Pacman_mover_arriba   # Arriba 
     beq $t1, 'b', Pacman_mover_abajo    # Abajo 
     beq $t1, 'I', Pacman_mover_izq      # Izquierda 
-    beq $t1, 'D', Pacman_mover_der      # Derecha 
+
+    # Si no es ninguna de las anteriores, es derecha
+        jal obtener_dir_derecha
+        j   Pacman_mover_siguiente
 
     Pacman_mover_arriba:
-        # (x, y+1)     
-        add $s3, $s3, 1 
-        j Pacman_mover_siguiente
+        jal obtener_dir_arriba
+        j   Pacman_mover_siguiente
 
     Pacman_mover_abajo:
-        # (x, y-1)
-        add $s3, $s3, -1
-        j Pacman_mover_siguiente
+        jal obtener_dir_abajo
+        j   Pacman_mover_siguiente
 
     Pacman_mover_izq:
-        # (x-1, y)
-        add $s2, $s2, -1  
-        j Pacman_mover_siguiente
-
-    Pacman_mover_der:
-        # (x+1, y)
-        add $s2, $s2, 1  
+        jal obtener_dir_izquierda
 
     Pacman_mover_siguiente:
-        # Convierte la coordenada (x, y) en su direccion
-        # de memoria en el Bitmap Display.
-        move $a0, $s2
-        move $a1, $s3
-        jal coord_a_dir_bitmap
-        
         # Obtiene el color del pixel.
-        lw $t0, ($v0)
+        move $s3,  $v0
+        lw   $t0, ($s3)
+
+        # Si se trata de una pared (no hace nada)
+        lw  $t1, colorPared
+        beq $t0, $t1, Pacman_mover_fin
+
+        # Pinta de negro el pixel actual
+        lw $t1, colorFondo
+        sw $t1, ($s2)
 
         # Si se trata de un camino (comida o fondo)
         lw  $t1, colorComida
         beq $t0, $t1, Pacman_mover_actualizar_comida
         lw  $t1, colorFondo
-        beq $t0, $t1, Pacman_mover_siguiente_camino
-
-        # Si se trata de una pared (no hace nada)
-        lw  $t1, colorPared
-        beq $t0, $t1, Pacman_mover_fin 
+        beq $t0, $t1, Pacman_mover_pintar_pacman
 
         # Si se trata de un portal
         lw  $t1, colorPortal
         beq $t0, $t1, Pacman_mover_siguiente_portal
 
         # En cambio, se trata de un fantasma
-        # Pintar de negro el pixel
-        lw $a0,  ($s0)
-        lw $a1, 4($s0)
-        lw $a2, colorFondo
-        jal pintar_pixel
-
         li $t1, 1
         sb $t1, fueComido
 
@@ -139,49 +166,36 @@ Pacman_mover:
             lw  $t1, ($s1)
             add $t1,  $t1, -1
             sw  $t1, ($s1)
-        
-        Pacman_mover_siguiente_camino:
-            # Pintar de negro el pixel
-            lw $a0,  ($s0)
-            lw $a1, 4($s0)
-            lw $a2, colorFondo
-            jal pintar_pixel
-
-            # Actualizar (x, y) de Pacman
-            sw $s2,  ($s0)
-            sw $s3, 4($s0)
 
             j Pacman_mover_pintar_pacman
 
         Pacman_mover_siguiente_portal:
-            # Pintar de negro el pixel
-            lw $a0,  ($s0)
-            lw $a1, 4($s0)
-            lw $a2, colorFondo
-            jal pintar_pixel
+            # Portal 6 (0, 18)
+            li  $a0, 0
+            li  $a1, 18
+            jal coord_a_dir_bitmap
+            beq $v0, $s3, Pacman_mover_siguiente_portal_der
 
-            # Actualiza (x, y) de Pacman segun corresponda
-            beqz $s2, Pacman_mover_siguiente_portal_izq
+            # Portal 6 (0, 17)
+            add $t1, $v0, 128
+            beq $t1, $s3, Pacman_mover_siguiente_portal_der
             
-            # De otra forma, se trata del portal derecho
-            # Se mueve al Pac-Man al portal izquierdo
-            li $s2, 1
-            sw $s2,  ($s0)
-            sw $s3, 4($s0)
-            j Pacman_mover_pintar_pacman
+            # De otra forma, se trata de los portales 5 (31, 17) y (31, 18)
+            # Mueve el Pac-Man al portal izquierdo
+            add $s3, $s2, -116     # DIRSIGUIENTE = DIRACTUAL - 29*4
+            j   Pacman_mover_pintar_pacman
             
-            Pacman_mover_siguiente_portal_izq:
-                # Se mueve al Pac-Man al portal derecho
-                li $s2, 30
-                sw $s2,  ($s0)
-                sw $s3, 4($s0)
+            Pacman_mover_siguiente_portal_der:
+                # Mueve el Pac-Man al portal derecho
+                add $s3, $s2, 116  # DIRSIGUIENTE = DIRACTUAL + 29*4
 
         Pacman_mover_pintar_pacman:
-            # Pintar Pacman
-            move $a0,   $s2
-            move $a1,   $s3
-            lw   $a2, 8($s0)
-            jal pintar_pixel
+            # Pinta el Pacman
+            lw $t1, colorPacman
+            sw $t1, ($s3)
+            
+            # Actualiza la direccion del Pacman en el Bitmap Display
+            sw $s3, ($s0)
 
 Pacman_mover_fin:
     # Epilogo
