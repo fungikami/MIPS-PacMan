@@ -69,14 +69,17 @@ Fantasma_crear_fin:
 # $t1: Dir. del Bitmap Display del fantasma.
 Fantasma_reiniciar:
     # Prologo
-    sw   $fp,   ($sp)
-    sw   $ra, -4($sp)
-    sw   $s0, -8($sp)
+    sw   $fp,    ($sp)
+    sw   $ra,  -4($sp)
+    sw   $s0,  -8($sp)
+    sw   $s1, -12($sp)
+    sw   $s2, -16($sp)
     move $fp,    $sp
-    addi $sp,    $sp, -12
+    addi $sp,    $sp, -20
 
-    move $s0,  $a0
-    lw   $s1, ($s0)
+    move $s0,   $a0
+    lw   $s1,  ($s0)
+    lw   $s2, 8($s0)
 
     # Obtiene y actualiza direccion del fantasma
     move $a0, $a1
@@ -93,8 +96,7 @@ Fantasma_reiniciar:
     lb   $t0, fueComido
     beqz $t0, Fantasma_reiniciar_actualizar_dir
 
-    lw $t0, 8($s0)
-    sw $t0,  ($s1)
+    sw $s2, ($s1)
 
     # Actualiza el color del fondo en la dir. nueva del fantasma
     lw $t0,  ($v0)
@@ -110,7 +112,8 @@ Fantasma_reiniciar_actualizar_dir:
     lw   $fp,    ($sp)
     lw   $ra,  -4($sp)
     lw   $s0,  -8($sp)
-    lw   $s0, -12($sp)
+    lw   $s1, -12($sp)
+    lw   $s2, -16($sp)
 
     jr $ra
 
