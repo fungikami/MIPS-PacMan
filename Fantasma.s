@@ -76,11 +76,16 @@ Fantasma_reiniciar:
 
     move $s0, $a0
 
+    # Si en la anterior partida, Pac-Man fue comido
     # Pintar de color del fondo donde estaba el fantasma
+    lw   $t0, fueComido
+    beqz $t0, Fantasma_reiniciar_actualizar_dir
+
     lw $t0, 8($s0)
     lw $t1,  ($s0)
     sw $t0,  ($t1)
 
+Fantasma_reiniciar_actualizar_dir:
     # Obtiene y actualiza direccion del fantasma
     move $a0, $a1
     move $a1, $a2
