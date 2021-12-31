@@ -277,7 +277,7 @@ interrupciones_fin:
 # ----------- Configuracion del juego ----------- 
 MAT:	.word 0x10008000	# Direccion base del Bitmat Display
 S:      .word 1             # Refrescamiento 
-C:      .word 200          # Base para la conversion con los tics del reloj
+C:      .word 1000         # Base para la conversion con los tics del reloj
 D:      .word 'A'           # Direccion actual del Pac-Man
 V:      .word 1000          # Vidas
 
@@ -333,21 +333,21 @@ tablero:
     .ascii  "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
     .ascii  "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
     .ascii  "G                           GGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGG GGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGGRGGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGGMGGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGGAGGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGGVGGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGG GGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGG GGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGG GGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGG GGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGG GGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGG GGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGG GGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGG GGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGG GGGG"
-    .ascii  "G GGGGGGGGGGGGGGGGGGGGGGGGG GGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGGRGGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGGMGGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGGAGGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGGVGGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
+    .ascii  "G                           GGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
+    .ascii  "G GGGGGGGGGGGGG GGGGGGGGGGG GGGG"
     .ascii  "G             P                G"
     .ascii  "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
     .ascii  "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
