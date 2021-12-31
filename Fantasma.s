@@ -64,6 +64,7 @@ Fantasma_crear_fin:
 #           $a2:  Coordenada y
 # Planificacion de registros:
 # $s0: Fantasma.
+# $s1: Dir. del fantasma actual en el Bitmap Display
 # $t0: Auxiliar.
 # $t1: Dir. del Bitmap Display del fantasma.
 Fantasma_reiniciar:
@@ -74,37 +75,42 @@ Fantasma_reiniciar:
     move $fp,    $sp
     addi $sp,    $sp, -12
 
-    move $s0, $a0
+    move $s0,  $a0
+    lw   $s1, ($s0)
 
-    # Si en la anterior partida, Pac-Man fue comido
-    # Pintar de color del fondo donde estaba el fantasma
-    lw   $t0, fueComido
-    beqz $t0, Fantasma_reiniciar_actualizar_dir
-
-    lw $t0, 8($s0)
-    lw $t1,  ($s0)
-    sw $t0,  ($t1)
-
-Fantasma_reiniciar_actualizar_dir:
     # Obtiene y actualiza direccion del fantasma
     move $a0, $a1
     move $a1, $a2
     jal  coord_a_dir_bitmap
     sw   $v0, ($s0)
+    
+    # Actualiza el color del fondo en la dir. nueva del fantasma
+    lw $t0, colorComida
+    sw $t0, 8($s0)
+    
+    # Si en la anterior partida, Pac-Man fue comido
+    # Pintar de color del fondo donde estaba el fantasma
+    lb   $t0, fueComido
+    beqz $t0, Fantasma_reiniciar_actualizar_dir
+
+    lw $t0, 8($s0)
+    sw $t0,  ($s1)
 
     # Actualiza el color del fondo en la dir. nueva del fantasma
     lw $t0,  ($v0)
     sw $t0, 8($s0)
 
+Fantasma_reiniciar_actualizar_dir:
     # Pinta el fantasma en la nueva direccion
     lw $t0, 4($s0)  # Color del fantasma
     sw $t0,  ($v0)  
     
     # Epilogo
-    move $sp,    $fp
-    lw   $fp,   ($sp)
-    lw   $ra, -4($sp)
-    lw   $s0, -8($sp)
+    move $sp,     $fp
+    lw   $fp,    ($sp)
+    lw   $ra,  -4($sp)
+    lw   $s0,  -8($sp)
+    lw   $s0, -12($sp)
 
     jr $ra
 
