@@ -50,6 +50,39 @@ Pacman_crear_fin:
 
     jr $ra
 
+# Funcion: Reinicia Pacman con su posicion inicial.
+# Entrada:  $a0:  Pacman
+# Planificacion de registros:
+# $s0: Pacman.
+# $t0: Color de Pac-Man.
+Pacman_reiniciar:
+    # Prologo
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    sw   $s0, -8($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -12
+
+    move $s0, $a0
+
+    # Inicializa nuevamente el Pac-Man amarillo en (14, 11)
+    li  $a0, 14          
+    li  $a1, 11          
+    jal coord_a_dir_bitmap
+    sw  $v0, ($s0)
+
+    # Pinta el Pac-Man 
+    lw $t0, colorPacman
+    sw $t0, ($v0)
+    
+    # Epilogo
+    move $sp,    $fp
+    lw   $fp,   ($sp)
+    lw   $ra, -4($sp)
+    lw   $s0, -8($sp)
+
+    jr $ra
+
 # Funcion: Se encarga del movimiento del Pac-Man y su interaccion
 #          con el entorno (segun la variable global D).
 # Entrada: $a0: Pacman.

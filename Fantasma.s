@@ -58,6 +58,51 @@ Fantasma_crear_fin:
 
     jr $ra
 
+# Funcion: Reinicia el fantasma con su posicion inicial.
+# Entrada:  $a0:  Fantasma
+#           $a1:  Coordenada x
+#           $a2:  Coordenada y
+# Planificacion de registros:
+# $s0: Fantasma.
+# $t0: Auxiliar.
+# $t1: Dir. del Bitmap Display del fantasma.
+Fantasma_reiniciar:
+    # Prologo
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    sw   $s0, -8($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -12
+
+    move $s0, $a0
+
+    # Pintar de color del fondo donde estaba el fantasma
+    lw $t0, 8($s0)
+    lw $t1,  ($s0)
+    sw $t0,  ($t1)
+
+    # Obtiene y actualiza direccion del fantasma
+    move $a0, $a1
+    move $a1, $a2
+    jal  coord_a_dir_bitmap
+    sw   $v0, ($s0)
+
+    # Actualiza el color del fondo en la dir. nueva del fantasma
+    lw $t0,  ($v0)
+    sw $t0, 8($s0)
+
+    # Pinta el fantasma en la nueva direccion
+    lw $t0, 4($s0)  # Color del fantasma
+    sw $t0,  ($v0)  
+    
+    # Epilogo
+    move $sp,    $fp
+    lw   $fp,   ($sp)
+    lw   $ra, -4($sp)
+    lw   $s0, -8($sp)
+
+    jr $ra
+
 # Funcion: Se encarga del movimiento del fantasma por el tablero, tomando
 #          en cuenta las intersecciones y colisiones.
 # Entrada: $a0: Fantasma.
@@ -218,7 +263,7 @@ Fantasma_ejecutar_mov:
         lw  $t0, ($s1)
         lw  $t1, colorPacman
         bne $t0, $t1, Fantasma_ejecutar_mov_pintar_nuevo
-        
+
         lw $t0, colorFondo
         sw $t0, 8($s0)
         

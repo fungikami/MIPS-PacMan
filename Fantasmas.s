@@ -75,6 +75,52 @@ Fantasmas_crear_fin:
 
     jr $ra
 
+# Funcion: Reinicia los Fantasmas con su posicion inicial.
+# Entrada:  $a0: Fantasmas
+# Planificacion de registros:
+# $s0: Direccion de la estructura.
+Fantasmas_reiniciar:
+    # Prologo
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    sw   $s0, -8($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -12
+    
+    move $s0, $v0   # Dir. de la estructura Fantasmas
+
+    # Reinicia Blinky
+    lw  $a0, ($s0)
+    li  $a1,  27
+    li  $a2,  25 
+    jal Fantasma_reiniciar
+
+	# Reinicia Pinky
+    lw  $a0, 4($s0)
+    li  $a1, 27
+    li  $a2, 24
+    jal Fantasma_reiniciar
+
+    # Reinicia Inky
+    lw  $a0, 8($s0)
+    li  $a1, 27
+    li  $a2, 23
+    jal Fantasma_reiniciar
+    
+    # Reinicia Clyde
+    lw  $a0, 12($s0)
+    li  $a1, 27
+    li  $a2, 22 
+    jal Fantasma_reiniciar 
+    
+    # Epilogo
+    move $sp,    $fp
+    lw   $fp,   ($sp)
+    lw   $ra, -4($sp)
+    lw   $s0, -8($sp)
+
+    jr $ra
+
 # Funcion: Ejecuta los movimientos de cada uno de los Fantasmas.
 # Entrada:  $a0: Direccion de la estructura Fantasmas.
 # Planificacion de registros:
