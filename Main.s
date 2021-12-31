@@ -68,8 +68,6 @@ main:
     bgtz $t0, esperar
     
 siguiente_partida:
-    sb $zero, fueComido
-
     # Disminuye el numero de vidas
     lw  $t0, V 
     add $t0, $t0, -1
@@ -91,7 +89,9 @@ siguiente_partida:
 
     # Reinicia Fantasmas
     lw  $a0, Fantasmas
-    jal Fantasmas_reiniciar 
+    jal Fantasmas_reiniciar
+
+    sb $zero, fueComido 
 
     j main    
 
