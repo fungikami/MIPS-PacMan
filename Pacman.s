@@ -180,7 +180,7 @@ Pacman_mover:
             add $t1, $v0, 128
             beq $t1, $s3, Pacman_mover_siguiente_portal_der
             
-            # De otra forma, se trata del portal 5
+            # De otra forma, se trata de los portales 5 (31, 17) y (31, 18)
             # Mueve el Pac-Man al portal izquierdo
             add $s3, $s2, -116     # DIRSIGUIENTE = DIRACTUAL - 29*4
             j   Pacman_mover_pintar_pacman

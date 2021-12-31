@@ -87,7 +87,7 @@ Fantasmas_reiniciar:
     move $fp,    $sp
     addi $sp,    $sp, -12
     
-    move $s0, $v0   # Dir. de la estructura Fantasmas
+    move $s0, $a0   # Dir. de la estructura Fantasmas
 
     # Reinicia Blinky
     lw  $a0, ($s0)

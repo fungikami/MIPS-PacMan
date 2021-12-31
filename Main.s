@@ -68,6 +68,8 @@ main:
     bgtz $t0, esperar
     
 siguiente_partida:
+    sb $zero, fueComido
+
     # Disminuye el numero de vidas
     lw  $t0, V 
     add $t0, $t0, -1
@@ -113,10 +115,10 @@ salir:
 #          de los personajes en el tablero.
 PacMan:
     # Prologo
-	sw   $fp,    ($sp)
-    sw   $ra,  -4($sp)
-	move $fp,     $sp
-	addi $sp,     $sp, -8
+	sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+	move $fp,    $sp
+	addi $sp,    $sp, -8
 
     # Reinicia la variable saltar
     sb $zero, avanzarCuadro
@@ -132,9 +134,9 @@ PacMan:
 
 PacMan_fin:
     # Epilogo
-    move $sp,     $fp
-	lw   $fp,    ($sp)
-    lw   $ra,  -4($sp)
+    move $sp,    $fp
+	lw   $fp,   ($sp)
+    lw   $ra, -4($sp)
 
     jr $ra
 
