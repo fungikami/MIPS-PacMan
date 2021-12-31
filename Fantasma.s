@@ -96,7 +96,7 @@ Fantasma_reiniciar:
     lb   $t0, fueComido
     beqz $t0, Fantasma_reiniciar_actualizar_dir
 
-    sw $s2, ($s1)
+    sw $s2, ($s1) 
 
     # Actualiza el color del fondo en la dir. nueva del fantasma
     lw $t0,  ($v0)

@@ -76,10 +76,6 @@ siguiente_partida:
     # Si se consumen todas las vidas, termina el juego
     beqz $t0, salir
 
-    # En cambio, se reinicia los personajes para la siguiente partida
-    lw  $a0, Pacman
-    jal Pacman_reiniciar # Reinicia posicion y dibuja
-
     # Se reinicia el tablero si se consumio todos los alimentos
     lw     $t0, alimRestante
     add    $t0, $t0, -1
@@ -90,6 +86,10 @@ siguiente_partida:
     # Reinicia Fantasmas
     lw  $a0, Fantasmas
     jal Fantasmas_reiniciar
+
+    # En cambio, se reinicia los personajes para la siguiente partida
+    lw  $a0, Pacman
+    jal Pacman_reiniciar # Reinicia posicion y dibuja
 
     sb $zero, fueComido 
 
