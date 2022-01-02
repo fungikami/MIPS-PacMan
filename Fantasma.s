@@ -93,20 +93,24 @@ Fantasma_reiniciar:
     
     # Si en la anterior partida, Pac-Man fue comido
     # Pintar de color del fondo donde estaba el fantasma
-    lb   $t0, fueComido
-    beqz $t0, Fantasma_reiniciar_actualizar_dir
+    lb   $t1, fueComido
+    beqz $t1, Fantasma_reiniciar_actualizar_dir
 
-    sw $s2, ($s1) 
-
-    # Actualiza el color del fondo en la dir. nueva del fantasma
-    lw  $t0, ($v0)
-    lw  $t1, colorComida
-    beq $t0, $t1, Fantasma_reiniciar_pintar_fondo
-
-    # Evita tomar como fondo algun color de fantasma
+    beq $s2, $t0, Fantasma_reiniciar_pintar_fondo_anterior
     lw  $t0, colorFondo
 
-    Fantasma_reiniciar_pintar_fondo:
+    Fantasma_reiniciar_pintar_fondo_anterior:
+        sw  $s2, ($s1) 
+
+        # Actualiza el color del fondo en la dir. nueva del fantasma
+        lw  $t0, ($v0)
+        lw  $t1, colorComida
+        beq $t0, $t1, Fantasma_reiniciar_pintar_fondo_actual
+
+        # Evita tomar como fondo algun color de fantasma
+        lw  $t0, colorFondo
+
+    Fantasma_reiniciar_pintar_fondo_actual:
         sw  $t0, 8($s0)
 
     Fantasma_reiniciar_actualizar_dir:

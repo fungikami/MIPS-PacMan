@@ -269,6 +269,11 @@ pintar_tablero:
         add $t0,  $t0, 1
         sw  $t0, ($a1)
 
+        # Aumenta contador de alimentos total
+        lw  $t0, ($a2)
+        add $t0,  $t0, 1
+        sw  $t0, ($a2)
+
     pintar_tablero_for_pixel_sig:
         add $t1, $t1, 4
         j   pintar_tablero_for_pixel
@@ -365,4 +370,49 @@ es_camino_fin:
     lw   $fp, ($sp)
     lw   $ra, -4($sp)
     
-    jr $ra 
+    jr $ra
+    
+# Funcion: Imprime la puntuacion actual del juego.
+# Entrada: 
+# Salida:  
+# Planificacion de registros:
+imprimir_puntuacion:
+    # Prologo
+    sw   $fp,   ($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -4
+
+    # Imprime titulo
+	la $a0, msgSalida
+	li $v0, 4
+	syscall
+
+    # Calcula puntuacion (porcentaje alimento)
+	la $a0, msgComida
+	li $v0, 4
+	syscall
+
+    lw  $t0, alimRestante
+    lw  $t1, alimTotal
+    sub $t0, $t1, $t0
+    mul $t0, $t0, 100
+    div $t0, $t0, $t1
+    
+	move $a0, $t0
+	li   $v0, 1
+	syscall
+
+	la $a0, msgComida2
+	li $v0, 4
+	syscall
+
+    # Imprime puntos
+	la $a0, dots
+	li $v0, 4
+	syscall
+    
+    # Epilogo
+    move $sp,  $fp
+    lw   $fp, ($sp)
+    
+    jr $ra  

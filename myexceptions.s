@@ -66,6 +66,11 @@ __excp:	.word __e0_, __e1_, __e2_, __e3_, __e4_, __e5_, __e6_, __e7_, __e8_, __e
 s1:	.word 0
 s2:	.word 0
 
+# ------------ Mensajes ------------
+mensajePausa:   .asciiz "... JUEGO PAUSADO ..."
+mensajeNoPausa: .asciiz "... JUEGO DESPAUSADO ..."
+
+
 # This is the exception handler code that the processor runs when
 # an exception occurs. It only prints some information about the
 # exception, but can server as a model of how to write a handler.
@@ -199,8 +204,26 @@ comando_pausar:
 	lb	 $v0, pausar  # Niega el contenido de pausar
     xori $v0, $v0, 1
     sb   $v0, pausar
-	
+
+    # Si no se encuentra pausado
+    beqz $v0, comando_pausar_despausado
+
+    # En cambio, se guarda el tiempo que se llevaba
+	mfc0 $a0, $9
+	sw   $a0, tiempo
+
+	# Ignorar interrupciones del timer 
+	li   $a0, 0x0101
+	mtc0 $a0, $12
+
 	j interrupciones_fin
+
+    comando_pausar_despausado:
+        # Recuperar tiempo
+        lw   $a0, tiempo
+        mtc0 $a0, $9
+	
+	    j interrupciones_fin
 
 comando_quitar:
     sb $zero, seguir
@@ -396,6 +419,11 @@ __start:
 	lw	$a1, ($a0)
 	ori	$a1, $a1, 2
 	sw	$a1, ($a0)
+
+    # Tiempo inicial de la partida
+	li $v0, 30
+	syscall
+	sw $a0, tiempo
 
 	lw $a0 0($sp)		# argc
 	addiu $a1 $sp 4		# argv

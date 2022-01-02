@@ -1,6 +1,9 @@
 # Proyecto 2
 # Implementacion del juego Pac-Man.
 #
+# 
+#
+#
 # Autores: Ka Fung & Christopher Gomez
 # Fecha:   10-ene-2022
 
@@ -10,26 +13,29 @@ seguir:	        .byte 1
 pausar:         .byte 0
 avanzarCuadro:  .byte 0
 contador:       .word 0
-alimRestante:   .word 0 # 573 con los fantasmas
+alimRestante:   .word 0 
+alimTotal:      .word 0 # 573 con los fantasmas
+tiempo:         .word 0
 fueComido:      .byte 0
 
 # ------------ Mensajes ------------
-mensajePausa:   .asciiz "... JUEGO PAUSADO ..."
-mensajeNoPausa: .asciiz "... JUEGO DESPAUSADO ..."
-mensajeSalida:  .asciiz "... JUEGO FINALIZADO ..."
-mensajeVictoria:.asciiz "... VICTORIA :) ..."
-mensajeDerrota: .asciiz "... DERROTA :( ..."
-mensajePuntos:  .asciiz "Puntuacion: "
-mensajeTiempo:  .asciiz "Tiempo: "
-mensajeSeg:     .asciiz " segundos." 
-dots:           .asciiz "..............................................................."
+msgPausa:       .asciiz "\n.................. JUEGO PAUSADO .................\n"
+msgNoPausa:     .asciiz "\n................ JUEGO DESPAUSADO ................\n"
+msgSalida:      .asciiz "\n................ JUEGO FINALIZADO ................\n"
+msgVictoria:    .asciiz "\n.................. VICTORIA :) ...................\n"
+msgDerrota:     .asciiz "\n................... DERROTA :( ...................\n"
+msgComida:      .asciiz " Puntuacion: Te has comido "
+msgComida2:     .asciiz "% del alimento total."
+dots:           .asciiz "\n..................................................\n"
 newLine:        .asciiz "\n"
 
 # ------------ Personajes ------------
 Pacman:         .word 0
 Fantasmas:      .word 0
 	
-	.globl seguir pausar avanzarCuadro contador fueComido __init__ main
+	.globl seguir pausar avanzarCuadro contador alimRestante alimTotal fueComido tiempo
+    .globl __init__ main
+    .globl msgSalida msgComida msgComida2 dots newLine
 
 	.text
 
@@ -48,6 +54,7 @@ dibujar_tablero:
     # Display tablero
     la $a0, tablero
     la $a1, alimRestante
+    la $a2, alimTotal
     jal pintar_tablero
 
 main:
@@ -110,7 +117,9 @@ pausar_partida:
 	j pausar_partida
 
 salir:	
-    # Imprimir mensaje de salida
+    # Imprimir puntuacion
+    jal imprimir_puntuacion
+    
 	li $v0, 10
 	syscall
 
