@@ -373,9 +373,10 @@ es_camino_fin:
     jr $ra
     
 # Funcion: Imprime la puntuacion actual del juego.
-# Entrada: 
-# Salida:  
+# Entrada: $a0:
 # Planificacion de registros:
+# $t0: Auxiliar.
+# $t1: Auxiliar.
 imprimir_puntuacion:
     # Prologo
     sw   $fp,   ($sp)
@@ -384,6 +385,19 @@ imprimir_puntuacion:
 
     # Imprime titulo
 	la $a0, msgSalida
+	li $v0, 4
+	syscall
+
+    # Imprime vidas
+    la $a0, msgVidas
+	li $v0, 4
+	syscall
+
+    lw $a0, V 
+    li $v0, 1
+	syscall
+
+    la $a0, nuevaLinea
 	li $v0, 4
 	syscall
 
@@ -407,7 +421,7 @@ imprimir_puntuacion:
 	syscall
 
     # Imprime puntos
-	la $a0, dots
+	la $a0, puntos
 	li $v0, 4
 	syscall
     

@@ -66,11 +66,6 @@ __excp:	.word __e0_, __e1_, __e2_, __e3_, __e4_, __e5_, __e6_, __e7_, __e8_, __e
 s1:	.word 0
 s2:	.word 0
 
-# ------------ Mensajes ------------
-mensajePausa:   .asciiz "... JUEGO PAUSADO ..."
-mensajeNoPausa: .asciiz "... JUEGO DESPAUSADO ..."
-
-
 # This is the exception handler code that the processor runs when
 # an exception occurs. It only prints some information about the
 # exception, but can server as a model of how to write a handler.

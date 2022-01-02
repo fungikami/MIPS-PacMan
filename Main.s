@@ -24,10 +24,11 @@ msgNoPausa:     .asciiz "\n................ JUEGO DESPAUSADO ................\n"
 msgSalida:      .asciiz "\n................ JUEGO FINALIZADO ................\n"
 msgVictoria:    .asciiz "\n.................. VICTORIA :) ...................\n"
 msgDerrota:     .asciiz "\n................... DERROTA :( ...................\n"
-msgComida:      .asciiz " Puntuacion: Te has comido "
-msgComida2:     .asciiz "% del alimento total."
-dots:           .asciiz "\n..................................................\n"
-newLine:        .asciiz "\n"
+msgComida:      .asciiz " Puntuacion:      Te has comido "
+msgComida2:     .asciiz "% del alimento."
+msgVidas:       .asciiz " Vidas restantes: "
+puntos:         .asciiz "\n..................................................\n"
+nuevaLinea:     .asciiz "\n"
 
 # ------------ Personajes ------------
 Pacman:         .word 0
@@ -35,7 +36,7 @@ Fantasmas:      .word 0
 	
 	.globl seguir pausar avanzarCuadro contador alimRestante alimTotal fueComido tiempo
     .globl __init__ main
-    .globl msgSalida msgComida msgComida2 dots newLine
+    .globl msgPausa msgNoPausa msgSalida msgVictoria msgDerrota msgComida msgComida2 msgVidas puntos nuevaLinea
 
 	.text
 
