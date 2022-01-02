@@ -420,6 +420,32 @@ imprimir_puntuacion:
 	li $v0, 4
 	syscall
 
+    la $a0, nuevaLinea
+	li $v0, 4
+	syscall
+
+    # Calcula tiempo del juego
+    la $a0, msgTiempo
+	li $v0, 4
+	syscall
+
+    # Tiempo actual - tiempo inicial
+    li	$v0, 30
+	syscall
+	lw	$t0, tiempo
+	sub	$t0, $a0, $t0
+
+    # Convertir de ms a segs
+    li $t1, 1000    
+	divu $t0, $t1
+  	mflo $a0 
+	li $v0, 1
+	syscall
+
+    la $a0, msgTiempo2
+	li $v0, 4
+	syscall
+
     # Imprime puntos
 	la $a0, puntos
 	li $v0, 4
