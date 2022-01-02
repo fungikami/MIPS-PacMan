@@ -99,14 +99,22 @@ Fantasma_reiniciar:
     sw $s2, ($s1) 
 
     # Actualiza el color del fondo en la dir. nueva del fantasma
-    lw $t0,  ($v0)
-    sw $t0, 8($s0)
+    lw  $t0, ($v0)
+    lw  $t1, colorComida
+    beq $t0, $t1, Fantasma_reiniciar_pintar_fondo
 
-Fantasma_reiniciar_actualizar_dir:
-    # Pinta el fantasma en la nueva direccion
-    lw $t0, 4($s0)  # Color del fantasma
-    sw $t0,  ($v0)  
-    
+    # Evita tomar como fondo algun color de fantasma
+    lw  $t0, colorFondo
+
+    Fantasma_reiniciar_pintar_fondo:
+        sw  $t0, 8($s0)
+
+    Fantasma_reiniciar_actualizar_dir:
+        # Pinta el fantasma en la nueva direccion
+        lw $t0, 4($s0)  # Color del fantasma
+        sw $t0,  ($v0) 
+         
+Fantasma_reiniciar_fin:    
     # Epilogo
     move $sp,     $fp
     lw   $fp,    ($sp)
