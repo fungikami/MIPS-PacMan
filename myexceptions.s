@@ -152,8 +152,9 @@ interrupciones:
 	j interrupciones_fin
 
 teclado:
+    # Reinicia el bit 8 de Cause register
 	mfc0 $k0, $13
-	andi $k0, 0xFEFF # Reinicia el bit 8 de Cause register
+	andi $k0, 0xFEFF 
 	mtc0 $k0, $13
 
     # Tomar la tecla presionada (Receiver Data)
@@ -196,7 +197,8 @@ comando_mover:
 	j interrupciones_fin
 
 comando_pausar:
-	lb	 $v0, pausar  # Niega el contenido de pausar
+    # Niega el contenido de pausar
+	lb	 $v0, pausar  
     xori $v0, $v0, 1
     sb   $v0, pausar
 
@@ -225,8 +227,9 @@ comando_quitar:
 	j interrupciones_fin
 
 timer:
+    # Reinicia el bit 15 de Cause register
 	mfc0 $k0, $13
-	andi $k0, 0x7FFF # Reinicia el bit 15 de Cause register
+	andi $k0, 0x7FFF 
 	mtc0 $k0, $13
 
 	# Reinicia Timer ($9)
@@ -292,25 +295,8 @@ interrupciones_fin:
 
 ############# VARIABLES GLOBALES #############
 
-# ----------- Configuracion del juego ----------- 
-MAT:	.word 0x10008000	# Direccion base del Bitmat Display
-S:      .word 1             # Refrescamiento 
-C:      .word 1000         # Base para la conversion con los tics del reloj
-D:      .word 'A'           # Direccion actual del Pac-Man
-V:      .word 1000          # Vidas
 
-# ------------ Colores ------------
-colorPacman: .word 0xFFDE1E     # Amarillo
-colorBlinky: .word 0xE61E0E     # Rojo
-colorPinky:  .word 0x783014     # Marron
-colorInky:   .word 0x38A4E4     # Azul
-colorClyde:  .word 0x38D92B     # Verde
-colorPortal: .word 0xF16406     # Naranja
-colorPared:  .word 0x33393B     # Gris oscuro
-colorComida: .word 0xFFFFFF     # Blanco
-colorFondo:  .word 0x0F0015     # Morado oscuro
-
-# # ------------ Tablero ------------
+# ------------ Tablero ------------
 tablero: 
     .ascii  "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
     .ascii  "G                              G"
@@ -379,9 +365,7 @@ tablero:
 #     .ascii  "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
 #     .asciiz "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
 
-	.globl MAT S C D V
 	.globl tablero
-	.globl colorPacman colorBlinky colorPinky colorInky colorClyde colorPortal colorPared colorComida colorFondo
 
 # Standard startup code.  Invoke the routine "main" with arguments:
 #	main(argc, argv, envp)
@@ -430,9 +414,6 @@ __start:
 
 	li $v0 10
 	syscall			# syscall 10 (exit)
-
-    # Archivos adicionales que utiliza el juego
-    .include "Utilidades.s"
 
 __eoth:
 

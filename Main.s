@@ -1,13 +1,33 @@
 # Proyecto 2
-# Implementacion del juego Pac-Man.
+# Implementacion del videojuego arcade Pac-Man.
 #
-# 
+# Instrucciones del juego:
+#   - Configurar variabler MAT, D, C, V y S.
+#   - Conectar Keyboard and Display MMIO.
+#   - Configurar y conectar Bitmap Display.
+#   - Ensamblar y correr Main.s.
 #
+# Comandos del juego:
+#   Movimiento de Pac-Man:
+#   - Arriba:       A/a
+#   - Abajo:        B/b
+#   - Izquierda:    I/i
+#   - Derecha:      D/d
+#   Menu del juego:
+#   - Pausar:       P/p
+#   - Salir:        Q/q
 #
 # Autores: Ka Fung & Christopher Gomez
 # Fecha:   10-ene-2022
 
 	.data
+# ----------- Configuracion del juego ----------- 
+MAT:	.word 0x10008000	# Direccion base del Bitmat Display
+S:      .word 1             # Refrescamiento 
+C:      .word 1200          # Base para la conversion con los tics del reloj
+D:      .word 'A'           # Direccion actual del Pac-Man
+V:      .word 3             # Vidas
+
 # ------------ Variables ------------
 seguir:	        .byte 1
 pausar:         .byte 0
@@ -18,12 +38,27 @@ alimTotal:      .word 0 # 573 con los fantasmas
 tiempo:         .word 0
 fueComido:      .byte 0
 
+# ------------ Personajes ------------
+Pacman:         .word 0
+Fantasmas:      .word 0
+
+# ------------ Colores ------------
+colorPacman:    .word 0xFFDE1E     # Amarillo
+colorBlinky:    .word 0xE61E0E     # Rojo
+colorPinky:     .word 0x783014     # Marron
+colorInky:      .word 0x38A4E4     # Azul
+colorClyde:     .word 0x38D92B     # Verde
+colorPortal:    .word 0xF16406     # Naranja
+colorPared:     .word 0x33393B     # Gris oscuro
+colorComida:    .word 0xFFFFFF     # Blanco
+colorFondo:     .word 0x0F0015     # Morado oscuro
+
 # ------------ Mensajes ------------
 msgPausa:       .asciiz "\n.................. JUEGO PAUSADO .................\n"
 msgNoPausa:     .asciiz "\n................ JUEGO DESPAUSADO ................\n"
 msgSalida:      .asciiz "\n................ JUEGO FINALIZADO ................\n"
 msgVictoria:    .asciiz "\n.................. VICTORIA :) ...................\n"
-msgDerrota:     .asciiz "\n................... DERROTA :( ...................\n"
+msgDerrota:     .asciiz "\n.................. DERROTA :( ....................\n"
 msgVidas:       .asciiz " Vidas restantes: "
 msgComida:      .asciiz " Puntuacion:      Te has comido "
 msgComida2:     .asciiz "% del alimento."
@@ -31,15 +66,13 @@ msgTiempo:      .asciiz " Tiempo:          "
 msgTiempo2:     .asciiz " segundos."
 puntos:         .asciiz "\n..................................................\n"
 nuevaLinea:     .asciiz "\n"
-
-# ------------ Personajes ------------
-Pacman:         .word 0
-Fantasmas:      .word 0
 	
+	.globl MAT S C D V
 	.globl seguir pausar avanzarCuadro contador alimRestante alimTotal fueComido tiempo
-    .globl __init__ main
+	.globl colorPacman colorBlinky colorPinky colorInky colorClyde colorPortal colorPared colorComida colorFondo
     .globl msgPausa msgNoPausa msgSalida msgVictoria msgDerrota msgVidas 
     .globl msgComida msgComida2 msgTiempo msgTiempo2 puntos nuevaLinea
+    .globl __init__ main
 
 	.text
 
@@ -54,7 +87,6 @@ __init__:
     bltz $v0, salir
     sw   $v0, Fantasmas
 
-dibujar_tablero:
     # Display tablero
     la $a0, tablero
     la $a1, alimRestante
@@ -92,18 +124,29 @@ siguiente_partida:
     add    $t0, $t0, -1
     la     $a0, tablero
     la     $a1, alimRestante
+    la     $a2, alimTotal
     bltzal $t0, pintar_tablero
-
+    
     # Reinicia Fantasmas
     lw  $a0, Fantasmas
     jal Fantasmas_reiniciar
 
-    # En cambio, se reinicia los personajes para la siguiente partida
+    # Reinicia Pac-Man
     lw  $a0, Pacman
     jal Pacman_reiniciar # Reinicia posicion y dibuja
 
-    sb $zero, fueComido 
+    # Si no fue comido, imprime Victoria
+    la   $a0, msgVictoria
+    lb   $t0, fueComido
+    beqz $t0, siguiente_partida_imprimir_resultado
+    la   $a0, msgDerrota
 
+    siguiente_partida_imprimir_resultado:
+        jal imprimir_puntuacion
+
+    # Reinicia variable que indica si fue comido el Pac-Man
+    sb $zero, fueComido 
+ 
     j main    
 
 esperar:
@@ -121,7 +164,8 @@ pausar_partida:
 	j pausar_partida
 
 salir:	
-    # Imprimir puntuacion
+    # Imprimir resultado
+    la  $a0, msgSalida
     jal imprimir_puntuacion
     
 	li $v0, 10

@@ -1,8 +1,9 @@
 # Fantasma.s
-# Personaje enemigo del juego
+# Estructura que representa el personaje enemigo del juego.
 #
 # Autores: Ka Fung & Christopher Gomez
 # Fecha:   10-ene-2022
+
         .data
 
         .text
@@ -310,7 +311,6 @@ Fantasma_ejecutar_mov_fin:
     lw   $s1, -12($sp)
 
     jr $ra
-
 
 # Funcion: Verifica si un fantasma se encuentra en una interseccion.
 # Entrada: $a0: Fantasma.

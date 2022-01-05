@@ -1,9 +1,10 @@
 # Fantasmas.s
-# Estructura que empaqueta los 4 enemigos del juego 
+# Estructura que guarda los 4 enemigos del juego.
 # implementado en Main.s
 #
 # Autores: Ka Fung & Christopher Gomez
 # Fecha:   10-ene-2022
+
         .data
 
         .text
@@ -76,7 +77,7 @@ Fantasmas_crear_fin:
     jr $ra
 
 # Funcion: Reinicia los Fantasmas con su posicion inicial.
-# Entrada:  $a0: Fantasmas
+# Entrada: $a0: Fantasmas
 # Planificacion de registros:
 # $s0: Direccion de la estructura.
 Fantasmas_reiniciar:
@@ -122,7 +123,7 @@ Fantasmas_reiniciar:
     jr $ra
 
 # Funcion: Ejecuta los movimientos de cada uno de los Fantasmas.
-# Entrada:  $a0: Direccion de la estructura Fantasmas.
+# Entrada: $a0: Direccion de la estructura Fantasmas.
 # Planificacion de registros:
 # $s0: Direccion de la estructura Fantasmas.
 Fantasmas_mover:

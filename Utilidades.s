@@ -373,7 +373,7 @@ es_camino_fin:
     jr $ra
     
 # Funcion: Imprime la puntuacion actual del juego.
-# Entrada: $a0:
+# Entrada: $a0: Titulo de la puntuacion (Victoria, Derrota, Juego Finalizado)
 # Planificacion de registros:
 # $t0: Auxiliar.
 # $t1: Auxiliar.
@@ -384,7 +384,6 @@ imprimir_puntuacion:
     addi $sp,    $sp, -4
 
     # Imprime titulo
-	la $a0, msgSalida
 	li $v0, 4
 	syscall
 
