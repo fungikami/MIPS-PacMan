@@ -117,7 +117,7 @@ Pacman_mover:
     beq $t1, 'b', Pacman_mover_abajo    # Abajo 
     beq $t1, 'I', Pacman_mover_izq      # Izquierda 
 
-    # Si no es ninguna de las anteriores, es derecha
+    # Si no es ninguna de las anteriores, es derecha 'D'
         jal obtener_dir_derecha
         j   Pacman_mover_siguiente
 

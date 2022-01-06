@@ -194,6 +194,7 @@ obtener_dir_noroeste:
 #          Cuenta y actualiza a su vez la cantidad de alimento en el mapa.
 # Entrada: $a0: Direccion de la cadena que contiene el tablero.
 #          $a1: Direccion de contador de alimentos restantes.
+#          $a2: Direccion de contador de alimentos totales.
 # Salida:  $v0: negativo si ocurrio algun error. 
 # Planificacion de registros:
 # $t0: Auxiliar.
@@ -210,6 +211,9 @@ pintar_tablero:
     lw $t1, MAT
     lw $t3, colorPared
     lw $t4, colorComida
+
+    # Inicializa con 0 el contador de alimento total
+    sw $zero, ($a2)
 
     pintar_tablero_for_pixel:
         lb  $t0, ($a0)

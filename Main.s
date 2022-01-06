@@ -26,7 +26,7 @@ MAT:	.word 0x10008000	# Direccion base del Bitmat Display
 S:      .word 1             # Refrescamiento 
 C:      .word 1200          # Base para la conversion con los tics del reloj
 D:      .word 'A'           # Direccion actual del Pac-Man
-V:      .word 3             # Vidas
+V:      .word 9             # Vidas
 
 # ------------ Variables ------------
 seguir:	        .byte 1
@@ -68,8 +68,9 @@ puntos:         .asciiz "\n..................................................\n"
 nuevaLinea:     .asciiz "\n"
 	
 	.globl MAT S C D V
-	.globl seguir pausar avanzarCuadro contador alimRestante alimTotal fueComido tiempo
-	.globl colorPacman colorBlinky colorPinky colorInky colorClyde colorPortal colorPared colorComida colorFondo
+	.globl seguir pausar avanzarCuadro contador fueComido tiempo
+	.globl colorPacman colorBlinky colorPinky colorInky colorClyde 
+    .globl colorPortal colorPared colorComida colorFondo
     .globl msgPausa msgNoPausa msgSalida msgVictoria msgDerrota msgVidas 
     .globl msgComida msgComida2 msgTiempo msgTiempo2 puntos nuevaLinea
     .globl __init__ main
@@ -119,6 +120,15 @@ siguiente_partida:
     # Si se consumen todas las vidas, termina el juego
     beqz $t0, salir
 
+    # Si no fue comido, imprime Victoria
+    la   $a0, msgVictoria
+    lb   $t0, fueComido
+    beqz $t0, siguiente_partida_imprimir_resultado
+    la   $a0, msgDerrota
+
+    siguiente_partida_imprimir_resultado:
+        jal imprimir_puntuacion
+
     # Se reinicia el tablero si se consumio todos los alimentos
     lw     $t0, alimRestante
     add    $t0, $t0, -1
@@ -134,15 +144,6 @@ siguiente_partida:
     # Reinicia Pac-Man
     lw  $a0, Pacman
     jal Pacman_reiniciar # Reinicia posicion y dibuja
-
-    # Si no fue comido, imprime Victoria
-    la   $a0, msgVictoria
-    lb   $t0, fueComido
-    beqz $t0, siguiente_partida_imprimir_resultado
-    la   $a0, msgDerrota
-
-    siguiente_partida_imprimir_resultado:
-        jal imprimir_puntuacion
 
     # Reinicia variable que indica si fue comido el Pac-Man
     sb $zero, fueComido 
