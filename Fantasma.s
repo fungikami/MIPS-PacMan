@@ -149,9 +149,9 @@ Fantasma_mover:
 
     # Verifica si se encuentra en una interseccion
     jal Fantasma_chequear_interseccion
-    
     beqz $v0, Fantasma_mover_revisar_sig
     
+    # Escoge direccion aleatoria si es una interseccion
     move $a0, $s0
     jal  Fantasma_cambiar_dir
     
@@ -230,7 +230,7 @@ Fantasma_ejecutar_mov:
     beq  $t0, 1, Fantasma_ejecutar_mov_arriba
     beq  $t0, 2, Fantasma_ejecutar_mov_abajo
     
-    # Derecha
+    # Direccion derecha
         jal obtener_dir_derecha
         j   Fantasma_ejecutar_mov_verif_portal
 
@@ -264,7 +264,7 @@ Fantasma_ejecutar_mov:
         add $t1, $v0, 128
         beq $t1, $s1, Fantasma_ejecutar_mov_portal_der
 
-        # De otra forma, se trata del portal 5
+        # De otra forma, se trata del portal 5 (31, 17) o (31, 18)
         # Mueve el Fantasma al portal izquierdo
         add $s1, $s1, -120     # DIRSIGUIENTE = DIRACTUAL - 30*4
         j   Fantasma_ejecutar_mov_pintar

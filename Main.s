@@ -25,7 +25,7 @@
 MAT:	.word 0x10008000	# Direccion base del Bitmat Display
 S:      .word 1             # Refrescamiento 
 C:      .word 1200          # Base para la conversion con los tics del reloj
-D:      .word 'A'           # Direccion actual del Pac-Man
+D:      .word 'A'           # Dir. de movimiento actual del Pac-Man
 V:      .word 9             # Vidas
 
 # ------------ Variables ------------
@@ -33,10 +33,10 @@ seguir:	        .byte 1
 pausar:         .byte 0
 avanzarCuadro:  .byte 0
 contador:       .word 0
+fueComido:      .byte 0
+tiempo:         .word 0
 alimRestante:   .word 0 
 alimTotal:      .word 0 # 573 con los fantasmas
-tiempo:         .word 0
-fueComido:      .byte 0
 
 # ------------ Personajes ------------
 Pacman:         .word 0

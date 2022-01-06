@@ -1,6 +1,5 @@
 # Fantasmas.s
 # Estructura que guarda los 4 enemigos del juego.
-# implementado en Main.s
 #
 # Autores: Ka Fung & Christopher Gomez
 # Fecha:   10-ene-2022

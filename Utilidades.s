@@ -317,7 +317,7 @@ escoger_aleatorio:
     beqz $t0, escoger_aleatorio_primero
     beq  $t0, 1, escoger_aleatorio_segundo
     
-    # Si no es 0 o 1, es 2 (se escoge $a3)
+    # Si no es 0 o 1, es 2 
     lw $v0, 8($t1)
     j  escoger_aleatorio_fin 
 

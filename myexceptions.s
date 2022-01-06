@@ -390,7 +390,7 @@ __start:
 	mtc0 $a0, $11
 
 	# Inicializa Cause register ($12)
-	li $a0, 0x8101
+	li   $a0, 0x8101
 	mtc0 $a0, $12
 	
 	# Inicializa Receiver Control
