@@ -160,14 +160,6 @@ Pacman_mover:
         sb $t1, fueComido
 
         j Pacman_mover_fin
-        
-        Pacman_mover_actualizar_comida:
-            # Actualiza el contador
-            lw  $t1, ($s1)
-            add $t1,  $t1, -1
-            sw  $t1, ($s1)
-
-            j Pacman_mover_pintar_pacman
 
         Pacman_mover_siguiente_portal:
             # Portal 6 (0, 18)
@@ -183,11 +175,26 @@ Pacman_mover:
             # De otra forma, se trata de los portales 5 (31, 17) y (31, 18)
             # Mueve el Pac-Man al portal izquierdo
             add $s3, $s2, -116     # DIRSIGUIENTE = DIRACTUAL - 29*4
-            j   Pacman_mover_pintar_pacman
+            
+            j   Pacman_mover_siguiente_portal_verif_alim
             
             Pacman_mover_siguiente_portal_der:
                 # Mueve el Pac-Man al portal derecho
                 add $s3, $s2, 116  # DIRSIGUIENTE = DIRACTUAL + 29*4
+            
+        Pacman_mover_siguiente_portal_verif_alim:
+            # Verificamos si la nueva posicion tiene alimento
+            lw  $t0, colorComida
+            lw  $t1, ($s3)
+            beq $t0, $t1, Pacman_mover_actualizar_comida
+
+            j Pacman_mover_pintar_pacman
+
+        Pacman_mover_actualizar_comida:
+            # Actualiza el contador
+            lw  $t1, ($s1)
+            add $t1,  $t1, -1
+            sw  $t1, ($s1)
 
         Pacman_mover_pintar_pacman:
             # Pinta el Pacman
