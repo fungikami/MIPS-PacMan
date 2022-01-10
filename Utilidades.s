@@ -273,14 +273,12 @@ pintar_tablero:
         add $t0,  $t0, 1
         sw  $t0, ($a1)
 
-        # Aumenta contador de alimentos total
-        lw  $t0, ($a2)
-        add $t0,  $t0, 1
-        sw  $t0, ($a2)
-
     pintar_tablero_for_pixel_sig:
         add $t1, $t1, 4
         j   pintar_tablero_for_pixel
+
+        # Copia al contador de alimentos total
+        sw  $t0, ($a2)
 
 pintar_tablero_fin:
     # Epilogo
