@@ -274,6 +274,13 @@ Fantasma_ejecutar_mov:
             add $s1, $s1, 120  # DIRSIGUIENTE = DIRACTUAL + 30*4
     
     Fantasma_ejecutar_mov_pintar:
+        # Verificamos que la siguiente posicion es camino
+        # Si el camino no es valido, no se mueve el fantasma
+        move $a0, $s1
+        jal  Fantasma_es_camino
+        bnez $v0, Fantasma_ejecutar_mov_fin
+        
+        # En cambio, se mueve fantasma
         # Pinta (x, y) del color de la capa de fondo del fantasma
         lw $t0,  ($s0)  # Dir. actual del fantasma
         lw $t1, 8($s0)  # Color del fondo

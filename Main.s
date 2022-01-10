@@ -123,11 +123,11 @@ tablero:
     .asciiz "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
 
 # ------------ Mensajes ------------
-msgPausa:       .asciiz "\n.-^^-..-^^-..-^^- JUEGO PAUSADO -^^-..-^^-..-^^-.\n"
+msgPausa:       .asciiz "\n.-^^-..-^^-..-^^-.  JUEGO PAUSADO .-^^-..-^^-..-^^-.\n"
 msgNoPausa:     .asciiz "\n.-^^-..-^^-..-^^- JUEGO DESPAUSADO -^^-..-^^-..-^^-.\n"
 msgSalida:      .asciiz "\n.-^^-..-^^-..-^^- JUEGO FINALIZADO -^^-..-^^-..-^^-.\n"
-msgVictoria:    .asciiz "\n.-^^-..-^^-..-^^-..- VICTORIA :) -..-^^-..-^^-..-^^-.\n"
-msgDerrota:     .asciiz "\n.-^^-..-^^-..-^^- DERROTA  :( -..-^^-..-^^-..-^^-.\n"
+msgVictoria:    .asciiz "\n.-^^-..-^^-..-^^-.. VICTORIA  :) ..-^^-..-^^-..-^^-.\n"
+msgDerrota:     .asciiz "\n.-^^-..-^^-..-^^-.. DERROTA   :( ..-^^-..-^^-..-^^-.\n"
 msgVidas:       .asciiz " Vidas restantes: "
 msgComida:      .asciiz " Progreso:        Te has comido "
 msgComida2:     .asciiz "% del alimento."
