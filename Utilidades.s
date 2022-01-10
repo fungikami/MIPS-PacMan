@@ -330,47 +330,6 @@ escoger_aleatorio_fin:
     lw   $fp, ($sp)
 
     jr $ra
-
-# Funcion: Verifica si el pixel en la direccion es un camino.
-# Entrada: $a0: Direccion del Bit
-# Salida:  $v0: 0 si el pixel es un camino.
-#               1 de otra forma.
-# Planificacion de registros:
-# $t0: Color de comida / fondo / portal / Pac-Man
-# $t1: Color del pixel en la direccion
-es_camino:
-    # Prologo
-    sw   $fp,   ($sp)
-    sw   $ra, -4($sp)
-    move $fp,    $sp
-    addi $sp,    $sp, -8
-
-    # Color del pixel
-    lw  $t1, ($a0)
-
-    # Si es un camino (comida, fondo, portal o Pac-Man)
-    move $v0, $zero
-    lw   $t0, colorComida
-    beq  $t1, $t0, es_camino_fin
-
-    lw  $t0, colorFondo
-    beq $t1, $t0, es_camino_fin
-    
-    lw  $t0, colorPortal
-    beq $t1, $t0, es_camino_fin
-
-    lw  $t0, colorPacman
-    beq $t1, $t0, es_camino_fin
-
-    li $v0, 1
-    
-es_camino_fin:
-    # Epilogo
-    move $sp,  $fp
-    lw   $fp, ($sp)
-    lw   $ra, -4($sp)
-    
-    jr $ra
     
 # Funcion: Imprime la puntuacion actual del juego.
 # Entrada: $a0: Titulo de la puntuacion (Victoria, Derrota, Juego Finalizado)

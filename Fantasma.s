@@ -184,7 +184,7 @@ Fantasma_mover:
 
     Fantasma_mover_chequear_colision: 
         move $a0, $v0
-        jal  es_camino
+        jal  Fantasma_es_camino
         beqz $v0, Fantasma_mover_ejecutar
 
         # Si hay alguna colision, se busca una nueva dir. aleatoria
@@ -351,7 +351,7 @@ Fantasma_chequear_interseccion:
     jal  obtener_dir_arriba
     
     move $a0, $v0
-    jal  es_camino
+    jal  Fantasma_es_camino
     bnez $v0, Fantasma_chequear_interseccion_der_abajo
 
     # Verifica si (x+1, y) es camino / Derecha
@@ -359,7 +359,7 @@ Fantasma_chequear_interseccion:
     jal  obtener_dir_derecha
     
     move $a0, $v0
-    jal  es_camino
+    jal  Fantasma_es_camino
     bnez $v0, Fantasma_chequear_interseccion_abajo_izq
 
     j Fantasma_chequear_interseccion_retornar_cierto
@@ -376,7 +376,7 @@ Fantasma_chequear_interseccion:
         jal  obtener_dir_derecha
         
         move $a0, $v0
-        jal  es_camino
+        jal  Fantasma_es_camino
         bnez $v0, Fantasma_chequear_interseccion_abajo_izq
 
         # Verifica si (x, y-1) es camino / Abajo
@@ -384,7 +384,7 @@ Fantasma_chequear_interseccion:
         jal  obtener_dir_abajo
         
         move $a0, $v0
-        jal  es_camino
+        jal  Fantasma_es_camino
         bnez $t1, Fantasma_chequear_interseccion_izq_arriba
 
         j Fantasma_chequear_interseccion_retornar_cierto
@@ -401,7 +401,7 @@ Fantasma_chequear_interseccion:
         jal  obtener_dir_abajo
         
         move $a0, $v0
-        jal  es_camino
+        jal  Fantasma_es_camino
         bnez $v0, Fantasma_chequear_interseccion_izq_arriba
 
         # Verifica si (x-1, y) es camino / Izquierda
@@ -409,7 +409,7 @@ Fantasma_chequear_interseccion:
         jal  obtener_dir_izquierda
         
         move $a0, $v0
-        jal  es_camino 
+        jal  Fantasma_es_camino 
         bnez $v0, Fantasma_chequear_interseccion_retornar_falso
 
         j Fantasma_chequear_interseccion_retornar_cierto
@@ -426,7 +426,7 @@ Fantasma_chequear_interseccion:
         jal  obtener_dir_izquierda
         
         move $a0, $v0
-        jal  es_camino
+        jal  Fantasma_es_camino
         bnez $v0, Fantasma_chequear_interseccion_retornar_falso
 
         # Verifica si (x, y+1) es camino / Arriba
@@ -434,7 +434,7 @@ Fantasma_chequear_interseccion:
         jal  obtener_dir_arriba
         
         move $a0, $v0
-        jal  es_camino
+        jal  Fantasma_es_camino
         bnez $v0, Fantasma_chequear_interseccion_retornar_falso
 
         j Fantasma_chequear_interseccion_retornar_cierto
@@ -501,7 +501,7 @@ Fantasma_cambiar_dir:
     move $a0, $s1
     jal  obtener_dir_arriba
     move $a0, $v0
-    jal  es_camino
+    jal  Fantasma_es_camino
 
     bnez $v0, Fantasma_cambiar_dir_chequear_derecha
     
@@ -518,7 +518,7 @@ Fantasma_cambiar_dir:
         move $a0, $s1
         jal  obtener_dir_derecha
         move $a0, $v0
-        jal  es_camino
+        jal  Fantasma_es_camino
 
         bnez $v0, Fantasma_cambiar_dir_chequear_abajo
 
@@ -534,7 +534,7 @@ Fantasma_cambiar_dir:
         move $a0, $s1
         jal  obtener_dir_abajo
         move $a0, $v0
-        jal  es_camino
+        jal  Fantasma_es_camino
 
         bnez $v0, Fantasma_cambiar_dir_chequear_izquierda
 
@@ -550,7 +550,7 @@ Fantasma_cambiar_dir:
         move $a0, $s1
         jal  obtener_dir_izquierda
         move $a0, $v0
-        jal  es_camino
+        jal  Fantasma_es_camino
 
         bnez $v0, Fantasma_cambiar_dir_verificar
 
@@ -588,4 +588,74 @@ Fantasma_cambiar_dir_fin:
     lw   $s3, -20($sp)
     lw   $s4, -24($sp)
 
+    jr $ra
+
+
+# Funcion: Verifica si el pixel en la direccion es un camino 
+#          válido para el fantasma.
+# Entrada: $a0: Direccion del Bitmap Display del fantasma.
+# Salida:  $v0: 0 si el pixel es un camino.
+#               1 de otra forma.
+# Planificacion de registros:
+# $t0: Color de comida / fondo / portal / Pac-Man.
+# $t1: Color del pixel en la direccion.
+# $s0: Dir. del Bitmap Display del fantasma.
+Fantasma_es_camino:
+    # Prologo
+    sw   $fp,   ($sp)
+    sw   $ra, -4($sp)
+    sw   $s0, -8($sp)
+    move $fp,    $sp
+    addi $sp,    $sp, -12
+
+    # Color del pixel
+    lw   $t1, ($a0)
+    move $s0,  $a0
+
+    # Si es un camino (comida, fondo, portal o Pac-Man)
+    move $v0, $zero
+    lw   $t0, colorComida
+    beq  $t1, $t0, Fantasma_es_camino_fin
+
+    lw  $t0, colorFondo
+    beq $t1, $t0, Fantasma_es_camino_fin
+    
+    lw  $t0, colorPacman
+    beq $t1, $t0, Fantasma_es_camino_fin
+    
+    lw  $t0, colorPortal
+    beq $t1, $t0, Fantasma_es_camino_verif_portal
+          
+    li $v0, 1
+    j  Fantasma_es_camino_fin
+
+Fantasma_es_camino_verif_portal:
+    # Portal 6 (0, 18)
+    li  $a0, 0
+    li  $a1, 18
+    jal coord_a_dir_bitmap
+    beq $v0, $s0, Fantasma_es_camino_verif_portal_der
+
+    # Portal 6 (0, 17)
+    add $t1, $v0, 128
+    beq $v0, $s0, Fantasma_es_camino_verif_portal_der
+
+    # De otra forma, se trata del portal 5 (31, 17) o (31, 18)
+    # Verifica recursivamente si el otro lado del portal es camino
+    add $a0, $s0, -120     # DIRSIGUIENTE = DIRACTUAL - 30*4
+    jal Fantasma_es_camino
+    j   Fantasma_es_camino_fin
+    
+    Fantasma_es_camino_verif_portal_der:
+        # Análogamente, verifica si el otro lado del portal es camino
+        add $a0, $s0, 120  # DIRSIGUIENTE = DIRACTUAL + 30*4
+        jal Fantasma_es_camino
+    
+Fantasma_es_camino_fin:
+    # Epilogo
+    move $sp,    $fp
+    lw   $fp,   ($sp)
+    lw   $ra, -4($sp)
+    lw   $s0, -8($sp)
+    
     jr $ra
