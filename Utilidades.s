@@ -276,7 +276,8 @@ pintar_tablero:
 
 pintar_tablero_fin:
     # Copia al contador de alimentos total
-    sw  $t0, ($a2)
+    lw $t0, ($a1)
+    sw $t0, ($a2)
     
     # Epilogo
     move $sp,     $fp

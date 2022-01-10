@@ -89,17 +89,17 @@ tablero:
     .asciiz "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
 
 # ------------ Mensajes ------------
-msgPausa:       .asciiz "\n.................. JUEGO PAUSADO .................\n"
-msgNoPausa:     .asciiz "\n................ JUEGO DESPAUSADO ................\n"
-msgSalida:      .asciiz "\n................ JUEGO FINALIZADO ................\n"
-msgVictoria:    .asciiz "\n.................. VICTORIA :) ...................\n"
-msgDerrota:     .asciiz "\n.................. DERROTA :( ....................\n"
+msgPausa:       .asciiz "\n.-^^-..-^^-..-^^- JUEGO PAUSADO -^^-..-^^-..-^^-.\n"
+msgNoPausa:     .asciiz "\n.-^^-..-^^-..-^^- JUEGO DESPAUSADO -^^-..-^^-..-^^-.\n"
+msgSalida:      .asciiz "\n.-^^-..-^^-..-^^- JUEGO FINALIZADO -^^-..-^^-..-^^-.\n"
+msgVictoria:    .asciiz "\n.-^^-..-^^-..-^^- VICTORIA :) -^^-..-^^-..-^^-.\n"
+msgDerrota:     .asciiz "\n.-^^-..-^^-..-^^- DERROTA  :( -^^-..-^^-..-^^-.\n"
 msgVidas:       .asciiz " Vidas restantes: "
-msgComida:      .asciiz " Puntuacion:      Te has comido "
+msgComida:      .asciiz " Progreso:        Te has comido "
 msgComida2:     .asciiz "% del alimento."
 msgTiempo:      .asciiz " Tiempo:          "
 msgTiempo2:     .asciiz " segundos."
-puntos:         .asciiz "\n..................................................\n"
+puntos:         .asciiz "\n.-^^-..-^^-..-^^-..-^^-..-^^-..-^^-..-^^-..-^^-..-^^-.\n"
 nuevaLinea:     .asciiz "\n"
 	
 	.globl MAT S C D V
