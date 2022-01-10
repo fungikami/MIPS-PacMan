@@ -26,7 +26,7 @@ MAT:	.word 0x10008000	# Direccion base del Bitmat Display
 S:      .word 3             # Refrescamiento 
 C:      .word 400          # Base para la conversion con los tics del reloj
 D:      .word 'A'           # Dir. de movimiento actual del Pac-Man
-V:      .word 3             # Vidas
+V:      .word 1             # Vidas
 
 # ------------ Variables ------------
 seguir:	        .byte 1
