@@ -212,9 +212,6 @@ pintar_tablero:
     lw $t3, colorPared
     lw $t4, colorComida
 
-    # Inicializa con 0 el contador de alimento total
-    sw $zero, ($a2)
-
     pintar_tablero_for_pixel:
         lb  $t0, ($a0)
         beq $t0, $zero, pintar_tablero_fin
@@ -277,10 +274,10 @@ pintar_tablero:
         add $t1, $t1, 4
         j   pintar_tablero_for_pixel
 
-        # Copia al contador de alimentos total
-        sw  $t0, ($a2)
-
 pintar_tablero_fin:
+    # Copia al contador de alimentos total
+    sw  $t0, ($a2)
+    
     # Epilogo
     move $sp,     $fp
     lw   $fp,    ($sp)
