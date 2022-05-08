@@ -1,6 +1,6 @@
 # CI3815 Project II: Pac-Man in MIPS Assembly
 
-Implementation of the arcade game Pac-Man at Mips Assembly.
+Implementation of the arcade game Pac-Man in Mips Assembly.
 
 ## How to get it to work
 
